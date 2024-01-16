@@ -2,10 +2,12 @@ import { Comment } from 'react-loader-spinner';
 import React, { useEffect, useState } from 'react';
 
 interface LoaderProps {
-  helpText?: string;
+  helpText?: boolean;
 }
 
-const Loader: React.FC<LoaderProps> = ({ helpText = 'true' }) => {
+const sameStyle = "text-3xl max-sm:text-2xl font-mono font-bold text-black dark:text-orange-500";
+
+const Loader: React.FC<LoaderProps> = ({ helpText = true }) => {
   const [showSecondLine, setShowSecondLine] = useState(false);
   const [isBlinking, setIsBlinking] = useState(true);
 
@@ -21,7 +23,7 @@ const Loader: React.FC<LoaderProps> = ({ helpText = 'true' }) => {
   }, []);
 
   return (
-      <div className='w-[280px] flex items-center flex-col'>
+      <div className='w-[280px] max-sm:w-[190px] flex items-center flex-col'>
         <Comment
           visible={true}
           height="200"
@@ -30,14 +32,14 @@ const Loader: React.FC<LoaderProps> = ({ helpText = 'true' }) => {
           color="#fff"
           backgroundColor="#F4442E"
         />
-        {helpText === 'true' && (
+        {helpText && (
           <>
-            <div className={isBlinking ? 'text-typingUpperCase text-3xl text-left font-mono text-orange-500' : 'text-3xl text-left font-mono text-orange-500'}>
+            <div className={isBlinking ? 'text-typingUpperCase ' + sameStyle : sameStyle}>
               Please wait,
             </div>
             {showSecondLine && (
-              <div className='text-typingDownCase text-2xl text-left font-mono text-orange-500'>
-                Your time is <span className="text-purple-600 underline font-bold">Essential</span> to us!
+              <div className='text-typingDownCase text-2xl max-sm:text-lg font-mono font-semibold text-black dark:text-orange-500'>
+                Your time is <span className="text-orange-500 dark:text-purple-600 underline font-extrabold">Essential</span> to us!
               </div>
             )}
           </>
