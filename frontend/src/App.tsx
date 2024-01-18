@@ -1,17 +1,16 @@
 import { Routes, Route } from 'react-router-dom';
 import { Suspense, lazy, useEffect } from 'react';
-import './App.css';
 
-import Loader from './components/Loader';
+import Loader from './Page/Loader';
 
-const Login = lazy(() => import('./components/Login/index'));
+const Login = lazy(() => import('./Page/Login/index'));
 
 function App() {
 
   useEffect(() => {
     const setTheme = () => {
       const currentHour = new Date().getHours();
-      const isDayTime = currentHour > 6 && currentHour < 18;
+      const isDayTime = currentHour > 6 && currentHour < 7;
       if(isDayTime){
         if(document.documentElement.classList.contains('dark')){
           document.documentElement.classList.remove('dark');
@@ -33,7 +32,7 @@ function App() {
   },[])
 
   return (
-    <div className='App bg-[#F5F5F5] dark:bg-[#272640]'>
+    <div className='bg-[#F5F5F5] dark:bg-[#272640]'>
       <Suspense fallback= {<Loader />}>
         <Routes>
           <Route path="/" element={<Login/>} />

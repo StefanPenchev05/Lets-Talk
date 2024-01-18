@@ -22,5 +22,5 @@
   },
   "include": [
     "src"
-, "api/api.ts"  ]
+, "api/api.ts", "src/Page/Login/index.tsx", "src/Page/Loader"  ]
 }
