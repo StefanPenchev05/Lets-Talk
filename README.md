@@ -11,3 +11,6 @@ Lets Talk is not just an application; it's your world. Personalize your interfac
 
 🌐 Global Boundlessness:
 Create, communicate, and connect with people from all around the world. Lets Talk turns the global world into a small, warm corner for every user. It's not just a chat application; it's a reflection of a new way of communication. Let's talk... and immediately the world becomes bigger and more colorful! 💬🚀
+
+
+_______________ CURENTLY WORKING ON MYCLOTHES
