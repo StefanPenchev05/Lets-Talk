@@ -1,11 +1,11 @@
-import React from "react";
 import { Divider } from "@mui/material";
+import { ReactNode } from "react";
 
-type DivierFiledProp = {
-  helperText: string;
+type DividerFiledProps<ItemType extends ReactNode> = {
+  helperText: ItemType;
 };
 
-const DividerField: React.FC<DivierFiledProp> = ({ helperText }) => {
+const DividerField: React.FC<DividerFiledProps<ReactNode>> = <ItemType extends ReactNode,>({ helperText }: DividerFiledProps<ItemType>) => {
   return (
     <Divider
       className="w-full text-gray-400 dark:text-white mb-4"
@@ -23,6 +23,6 @@ const DividerField: React.FC<DivierFiledProp> = ({ helperText }) => {
       {helperText}
     </Divider>
   );
-};
+}
 
 export default DividerField;

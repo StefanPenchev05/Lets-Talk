@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import "./index.css";
 
-type SubmitButtonProp = {
-  helperText: string;
+type SubmitButtonProp<ItemType extends ReactNode> = {
+  helperText: ItemType;
 };
 
-const SubmitButton: React.FC<SubmitButtonProp> = ({helperText}) => {
+const SubmitButton: React.FC<SubmitButtonProp<ReactNode>> = <ItemType extends ReactNode,>({ helperText }:SubmitButtonProp<ItemType>) => {
   return (
     <div>
       <button
@@ -19,6 +19,6 @@ const SubmitButton: React.FC<SubmitButtonProp> = ({helperText}) => {
       </button>
     </div>
   );
-}
+};
 
 export default SubmitButton;
