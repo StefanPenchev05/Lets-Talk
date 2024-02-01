@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+    transition: background-color 2.0s ease;
+}
+
+div {
+    transition: background-color 2.0s ease !important;
+}
+
+span {
+    transition: background-color 2.0s ease !important;
+}
+
+button {
+    transition: background-color 2.0s ease;
+}
+
+@layer base {
+    .MuiTypography-root {
+        transition: color 2.0s ease !important;
+    }
+    
+    .MuiTypography-root {
+        transition: color 2.0s ease !important;
+    }
+}
