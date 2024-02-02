@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QU+/FoGGNOLxKjg48cptUGaUoP2pLUhSsaz1BmyRpedi+ZiAmCqVqueEzQo9OXEi6dG7UhgIpyKCpJOnuFJO5A==",
+  "dgSpecHash": "DAzwcewzGHO9zi8FNy42KcyL/6Btwh5iyMmjHalsmOG+LyyN5RQQX1xrHQCCqWNpY+KmcKTZM1YSRLUKOt1p6A==",
   "success": true,
-  "projectFilePath": "/Users/stefanpenchev/Desktop/Projects/letstalk/Server/LetsTalk/LetsTalk.csproj",
+  "projectFilePath": "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/Server/LetsTalk/LetsTalk.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

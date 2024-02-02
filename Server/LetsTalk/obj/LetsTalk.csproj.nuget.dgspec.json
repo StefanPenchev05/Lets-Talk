@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/stefanpenchev/Desktop/Projects/letstalk/Server/LetsTalk/LetsTalk.csproj": {}
+    "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/Server/LetsTalk/LetsTalk.csproj": {}
   },
   "projects": {
-    "/Users/stefanpenchev/Desktop/Projects/letstalk/Server/LetsTalk/LetsTalk.csproj": {
+    "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/Server/LetsTalk/LetsTalk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/stefanpenchev/Desktop/Projects/letstalk/Server/LetsTalk/LetsTalk.csproj",
+        "projectUniqueName": "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/Server/LetsTalk/LetsTalk.csproj",
         "projectName": "LetsTalk",
-        "projectPath": "/Users/stefanpenchev/Desktop/Projects/letstalk/Server/LetsTalk/LetsTalk.csproj",
+        "projectPath": "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/Server/LetsTalk/LetsTalk.csproj",
         "packagesPath": "/Users/stefanpenchev/.nuget/packages/",
-        "outputPath": "/Users/stefanpenchev/Desktop/Projects/letstalk/Server/LetsTalk/obj/",
+        "outputPath": "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/Server/LetsTalk/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/stefanpenchev/.nuget/NuGet/NuGet.Config"
