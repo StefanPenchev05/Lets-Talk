@@ -30,5 +30,5 @@ jobs:
       - run: |
           cd Client/LetsTalk
           npm ci
-      - run: npm run build --if-present
-      - run: npm test
+          npm run build --if-present
+          npm test
