@@ -1,6 +1,6 @@
 import React from 'react'
 import { IconButton } from '@mui/material'
-import { Google, FacebookOutlined } from '@mui/icons-material'
+import { Google, FacebookOutlined, GitHub } from '@mui/icons-material'
 
 const SocialButton: React.FC = ()  => {
   return (
@@ -11,6 +11,9 @@ const SocialButton: React.FC = ()  => {
             </IconButton>
             <IconButton>
                 <FacebookOutlined color='primary' className='text-4xl'/>
+            </IconButton>
+            <IconButton>
+              <GitHub className='text-4xl text-black dark:text-white'/>
             </IconButton>
         </div>
     </div>

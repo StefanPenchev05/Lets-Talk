@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useWindowResize } from "../../hooks/useWindowResize.hook";
 import { useFormSubmit } from "../../hooks/login/useFormSubmit.hook";
 
-import Subtitle from "./Subtitle";
-import SubmitButton from "../../components/SubmitButton";
-import EmailInput from "../../components/EmailInput";
-import PasswordInput from "../../components/PasswordInput";
-import DividerField from "../../components/DividerFiled";
-import SocialButton from "./SocialButton";
+import Subtitle from "../../components/login/Subtitle";
+import SubmitButton from "../../components/shared/SubmitButton";
+import EmailInput from "../../components/shared/EmailInput";
+import PasswordInput from "../../components/shared/PasswordInput";
+import DividerField from "../../components/shared/DividerFiled";
+import SocialButton from "../../components/login/SocialButton";
 
 import ManImg from "../../assets/icons/man.png";
 import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";

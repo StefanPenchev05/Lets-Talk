@@ -8,7 +8,7 @@ type DividerFiledProps<ItemType extends ReactNode> = {
 const DividerField: React.FC<DividerFiledProps<ReactNode>> = <ItemType extends ReactNode,>({ helperText }: DividerFiledProps<ItemType>) => {
   return (
     <Divider
-      className="w-full text-gray-400 dark:text-white mb-4"
+      className="w-full text-gray-400 dark:text-white mb-4 text-2xl"
       sx={{
         ".dark &:before": {
           backgroundColor: "white",

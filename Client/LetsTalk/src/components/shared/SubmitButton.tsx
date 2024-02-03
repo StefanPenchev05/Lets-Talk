@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import "./index.css";
+import "../index.css";
 
 type SubmitButtonProp<ItemType extends ReactNode> = {
   helperText: ItemType;
