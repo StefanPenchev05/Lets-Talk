@@ -2,6 +2,8 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Node.js CI
+env:
+  // Remove the line with the invalid variable reference
 
 on:
   push:
@@ -30,4 +32,8 @@ jobs:
       - run: |
           cd Client/LetsTalk
           npm ci
+      - run: |
+          cd Client/LetsTalk
           npm run build --if-present
+      # - run: npm test
+      
