@@ -5,7 +5,10 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
+    cors: {
+      origin: '*', // Allow all origins
+      credentials: false, // Allow cookies to be included in the requests
+    },
     host: "localhost",
-    port: 3000,
   },
 });
