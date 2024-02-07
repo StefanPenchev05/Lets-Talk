@@ -1,5 +1,4 @@
 import { TextField } from "@mui/material";
-import { useEffect } from "react";
 
 interface EmailInputProps {
   email: string;
@@ -7,11 +6,7 @@ interface EmailInputProps {
   error?: string;
 }
 
-
 const EmailInput: React.FC<EmailInputProps> = ({ email, setEmail, error }) => {
-    useEffect(()=>{
-        console.log(error)
-    },[error])
   return (
     <TextField
       label="Username"

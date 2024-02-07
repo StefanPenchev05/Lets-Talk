@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 
@@ -13,7 +13,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   setPassword,
   error,
 }) => {
-  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
     <TextField
