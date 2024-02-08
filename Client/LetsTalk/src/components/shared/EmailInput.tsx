@@ -9,6 +9,8 @@ interface EmailInputProps {
 const EmailInput: React.FC<EmailInputProps> = ({ email, setEmail, error }) => {
   return (
     <TextField
+      data-testid="email-input"
+      type="email"
       label="Username"
       variant="outlined"
       color="primary"
