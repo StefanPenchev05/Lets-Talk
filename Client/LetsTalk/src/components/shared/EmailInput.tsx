@@ -10,8 +10,8 @@ const EmailInput: React.FC<EmailInputProps> = ({ email, setEmail, error }) => {
   return (
     <TextField
       data-testid="email-input"
-      type="email"
-      label="Username"
+      type="emailOrUsername"
+      label="Email or Username"
       variant="outlined"
       color="primary"
       value={email}

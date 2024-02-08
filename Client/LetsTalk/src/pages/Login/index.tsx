@@ -24,7 +24,7 @@ const Login: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center h-screen w-full">
+    <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-screen w-full">
       <div className="hidden lg:block w-3/4 h-full bg-white dark:bg-[#150f38]">
         <img
           src={Wallpaper}

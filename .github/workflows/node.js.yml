@@ -43,5 +43,7 @@ jobs:
           npm test
 
       - name: Run Cypress tests
-        run: npx cypress run
+        run: |
+          cd Client/LetsTalk
+          npx cypress run
       
