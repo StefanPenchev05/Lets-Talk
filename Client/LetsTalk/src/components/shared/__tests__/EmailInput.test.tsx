@@ -19,7 +19,7 @@ test("updates value when typed into", () => {
     <EmailInput email="" setEmail={setEmail} />
   );
 
-  fireEvent.change(getByLabelText("Username"), {
+  fireEvent.change(getByLabelText("Email or Username"), {
     target: { value: "test@example.com" },
   });
 
