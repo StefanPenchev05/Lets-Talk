@@ -17,6 +17,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 
   return (
     <TextField
+      data-testid="password-input"
       label="Password"
       variant="outlined"
       color="primary"
@@ -53,6 +54,12 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           },
           "&.Mui-focused fieldset": {
             borderColor: "yellow",
+          },
+        },
+        ".dark & .MuiFormHelperText-root": {
+          color: "white",
+          "&.Mui-error": {
+            color: "red",
           },
         },
       }}

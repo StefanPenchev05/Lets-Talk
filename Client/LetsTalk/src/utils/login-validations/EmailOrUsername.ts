@@ -9,7 +9,7 @@ const validateEmail = (email: string): boolean => {
 };
 
 const validateUsername = (username: string): boolean => {
-  const usernamePattern = /^[a-zA-Z0-9]{3,20}$/;
+  const usernamePattern = /^[a-zA-Z0-9._-]{3,20}$/;
   if (!usernamePattern.test(username)) {
     throw new CustomError("Invalid username format", { type: "username" });
   }

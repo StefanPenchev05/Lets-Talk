@@ -37,6 +37,13 @@ const EmailInput: React.FC<EmailInputProps> = ({ email, setEmail, error }) => {
             borderColor: "yellow",
           },
         },
+
+        ".dark & .MuiFormHelperText-root": {
+          color: "white",
+          "&.Mui-error": {
+            color: "red",
+          },
+        },
       }}
     />
   );
