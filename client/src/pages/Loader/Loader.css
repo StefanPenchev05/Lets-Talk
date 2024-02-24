@@ -1,0 +1,28 @@
+@keyframes typingUpperCase{
+    0% { width: 0 }
+    100% { width: 8em }
+}
+
+@keyframes typingDownCase{
+    0% { width: 0 }
+    100% { width: 18em }
+}
+
+@keyframes blink-caret{
+    0%, 100% { border-color: transparent }
+    50% { border-color: orange; }
+}
+
+.text-typingUpperCase {
+    border-right: .15em solid white;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: typingUpperCase 1.5s steps(60, end), blink-caret .75s step-end infinite;
+}
+
+.text-typingDownCase {
+    border-right: .15em solid white;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: typingDownCase 2s steps(60, end), blink-caret .75s step-end infinite;
+}

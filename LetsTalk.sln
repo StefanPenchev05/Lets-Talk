@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{58B399DB-5136-413D-8E10-8C2D66E00D7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server-aspnet", "server-aspnet\Server.csproj", "{58B399DB-5136-413D-8E10-8C2D66E00D7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
