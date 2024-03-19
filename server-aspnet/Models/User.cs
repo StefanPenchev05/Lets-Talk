@@ -9,5 +9,9 @@ namespace Server.Models
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        // Naviagtion properties
+        public ICollection<Message> Messages { get; set; }
+        public ICollection<UserChannel> UserChannels { get; set; }
     }
 }
