@@ -62,8 +62,17 @@ namespace Server.Controllers
                     {
                         // Check if the user has enabled two-factor authentication
                         var userSettings = user.Settings;
-                        if(userSettings.TwoFactorAuth){
-                            
+                        if (userSettings.TwoFactorAuth)
+                        {
+
+                        }
+                        else
+                        {
+                            // Set the session value with the user's ID
+                            HttpContext.Session.SetString("UserId", user.UserId.ToString());
+
+                            // Return a 200 OK response
+                            return Ok(new { message = "Login successful" });
                         }
                     }
                     else
@@ -75,12 +84,12 @@ namespace Server.Controllers
                 else
                 {
                     // If the user is not found, return an error
-                    return BadRequest(new { message = "The user is not found!" });
+                    return StatusCode(404, new { message = "The user is not found!" });
                 }
             }
 
             // If the model is not valid, return a server error
-            return BadRequest(new { message = "Server Error" });
+            return StatusCode(500, new { message = "Server Error" });
         }
 
         // Define the Error action
