@@ -12,6 +12,7 @@
 /build
 
 server-aspnet/Migrations
+server-aspnet/bin
 
 # misc
 .DS_Store

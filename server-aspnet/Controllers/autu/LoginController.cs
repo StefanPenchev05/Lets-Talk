@@ -67,7 +67,7 @@ namespace Server.Controllers
                             var userSettings = user.Settings;
                             if (userSettings.TwoFactorAuth)
                             {
-
+                                
                             }
                             else
                             {
@@ -92,7 +92,10 @@ namespace Server.Controllers
                 }
 
                 // If the model is not valid, return a server error
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { Filed = x.Key, Message = x.Value.Errors.First().ErrorMessage })
+                    .ToList();
                 return StatusCode(500, new { message = errors });
             }
             catch (Exception ex)
