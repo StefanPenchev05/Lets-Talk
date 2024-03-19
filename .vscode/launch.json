@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Server/LetsTalk/bin/Debug/net8.0/LetsTalk.dll",
+            "program": "${workspaceFolder}/server-aspnet/bin/Debug/net8.0/Server.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Server/LetsTalk",
+            "cwd": "${workspaceFolder}/server-aspnet/",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
@@ -23,7 +23,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/server-aspnet/Views"
             }
         },
         {

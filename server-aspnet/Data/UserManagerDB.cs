@@ -6,15 +6,14 @@ namespace Server.Data
 {
     public class UserManagerDB : DbContext
     {
+        public UserManagerDB(DbContextOptions<UserManagerDB> options)
+            : base(options)
+        {
+        }
+
         public DbSet<User> Users { get; set; }
         public DbSet<Settings> Settings { get; set; }
         public DbSet<SessionStore> SesssionStore { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseMySql("Server=localhost;Database=LetsTalk;uid=root;",
-            new MySqlServerVersion(new Version(8, 3, 0)));
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
