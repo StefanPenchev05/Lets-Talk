@@ -3,6 +3,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// MySql distributed cache services
+builder.Services.AddDistributedMySqlCache(option => {
+    option.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    option.TableName = "SesionStore";
+    option.SchemaName = "SessionStore";
+});
+
+// Add session services
+builder.Services.AddSession(option => {
+    option.IdleTimeout = TimeSpan.FromHours(1);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -17,6 +31,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 

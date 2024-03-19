@@ -200,3 +200,12 @@
 /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/obj/Debug/net8.0/Server.genruntimeconfig.cache
 /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/obj/Debug/net8.0/ref/Server.dll
 /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/obj/Debug/net8.0/Server.csproj.Up2Date
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Pomelo.Extensions.Caching.MySql.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll

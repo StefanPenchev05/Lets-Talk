@@ -8,6 +8,7 @@ namespace Server.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Settings> Settings { get; set; }
+        public DbSet<SessionStore> SesssionStore { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -77,6 +77,30 @@ namespace Server.Migrations
                     b.ToTable("Role");
                 });
 
+            modelBuilder.Entity("Server.Models.SessionStore", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(36)
+                        .HasColumnType("varchar(36)");
+
+                    b.Property<DateTime?>("AbsoluteExpiration")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("ExpiresAtTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<ulong?>("SlidingExpirationInSeconds")
+                        .HasColumnType("bigint unsigned");
+
+                    b.Property<byte[]>("Value")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SesssionStore");
+                });
+
             modelBuilder.Entity("Server.Models.Settings", b =>
                 {
                     b.Property<int>("Id")
