@@ -26,22 +26,22 @@ jobs:
             ${{ runner.OS }}-node-
       - name: Install dependencies and run application
         run: |
-          cd Client/LetsTalk
+          cd client/
           npm ci
 
       - name: Build application
         run: |
-          cd Client/LetsTalk
+          cd client/
           npm run build --if-present
 
       - name: Run unit tests
         run: |
-          cd Client/LetsTalk
+          cd client/
           npm test
 
       - name: Start server
         run: |
-          cd Client/LetsTalk
+          cd client/
           npm start &
         env:
           CI: true
