@@ -77,6 +77,41 @@ namespace Server.Migrations
                     b.ToTable("Role");
                 });
 
+            modelBuilder.Entity("Server.Models.Settings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AllowDirectMessages")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("DarkMode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Notifications")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("ShowOnlineStatus")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("TwoFactorAuth")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Settings");
+                });
+
             modelBuilder.Entity("Server.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -94,6 +129,9 @@ namespace Server.Migrations
 
                     b.Property<string>("Password")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("SettingsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .HasColumnType("longtext");
@@ -151,6 +189,17 @@ namespace Server.Migrations
                     b.Navigation("channel");
                 });
 
+            modelBuilder.Entity("Server.Models.Settings", b =>
+                {
+                    b.HasOne("Server.Models.User", "User")
+                        .WithOne("Settings")
+                        .HasForeignKey("Server.Models.Settings", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Server.Models.UserChannel", b =>
                 {
                     b.HasOne("Server.Models.Channel", "Channel")
@@ -193,6 +242,8 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.User", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("Settings");
 
                     b.Navigation("UserChannels");
                 });
