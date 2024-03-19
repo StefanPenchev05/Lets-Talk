@@ -21,14 +21,21 @@ namespace Server.Controllers
     {
         // Define the logger, context, hash service, and validator
         private ILogger<LoginController> logger;
+        private IConfiguration configuration;
         private readonly UserManagerDB context;
         private readonly HashService hashService;
+        private readonly EmailManager emailManager;
+        private readonly IViewRenderService viewRenderService; // Add this line
+
 
         // Inject dependencies into the constructor
-        public LoginController(ILogger<LoginController> logger, UserManagerDB context)
+        public LoginController(ILogger<LoginController> logger, UserManagerDB context, EmailManager emailManager, IConfiguration configuration, IViewRenderService viewRenderService)
         {
             this.logger = logger;
             this.context = context;
+            this.emailManager = emailManager;
+            this.configuration = configuration;
+            this.viewRenderService = viewRenderService;
         }
 
         // Define the Login action
@@ -40,8 +47,11 @@ namespace Server.Controllers
                 // Check if the model is valid
                 if (ModelState.IsValid)
                 {
-                    User user = new User();
+                    User user = null;
                     var validator = new LoginValidator();
+                    var emailService = new EmailManager(configuration, viewRenderService);
+                    await emailService.SendEmailAsync("Test", model);
+
                     // Determine if the input is an email or username
                     string emailOrUsername = validator.isEmailOrUsername(model.UsernameOrEmail);
                     if (emailOrUsername == "email")
@@ -67,7 +77,6 @@ namespace Server.Controllers
                             var userSettings = user.Settings;
                             if (userSettings.TwoFactorAuth)
                             {
-                                
                             }
                             else
                             {
@@ -91,7 +100,7 @@ namespace Server.Controllers
                     }
                 }
 
-                // If the model is not valid, return a server error
+                // If the model is not valid, return model errors
                 var errors = ModelState
                     .Where(x => x.Value.Errors.Count > 0)
                     .Select(x => new { Filed = x.Key, Message = x.Value.Errors.First().ErrorMessage })

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
+using Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ builder.Services.AddSession(option => {
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
 });
+
+builder.Services.AddTransient<EmailManager>();
+builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 
 var app = builder.Build();
 
