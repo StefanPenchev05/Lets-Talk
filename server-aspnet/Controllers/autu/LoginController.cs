@@ -61,6 +61,10 @@ namespace Server.Controllers
                     if (user.Password == passwordHasher)
                     {
                         // Check if the user has enabled two-factor authentication
+                        var userSettings = user.Settings;
+                        if(userSettings.TwoFactorAuth){
+                            
+                        }
                     }
                     else
                     {
