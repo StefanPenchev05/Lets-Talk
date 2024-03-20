@@ -88,28 +88,28 @@ namespace Server.Controllers
 
                                 // Use the EmailManager to send an email with the authentication code and return to the client to check his email and write the code given
                                 await emailService.SendEmailAsync("TwoFactorAuth", "Two Factor Authentication Code", model, additianalData);
-                                return Ok(new {twoFactorAwait = true, message = "Email has been send to you with the code"});
+                                return Ok(new { twoFactorAwait = true, message = "Email has been send to you with the code" });
+                            }
+                            else
+                            {
+                                // Set the session value with the user's ID
+                                HttpContext.Session.SetString("UserId", user.UserId.ToString());
+
+                                // Return a 200 OK response
+                                return Ok(new { message = "Login successful" });
                             }
                         }
                         else
                         {
-                            // Set the session value with the user's ID
-                            HttpContext.Session.SetString("UserId", user.UserId.ToString());
-
-                            // Return a 200 OK response
-                            return Ok(new { message = "Login successful" });
+                            // If the passwords don't match, return an error
+                            return BadRequest(new { message = "Invalid password for this user" });
                         }
                     }
                     else
                     {
-                        // If the passwords don't match, return an error
-                        return BadRequest(new { message = "Invalid password for this user" });
+                        // If the user is not found, return an error
+                        return StatusCode(404, new { message = "The user is not found!" });
                     }
-                }
-                else
-                {
-                    // If the user is not found, return an error
-                    return StatusCode(404, new { message = "The user is not found!" });
                 }
 
                 // If the model is not valid, return model errors
