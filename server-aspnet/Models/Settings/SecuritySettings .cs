@@ -9,7 +9,7 @@ namespace Server.Models
     {
         public int Id { get; set; }
         public bool TwoFactorAuth { get; set; } = false;
-        public int? TwoFactorAuthCode { get; set; } = null;
+        public string? TwoFactorAuthCode { get; set; } = null;
         public DateTime? LastPasswordChange { get; set; }
         public int FailedLoginAttempts { get; set; } = 0;
         public DateTime? AccountLockoutEnd { get; set; }

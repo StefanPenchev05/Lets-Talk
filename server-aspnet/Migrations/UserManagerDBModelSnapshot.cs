@@ -282,8 +282,8 @@ namespace Server.Migrations
                     b.Property<bool>("TwoFactorAuth")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("TwoFactorAuthCode")
-                        .HasColumnType("int");
+                    b.Property<string>("TwoFactorAuthCode")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 

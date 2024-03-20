@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,7 +49,7 @@ namespace Server.Controllers
         private async Task<IActionResult> _HandleTwoFactorAuthAsync(User user, LoginViewModel model)
         {
             // Generate a random 5-digit number for the authentication code
-            int code = new Random().Next(10000, 100000);
+            string code = new Random().Next(10000, 100000).ToString();
 
             // Create a dictionary to hold additional data for the email
             Dictionary<string, object> additianalData = new()
