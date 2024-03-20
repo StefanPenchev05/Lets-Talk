@@ -34,36 +34,41 @@ public class ViewRenderService : IViewRenderService
     // Method to render a view to a string
     public async Task<string> RenderToStringAsync(string viewName, object model)
     {
-        // Create a new HttpContext and ActionContext for rendering the view
-        var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };
-        var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+        // Console.WriteLine(model);
+        if(model == null){
+            throw new ArgumentException(nameof(model), "Model cannot be null");
+        }
 
-        using (var sw = new StringWriter())
+        try
         {
-            // Find the view with the given name
-            var viewResult = razorViewEngine.FindView(actionContext, viewName, false);
+            var httpContext = new DefaultHttpContext { RequestServices = serviceProvider };
+            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            // If the view doesn't exist, throw an exception
-            if (viewResult.View == null)
+            using (var sw = new StringWriter())
             {
-                throw new ArgumentException($"{viewName} does not match with any available view");
+                var viewResult = razorViewEngine.FindView(actionContext, viewName, false);
+
+                if (viewResult.View == null)
+                {
+                    throw new ArgumentNullException($"{viewName} does not match any available view");
+                }
+
+                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
+                {
+                    Model = model
+                };
+
+                var viewContext = new ViewContext(actionContext, viewResult.View, viewDictionary, new TempDataDictionary(actionContext.HttpContext, tempDataProvider), sw, new HtmlHelperOptions());
+
+                await viewResult.View.RenderAsync(viewContext);
+
+                return sw.ToString();
             }
-
-            // Create a ViewDataDictionary for the view
-            var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-            {
-                Model = model
-            };
-
-            // Create a ViewContext for rendering the view
-            var viewContext = new ViewContext(actionContext, viewResult.View, viewDictionary, new TempDataDictionary(actionContext.HttpContext, tempDataProvider), sw, new HtmlHelperOptions());
-
-            // Render the view to the StringWriter
-            await viewResult.View.RenderAsync(viewContext);
-            Console.WriteLine(sw.ToString());
-
-            // Return the rendered view as a string
-            return sw.GetStringBuilder().ToString();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
         }
     }
 }

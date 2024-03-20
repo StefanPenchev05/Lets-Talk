@@ -17,3 +17,7 @@ build_property.SupportLocalizedComponentNames =
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
 build_property.MSBuildProjectDirectory = /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet
 build_property._RazorSourceGeneratorDebug = 
+
+[/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/Views/EmailTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW1haWxUZXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 

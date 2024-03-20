@@ -19,13 +19,12 @@ namespace Server.Controllers
     [Route("/auth/login")]
     public class LoginController : Controller
     {
-        // Define the logger, context, hash service, and validator
         private ILogger<LoginController> logger;
         private IConfiguration configuration;
         private readonly UserManagerDB context;
         private readonly HashService hashService;
         private readonly EmailManager emailManager;
-        private readonly IViewRenderService viewRenderService; // Add this line
+        private readonly IViewRenderService viewRenderService;
 
 
         // Inject dependencies into the constructor
