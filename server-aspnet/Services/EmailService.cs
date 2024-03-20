@@ -5,7 +5,7 @@ using Server.ViewModels;
 namespace Server.Services
 {
     // This class is responsible for sending emails.
-    public class EmailManager
+    public class EmailManager : IEmailService
     {
         // Configuration object to access app settings.
         private readonly IConfiguration _configuration;

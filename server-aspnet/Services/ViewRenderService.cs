@@ -5,12 +5,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-// Interface for the service that will render a view to a string
-public interface IViewRenderService
-{
-    // Method to render a view to a string
-    Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, object> additionalData = null);
-}
+using Server.Services;
 
 public class ViewRenderService : IViewRenderService
 {

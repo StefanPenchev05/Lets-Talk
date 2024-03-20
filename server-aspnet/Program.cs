@@ -31,6 +31,7 @@ builder.Services.AddSession(option => {
 builder.Services.AddTransient<EmailManager>();
 builder.Services.AddTransient<LoginValidator>();
 builder.Services.AddTransient<IHashService, HashService>();
+builder.Services.AddTransient<ICryptoService, CryptoService>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 
 var app = builder.Build();

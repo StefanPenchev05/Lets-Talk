@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// Server NameSpaces
 using Server.Data;
 using Server.Validator;
 using Server.ViewModels;
@@ -15,25 +14,23 @@ using Server.Models;
 
 namespace Server.Controllers
 {
-    // Define the route for this controller
     [Route("/auth/login")]
     public class LoginController : Controller
     {
         private ILogger<LoginController> _logger;
-        private IConfiguration _configuration;
         private readonly UserManagerDB _context;
         private readonly IHashService _hashService;
-        private readonly EmailManager _emailManager;
-        private readonly IViewRenderService _viewRenderService;
+        private readonly IEmailService _emailManager;
+        private readonly ICryptoService _cryptoService;
 
-        public LoginController(ILogger<LoginController> logger, UserManagerDB context, EmailManager emailManager, LoginValidator validator, IConfiguration configuration, IViewRenderService viewRenderService)
+        // Dependency injection via constructor
+        public LoginController(ILogger<LoginController> logger, UserManagerDB context)
         {
             _logger = logger;
             _context = context;
-            _emailManager = emailManager;
-            _configuration = configuration;
-            _viewRenderService = viewRenderService;
         }
+
+        // Find a user by username or email
         private async Task<User> FindUserAsync(string usernameOrEmail)
         {
             return await _context.Users
@@ -42,11 +39,18 @@ namespace Server.Controllers
                 .SingleOrDefaultAsync(u => u.Email == usernameOrEmail || u.UserName == usernameOrEmail);
         }
 
+        // Verify if the provided password matches the hashed password
         private async Task<bool> VerifyPassword(string password, string hashedPassword)
         {
             return await _hashService.Compare(password, hashedPassword);
         }
 
+        private async Task<byte[]> EncryptUserId(string userID)
+        {
+            return await _cryptoService.EncryptAsync(userID);
+        }
+
+        // Handle two-factor authentication
         private async Task<IActionResult> _HandleTwoFactorAuthAsync(User user, LoginViewModel model)
         {
             // Generate a random 5-digit number for the authentication code
@@ -58,13 +62,17 @@ namespace Server.Controllers
                 {"CodeForAuth", code}
             };
 
-            // Use the EmailManager to send an email with the authentication code and return to the client to check his email and write the code given
+            // Send an email with the authentication code
             await _emailManager.SendEmailAsync("TwoFactorAuth", "Two Factor Authentication Code", model, additianalData);
 
             // Update the TwoFactorAuthCode in the user's security settings
             user.Settings.SecuritySettings.TwoFactorAuthCode = code;
 
             _context.SaveChanges();
+
+            byte[] encryptedUserId = await EncryptUserId(user.UserId.ToString());
+
+            HttpContext.Session.SetString("ID", encryptedUserId.ToString());
 
             return Ok(new { twoFactorAwait = true, message = "Email has been send to you with the code" });
         }
@@ -93,11 +101,13 @@ namespace Server.Controllers
                         return BadRequest(new { message = "Incorrect password" });
                     }
 
+                    // If two-factor authentication is enabled, handle it
                     if (user.Settings.SecuritySettings.TwoFactorAuth)
                     {
                        await _HandleTwoFactorAuthAsync(user, model);
                     }
 
+                    // Store the user ID in the session
                     HttpContext.Session.SetString("UserId", user.UserId.ToString());
                     return Ok(new { message = "Login successful" });
 

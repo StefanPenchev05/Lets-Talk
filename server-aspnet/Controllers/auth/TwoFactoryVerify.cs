@@ -20,10 +20,10 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        // public Task<IActionResult> Verify([FromBody] LoginViewModel model)
-        // {
-
-        // }
+        public Task<IActionResult> Verify([FromBody] TwoFactorVerifyViewModel model)
+        {
+            
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
