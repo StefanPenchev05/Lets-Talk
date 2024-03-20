@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 // Server NameSpaces
 using Server.Data;
 using Server.Validator;
-using Server.Models.ViewModels;
+using Server.ViewModels;
 using Server.Services;
 using Server.Models;
 

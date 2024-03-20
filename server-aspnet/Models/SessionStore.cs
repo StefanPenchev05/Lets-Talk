@@ -18,5 +18,8 @@ namespace Server.Models
         public ulong? SlidingExpirationInSeconds { get; set; }
 
         public DateTime? AbsoluteExpiration { get; set; }
+
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

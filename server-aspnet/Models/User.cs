@@ -10,11 +10,13 @@ namespace Server.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+        // Naviagtion properties
         public int SettingsId { get; set; }
         public Settings Settings { get; set; }
 
-        // Naviagtion properties
         public ICollection<Message> Messages { get; set; }
         public ICollection<UserChannel> UserChannels { get; set; }
+        public ICollection<SessionStore> Sessions { get; set; }
+
     }
 }
