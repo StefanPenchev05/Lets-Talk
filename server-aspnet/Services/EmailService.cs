@@ -15,7 +15,7 @@ namespace Server.Services
             _viewRenderService = viewRenderService;
         }
 
-        public async Task SendEmailAsync(string viewName,string _subject, LoginViewModel model){
+        public async Task SendEmailAsync(string viewName,string _subject,LoginViewModel model,  Dictionary<string, object> additionalData = null){
             var fromEmail = _configuration["EmailSettings:Email"];
             var password = _configuration["EmailSettings:Password"];
 
@@ -26,7 +26,7 @@ namespace Server.Services
                 EnableSsl = true
             };
 
-            var body = await _viewRenderService.RenderToStringAsync($"{viewName}", model);
+            var body = await _viewRenderService.RenderToStringAsync($"{viewName}", model, additionalData);
 
             var mailMessage = new MailMessage(fromEmail, model.UsernameOrEmail, _subject, body)
             {

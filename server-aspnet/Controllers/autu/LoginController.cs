@@ -48,8 +48,6 @@ namespace Server.Controllers
                 {
                     User user = null;
                     var validator = new LoginValidator();
-                    var emailService = new EmailManager(configuration, viewRenderService);
-                    await emailService.SendEmailAsync("TwoFactorAuth","Two Factor Authentication Code", model);
 
                     // Determine if the input is an email or username
                     string emailOrUsername = validator.isEmailOrUsername(model.UsernameOrEmail);
@@ -76,27 +74,42 @@ namespace Server.Controllers
                             var userSettings = user.Settings;
                             if (userSettings.TwoFactorAuth)
                             {
-                            }
-                            else
-                            {
-                                // Set the session value with the user's ID
-                                HttpContext.Session.SetString("UserId", user.UserId.ToString());
+                                // Generate a random 5-digit number for the authentication code
+                                int authCode = new Random().Next(10000, 100000);
 
-                                // Return a 200 OK response
-                                return Ok(new { message = "Login successful" });
+                                // Create a dictionary to hold additional data for the email
+                                Dictionary<string, object> additianalData = new()
+                                {
+                                    {"CodeForAuth", authCode}
+                                };
+
+                                // Create a new instance of the EmailManager service
+                                var emailService = new EmailManager(configuration, viewRenderService);
+
+                                // Use the EmailManager to send an email with the authentication code and return to the client to check his email and write the code given
+                                await emailService.SendEmailAsync("TwoFactorAuth", "Two Factor Authentication Code", model, additianalData);
+                                return Ok(new {twoFactorAwait = true, message = "Email has been send to you with the code"});
                             }
                         }
                         else
                         {
-                            // If the passwords don't match, return an error
-                            return BadRequest(new { message = "Invalid password for this user" });
+                            // Set the session value with the user's ID
+                            HttpContext.Session.SetString("UserId", user.UserId.ToString());
+
+                            // Return a 200 OK response
+                            return Ok(new { message = "Login successful" });
                         }
                     }
                     else
                     {
-                        // If the user is not found, return an error
-                        return StatusCode(404, new { message = "The user is not found!" });
+                        // If the passwords don't match, return an error
+                        return BadRequest(new { message = "Invalid password for this user" });
                     }
+                }
+                else
+                {
+                    // If the user is not found, return an error
+                    return StatusCode(404, new { message = "The user is not found!" });
                 }
 
                 // If the model is not valid, return model errors

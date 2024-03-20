@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 public interface IViewRenderService
 {
     // Method to render a view to a string
-    Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, string> additionalData = null);
+    Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, object> additionalData = null);
 }
 
 public class ViewRenderService : IViewRenderService
@@ -32,7 +32,7 @@ public class ViewRenderService : IViewRenderService
     }
 
     // Method to render a view to a string
-    public async Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, string> additionalData = null)
+    public async Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, object> additionalData = null)
     {
         // Check if model is null
         if (model == null)
