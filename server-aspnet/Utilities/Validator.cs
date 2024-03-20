@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.Validator
+namespace Server.ValidatorValidationAttribute
 {
     public class Username : ValidationAttribute
     {

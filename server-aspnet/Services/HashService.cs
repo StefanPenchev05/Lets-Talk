@@ -6,7 +6,7 @@ namespace Server.Services
 {
     public class HashService : IHashService
     {
-        private async Task<string> HashPassword(string password)
+        public async Task<string> HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
             {

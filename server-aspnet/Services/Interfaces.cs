@@ -6,6 +6,7 @@ namespace Server.Interface
     // Interface for a service that can compare a password with a hashed password
     public interface IHashService
     {
+        Task<string> HashPassword(string password);
         Task<bool> Compare(string password, string hashedPassword);
     }
 

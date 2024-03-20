@@ -363,6 +363,9 @@ namespace Server.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<byte[]>("ProfilePicture")
+                        .HasColumnType("longblob");
+
                     b.Property<int>("SettingsId")
                         .HasColumnType("int");
 
