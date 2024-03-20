@@ -49,7 +49,7 @@ namespace Server.Controllers
                     User user = null;
                     var validator = new LoginValidator();
                     var emailService = new EmailManager(configuration, viewRenderService);
-                    await emailService.SendEmailAsync("Test", model);
+                    await emailService.SendEmailAsync("TwoFactorAuth","Two Factor Authentication Code", model);
 
                     // Determine if the input is an email or username
                     string emailOrUsername = validator.isEmailOrUsername(model.UsernameOrEmail);
