@@ -3,15 +3,23 @@ using System.Text;
 
 namespace Server.Services
 {
-    public class HashService
+    public class HashService : IHashService
     {
-        public string HashPassword(string password)
+        private async Task<string> HashPassword(string password)
         {
             using (var sha256 = SHA256.Create())
             {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(password)))
+                {
+                    var hashedBytes = await sha256.ComputeHashAsync(stream);
+                    return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                }
             }
+        }
+
+        public async Task<bool> Compare(string password, string hashedPassword)
+        {
+            return await HashPassword(password) == hashedPassword;
         }
     }
 }
