@@ -63,6 +63,75 @@ namespace Server.Migrations
                     b.ToTable("Message");
                 });
 
+            modelBuilder.Entity("Server.Models.NotificationSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ReceiveEmailNotifications")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("ReceivePushNotifications")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("SettingsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SettingsId")
+                        .IsUnique();
+
+                    b.ToTable("NotificationSettings");
+                });
+
+            modelBuilder.Entity("Server.Models.PreferenceSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("SettingsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Theme")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SettingsId")
+                        .IsUnique();
+
+                    b.ToTable("PreferenceSettings");
+                });
+
+            modelBuilder.Entity("Server.Models.PrivacySettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("AllowDirectMessages")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("SettingsId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ShowOnlineStatus")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SettingsId")
+                        .IsUnique();
+
+                    b.ToTable("PrivacySettings");
+                });
+
             modelBuilder.Entity("Server.Models.Role", b =>
                 {
                     b.Property<int>("RoleId")
@@ -75,6 +144,38 @@ namespace Server.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("Server.Models.SecuritySettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("AccountLockoutEnd")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastPasswordChange")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("SettingsId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("TwoFactorAuth")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("TwoFactorAuthCode")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SettingsId")
+                        .IsUnique();
+
+                    b.ToTable("SecuritySettings");
                 });
 
             modelBuilder.Entity("Server.Models.SessionStore", b =>
@@ -106,24 +207,6 @@ namespace Server.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<bool>("AllowDirectMessages")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("DarkMode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Notifications")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("ShowOnlineStatus")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("TwoFactorAuth")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -213,6 +296,50 @@ namespace Server.Migrations
                     b.Navigation("channel");
                 });
 
+            modelBuilder.Entity("Server.Models.NotificationSettings", b =>
+                {
+                    b.HasOne("Server.Models.Settings", "Settings")
+                        .WithOne("NotificationSettings")
+                        .HasForeignKey("Server.Models.NotificationSettings", "SettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Settings");
+                });
+
+            modelBuilder.Entity("Server.Models.PreferenceSettings", b =>
+                {
+                    b.HasOne("Server.Models.Settings", "Settings")
+                        .WithOne("PreferenceSettings")
+                        .HasForeignKey("Server.Models.PreferenceSettings", "SettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Settings");
+                });
+
+            modelBuilder.Entity("Server.Models.PrivacySettings", b =>
+                {
+                    b.HasOne("Server.Models.Settings", "Settings")
+                        .WithOne("PrivacySettings")
+                        .HasForeignKey("Server.Models.PrivacySettings", "SettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Settings");
+                });
+
+            modelBuilder.Entity("Server.Models.SecuritySettings", b =>
+                {
+                    b.HasOne("Server.Models.Settings", "Settings")
+                        .WithOne("SecuritySettings")
+                        .HasForeignKey("Server.Models.SecuritySettings", "SettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Settings");
+                });
+
             modelBuilder.Entity("Server.Models.Settings", b =>
                 {
                     b.HasOne("Server.Models.User", "User")
@@ -261,6 +388,17 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.Role", b =>
                 {
                     b.Navigation("UserChannels");
+                });
+
+            modelBuilder.Entity("Server.Models.Settings", b =>
+                {
+                    b.Navigation("NotificationSettings");
+
+                    b.Navigation("PreferenceSettings");
+
+                    b.Navigation("PrivacySettings");
+
+                    b.Navigation("SecuritySettings");
                 });
 
             modelBuilder.Entity("Server.Models.User", b =>

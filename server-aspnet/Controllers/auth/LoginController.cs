@@ -71,7 +71,7 @@ namespace Server.Controllers
                         if (user.Password == passwordHasher)
                         {
                             // Check if the user has enabled two-factor authentication
-                            var userSettings = user.Settings;
+                            var userSettings = user.Settings.SecuritySettings;
                             if (userSettings.TwoFactorAuth)
                             {
                                 // Generate a random 5-digit number for the authentication code
@@ -88,6 +88,9 @@ namespace Server.Controllers
 
                                 // Use the EmailManager to send an email with the authentication code and return to the client to check his email and write the code given
                                 await emailService.SendEmailAsync("TwoFactorAuth", "Two Factor Authentication Code", model, additianalData);
+
+                                userSettings.TwoFactorAuthCode = authCode;
+
                                 return Ok(new { twoFactorAwait = true, message = "Email has been send to you with the code" });
                             }
                             else
