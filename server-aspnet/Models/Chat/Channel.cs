@@ -8,8 +8,8 @@ namespace Server.Models
     public class Channel
     {
         public int ChannelId { get; set; }
-        public string Name { get; set; }
-        public byte[] Image { get; set; }
+        public string Name { get; set; } = "Chat Group";
+        public byte[] Image { get; set; } = null;
 
         // Naviagtion properties
         public ICollection<Message> Messages { get; set; }

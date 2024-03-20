@@ -33,7 +33,120 @@ namespace Server.Migrations
 
                     b.HasKey("ChannelId");
 
-                    b.ToTable("Channel");
+                    b.ToTable("Channels");
+                });
+
+            modelBuilder.Entity("Server.Models.DirectMessage", b =>
+                {
+                    b.Property<int>("DirectMessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("DirectMessageId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("DirectMessage");
+                });
+
+            modelBuilder.Entity("Server.Models.FriendRequest", b =>
+                {
+                    b.Property<int>("FriendRequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequestedId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequesterId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendRequestId");
+
+                    b.HasIndex("RequestedId");
+
+                    b.HasIndex("RequesterId");
+
+                    b.ToTable("FriendRequests");
+                });
+
+            modelBuilder.Entity("Server.Models.Friendship", b =>
+                {
+                    b.Property<int>("FriendshipId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("User1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("User2Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendshipId");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Friendships");
+                });
+
+            modelBuilder.Entity("Server.Models.LoginLocations", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("LoginBrowser")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("LoginDeviceName")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("LoginDeviceOperatingSystem")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<DateTime>("LoginTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("SettingsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SettingsId")
+                        .IsUnique();
+
+                    b.ToTable("LoginLocations");
                 });
 
             modelBuilder.Entity("Server.Models.Message", b =>
@@ -46,7 +159,9 @@ namespace Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");
@@ -60,7 +175,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Server.Models.NotificationSettings", b =>
@@ -98,8 +213,8 @@ namespace Server.Migrations
                     b.Property<int>("SettingsId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Theme")
-                        .HasColumnType("longtext");
+                    b.Property<int>("Theme")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -138,12 +253,12 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                    b.Property<int>("RoleType")
+                        .HasColumnType("int");
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Server.Models.SecuritySettings", b =>
@@ -193,11 +308,16 @@ namespace Server.Migrations
                     b.Property<ulong?>("SlidingExpirationInSeconds")
                         .HasColumnType("bigint unsigned");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<byte[]>("Value")
                         .IsRequired()
                         .HasColumnType("longblob");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SesssionStore");
                 });
@@ -226,22 +346,30 @@ namespace Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("SettingsId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.HasKey("UserId");
 
@@ -274,12 +402,84 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserChannel");
+                    b.ToTable("UserChannels");
+                });
+
+            modelBuilder.Entity("Server.Models.DirectMessage", b =>
+                {
+                    b.HasOne("Server.Models.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Server.Models.FriendRequest", b =>
+                {
+                    b.HasOne("Server.Models.User", "Requested")
+                        .WithMany()
+                        .HasForeignKey("RequestedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.User", "Requester")
+                        .WithMany("FriendRequests")
+                        .HasForeignKey("RequesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Requested");
+
+                    b.Navigation("Requester");
+                });
+
+            modelBuilder.Entity("Server.Models.Friendship", b =>
+                {
+                    b.HasOne("Server.Models.User", "User1")
+                        .WithMany("User1Friendships")
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.User", "User2")
+                        .WithMany("User2Friendships")
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.User", null)
+                        .WithMany("Friendships")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("Server.Models.LoginLocations", b =>
+                {
+                    b.HasOne("Server.Models.Settings", "Settings")
+                        .WithOne("LoginLocations")
+                        .HasForeignKey("Server.Models.LoginLocations", "SettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Settings");
                 });
 
             modelBuilder.Entity("Server.Models.Message", b =>
                 {
-                    b.HasOne("Server.Models.Channel", "channel")
+                    b.HasOne("Server.Models.Channel", "Channel")
                         .WithMany("Messages")
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -291,9 +491,9 @@ namespace Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Channel");
 
-                    b.Navigation("channel");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Server.Models.NotificationSettings", b =>
@@ -338,6 +538,17 @@ namespace Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Settings");
+                });
+
+            modelBuilder.Entity("Server.Models.SessionStore", b =>
+                {
+                    b.HasOne("Server.Models.User", "User")
+                        .WithMany("Sessions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Server.Models.Settings", b =>
@@ -392,6 +603,8 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Settings", b =>
                 {
+                    b.Navigation("LoginLocations");
+
                     b.Navigation("NotificationSettings");
 
                     b.Navigation("PreferenceSettings");
@@ -403,9 +616,19 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.User", b =>
                 {
+                    b.Navigation("FriendRequests");
+
+                    b.Navigation("Friendships");
+
                     b.Navigation("Messages");
 
+                    b.Navigation("Sessions");
+
                     b.Navigation("Settings");
+
+                    b.Navigation("User1Friendships");
+
+                    b.Navigation("User2Friendships");
 
                     b.Navigation("UserChannels");
                 });

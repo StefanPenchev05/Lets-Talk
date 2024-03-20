@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Server.Models
 {
     public class Settings
     {
+        [Key]
         public int Id { get; set; }
 
         // Navigation properties
@@ -11,6 +14,8 @@ namespace Server.Models
         public SecuritySettings SecuritySettings { get; set; }
         public PreferenceSettings PreferenceSettings { get; set; }
         public NotificationSettings NotificationSettings { get; set; }
+
+        public LoginLocations LoginLocations { get; set; }
 
     }
 }

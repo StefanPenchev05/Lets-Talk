@@ -1,17 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Server.Models
 {
     public class UserChannel
     {
+        [Key]
         public int UserChannelId { get; set; }
 
         // Foreign keys
+        [Required]
         public int UserId { get; set; }
+
+        [Required]
         public int ChannelId { get; set; }
+
+        [Required]
         public int RoleId { get; set; }
 
         // Navigation properties
