@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Server.Data;
-using Server.Validator;
 using Server.ViewModels;
-using Server.Services;
+using Server.Interface;
 using Server.Models;
 
 namespace Server.Controllers

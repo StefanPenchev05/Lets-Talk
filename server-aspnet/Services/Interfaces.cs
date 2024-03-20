@@ -1,6 +1,7 @@
 using Server.ViewModels;
+using System.ComponentModel.DataAnnotations;
 
-namespace Server.Services
+namespace Server.Interface
 {
     // Interface for a service that can compare a password with a hashed password
     public interface IHashService

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Server.Interface;
 
 namespace Server.Services
 {

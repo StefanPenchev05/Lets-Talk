@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Mail;
 using Server.ViewModels;
+using Server.Interface;
 
 namespace Server.Services
 {

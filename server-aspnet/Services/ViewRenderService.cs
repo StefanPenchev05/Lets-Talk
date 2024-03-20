@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-using Server.Services;
+using Server.Interface;
 
 public class ViewRenderService : IViewRenderService
 {

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Services;
-using Server.Validator;
+using Server.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +29,6 @@ builder.Services.AddSession(option => {
 });
 
 builder.Services.AddTransient<EmailManager>();
-builder.Services.AddTransient<LoginValidator>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<ICryptoService, CryptoService>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
