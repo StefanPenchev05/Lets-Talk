@@ -15,10 +15,11 @@ namespace Server.Controllers
         private readonly UserManagerDB _context;
         private ICryptoService _cryptoService;
 
-        public TwoFactoryVerify(ILogger<TwoFactoryVerify> logger, UserManagerDB context)
+        public TwoFactoryVerify(ILogger<TwoFactoryVerify> logger, UserManagerDB context, ICryptoService cryptoService)
         {
             _logger = logger;
             _context = context;
+            _cryptoService = cryptoService;
         }
 
         // Method to decrypt the user ID

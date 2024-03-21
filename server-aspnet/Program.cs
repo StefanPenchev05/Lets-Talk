@@ -28,7 +28,7 @@ builder.Services.AddSession(option => {
     option.Cookie.IsEssential = true;
 });
 
-builder.Services.AddTransient<EmailManager>();
+builder.Services.AddTransient<IEmailService, EmailManager>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<ICryptoService, CryptoService>();
 builder.Services.AddTransient<ITokenService, TokenService>();

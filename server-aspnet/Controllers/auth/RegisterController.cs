@@ -18,13 +18,16 @@ namespace Server.Controllers
         private readonly ILogger<RegisterController> _logger;
         private readonly UserManagerDB _context;
         private readonly IHashService _hashService;
-        private readonly ITokenService tokenService;
-        private readonly IEmailService emailService;
+        private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
-        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context)
+        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService)
         {
             _logger = logger;
             _context = context;
+            _hashService = hashService;
+            _tokenService = tokenService;
+            _emailService = emailService;
         }
 
         private async Task<string> SuggestUsername(string username)
@@ -65,7 +68,7 @@ namespace Server.Controllers
 
         private async Task<string> GenerateToken(string uuid)
         {
-            return await tokenService.GenerateTokenAsync(uuid);
+            return await _tokenService.GenerateTokenAsync(uuid);
         }
 
         [HttpPost]
@@ -122,7 +125,9 @@ namespace Server.Controllers
 
                     string token = await GenerateToken(tempUser.Id.ToString());
                     
-                    await emailService.SendEmailAsync("EmailVerification","Link For Email Verification", model.Email);
+                    await _emailService.SendEmailAsync("EmailVerification","Link For Email Verification", model.Email);
+
+                    return Ok(new {message = "Sended Email"});
 
                 }
                 // If the model is not valid, return model errors

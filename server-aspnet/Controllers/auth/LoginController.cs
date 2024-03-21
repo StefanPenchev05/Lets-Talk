@@ -18,10 +18,13 @@ namespace Server.Controllers
         private readonly ICryptoService _cryptoService;
 
         // Dependency injection via constructor
-        public LoginController(ILogger<LoginController> logger, UserManagerDB context)
+        public LoginController(ILogger<LoginController> logger, UserManagerDB context, IHashService hashService, IEmailService emailService, ICryptoService cryptoService)
         {
             _logger = logger;
             _context = context;
+            _hashService = hashService;
+            _emailManager = emailService;
+            _cryptoService = cryptoService;
         }
 
         // Find a user by username or email
