@@ -27,25 +27,37 @@ namespace Server.Controllers
 
         private async Task<string> SuggestUsername(string username)
         {
+            // Initialize a flag to check if the username is taken
             bool isUsernameTaken = true;
+
+            // Initialize a suffix to append to the username if it's taken
             int suffix = 1;
+
+            // Initialize the suggested username with the provided username
             string suggestedUsername = username;
+
+            // Loop until we find a username that's not taken
             while (isUsernameTaken)
             {
+                // Try to find a user with the suggested username
                 User userWithUsername = await _context.Users
                     .SingleOrDefaultAsync(u => u.UserName == suggestedUsername);
 
+                // If a user with the suggested username exists...
                 if (userWithUsername != null)
                 {
+                    // Append the suffix to the username and increment the suffix
                     suggestedUsername = $"{username}{suffix}";
                     suffix++;
                 }
                 else
                 {
+                    // If no user with the suggested username exists, set the flag to false
                     isUsernameTaken = false;
                 }
             }
 
+            // Return the suggested username
             return suggestedUsername;
         }
 
@@ -69,15 +81,24 @@ namespace Server.Controllers
                     User userWithUsername = await _context.Users
                         .SingleOrDefaultAsync(u => u.UserName == model.Username);
 
+                    // If a user with the same username already exists...
                     if (userWithUsername != null)
                     {
+                        // Generate a suggested username
                         string suggestedUsername = await SuggestUsername(model.Username);
+
+                        // Return a BadRequest response with the error message and the suggested username
                         return BadRequest(new { usernameExists = true, message = "This username is already taken", SuggestUsername = suggestedUsername });
                     }
 
+                    // Hash the password using the hash service
                     string hashedPassword = await _hashService.HashPassword(model.Password);
 
-                    User newUser = new()
+                    // Generate a new verification code
+                    string verificationCode = Guid.NewGuid().ToString();
+
+                    // Create a new TempData object for the new user
+                    TempData newUser = new()
                     {
                         Email = model.Email,
                         Password = hashedPassword,
@@ -85,16 +106,12 @@ namespace Server.Controllers
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         ProfilePicture = model.ProfilePicture,
-                        Settings = new()
-                        {
-                            SecuritySettings = new()
-                            {
-                                TwoFactorAuth = model.TwoFactorAuth != null ? true : false
-                            }
-                        }
+                        TwoFactorAuth = model.TwoFactorAuth,
+                        VerificationCode = verificationCode
                     };
 
-                    
+                    // Save the changes to the database
+                    await _context.SaveChangesAsync();
                 }
                 // If the model is not valid, return model errors
                 var errors = ModelState

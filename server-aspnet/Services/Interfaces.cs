@@ -1,5 +1,6 @@
 using Server.ViewModels;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace Server.Interface
 {
@@ -27,5 +28,11 @@ namespace Server.Interface
     {
         Task<byte[]> EncryptAsync(string plainText);
         Task<string> DecryptAsync(byte[] cipherText);
+    }
+
+    public interface ITokenService
+    {
+        Task<string> GenerateTokenAsync(string uuid);
+        Task<ClaimsPrincipal> VerifyTokenAsync(string token);
     }
 }

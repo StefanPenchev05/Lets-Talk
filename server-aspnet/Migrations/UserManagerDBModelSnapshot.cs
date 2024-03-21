@@ -339,6 +339,45 @@ namespace Server.Migrations
                     b.ToTable("Settings");
                 });
 
+            modelBuilder.Entity("Server.Models.TempData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("longtext");
+
+                    b.Property<byte[]>("ProfilePicture")
+                        .HasColumnType("longblob");
+
+                    b.Property<bool?>("TwoFactorAuth")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VerificationCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tempDatas");
+                });
+
             modelBuilder.Entity("Server.Models.User", b =>
                 {
                     b.Property<int>("UserId")

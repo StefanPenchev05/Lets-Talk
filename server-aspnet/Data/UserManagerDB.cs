@@ -20,6 +20,7 @@ namespace Server.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<TempData> tempDatas { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
