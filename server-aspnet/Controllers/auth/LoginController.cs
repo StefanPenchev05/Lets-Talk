@@ -57,7 +57,7 @@ namespace Server.Controllers
             };
 
             // Send an email with the authentication code
-            await _emailManager.SendEmailAsync("TwoFactorAuth", "Two Factor Authentication Code", model, additianalData);
+            await _emailManager.SendEmailAsync("TwoFactorAuth", "Two Factor Authentication Code", model.UsernameOrEmail, additianalData);
 
             // Update the TwoFactorAuthCode in the user's security settings
             user.Settings.SecuritySettings.TwoFactorAuthCode = code;

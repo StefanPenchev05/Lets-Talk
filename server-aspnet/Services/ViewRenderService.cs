@@ -27,14 +27,8 @@ public class ViewRenderService : IViewRenderService
     }
 
     // Method to render a view to a string
-    public async Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, object> additionalData = null)
+    public async Task<string> RenderToStringAsync(string viewName, Dictionary<string, object> additionalData = null)
     {
-        // Check if model is null
-        if (model == null)
-        {
-            throw new ArgumentException(nameof(model), "Model cannot be null");
-        }
-
         try
         {
             // Create a new HttpContext and ActionContext
@@ -54,10 +48,7 @@ public class ViewRenderService : IViewRenderService
                 }
 
                 // Create a ViewDataDictionary and set the model
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
+                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary());
 
                 // If additionalData is not null, add each item to the ViewDataDictionary
                 if (additionalData != null)

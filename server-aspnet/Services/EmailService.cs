@@ -14,13 +14,15 @@ namespace Server.Services
         private readonly IViewRenderService _viewRenderService;
 
         // Constructor that takes IConfiguration and IViewRenderService as parameters.
-        public EmailManager(IConfiguration configuration, IViewRenderService viewRenderService){
+        public EmailManager(IConfiguration configuration, IViewRenderService viewRenderService)
+        {
             _configuration = configuration;
             _viewRenderService = viewRenderService;
         }
 
         // Method to send an email asynchronously.
-        public async Task SendEmailAsync(string viewName, string _subject, LoginViewModel model,  Dictionary<string, object> additionalData = null){
+        public async Task SendEmailAsync(string viewName, string _subject, string EmailOrUsername, Dictionary<string, object> additionalData = null)
+        {
             // Retrieve email settings from configuration.
             var fromEmail = _configuration["EmailSettings:Email"];
             var password = _configuration["EmailSettings:Password"];
@@ -34,16 +36,16 @@ namespace Server.Services
             };
 
             // Render the specified view to a string.
-            var body = await _viewRenderService.RenderToStringAsync($"{viewName}", model, additionalData);
+            var body = await _viewRenderService.RenderToStringAsync($"{viewName}", additionalData);
 
             // Create a new mail message with the specified settings.
-            var mailMessage = new MailMessage(fromEmail, model.UsernameOrEmail, _subject, body)
+            var mailMessage = new MailMessage(fromEmail, EmailOrUsername, _subject, body)
             {
                 IsBodyHtml = true
             };
 
             // Add the recipient to the mail message.
-            mailMessage.To.Add(model.UsernameOrEmail);
+            mailMessage.To.Add(EmailOrUsername);
 
             // Send the mail message asynchronously.
             await smtpClient.SendMailAsync(mailMessage);

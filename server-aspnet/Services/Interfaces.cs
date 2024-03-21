@@ -14,13 +14,13 @@ namespace Server.Interface
     // Interface for a service that can send emails asynchronously
     public interface IEmailService
     {
-        Task SendEmailAsync(string viewName, string _subject, LoginViewModel model,  Dictionary<string, object> additionalData = null);
+        Task SendEmailAsync(string viewName, string _subject, string EmailOrUsername, Dictionary<string, object> additionalData = null);
     }
 
     // Interface for a service that can render a view to a string asynchronously
     public interface IViewRenderService
     {
-        Task<string> RenderToStringAsync(string viewName, object model, Dictionary<string, object> additionalData = null);
+        Task<string> RenderToStringAsync(string viewName, Dictionary<string, object> additionalData = null);
     }
 
     // Interface for a service that can encrypt and decrypt data asynchronously

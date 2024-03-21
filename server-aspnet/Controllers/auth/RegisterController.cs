@@ -18,6 +18,8 @@ namespace Server.Controllers
         private readonly ILogger<RegisterController> _logger;
         private readonly UserManagerDB _context;
         private readonly IHashService _hashService;
+        private readonly ITokenService tokenService;
+        private readonly IEmailService emailService;
 
         public RegisterController(ILogger<RegisterController> logger, UserManagerDB context)
         {
@@ -61,6 +63,11 @@ namespace Server.Controllers
             return suggestedUsername;
         }
 
+        private async Task<string> GenerateToken(string uuid)
+        {
+            return await tokenService.GenerateTokenAsync(uuid);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
@@ -98,7 +105,7 @@ namespace Server.Controllers
                     string verificationCode = Guid.NewGuid().ToString();
 
                     // Create a new TempData object for the new user
-                    TempData newUser = new()
+                    TempData tempUser = new()
                     {
                         Email = model.Email,
                         Password = hashedPassword,
@@ -112,6 +119,11 @@ namespace Server.Controllers
 
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
+
+                    string token = await GenerateToken(tempUser.Id.ToString());
+                    
+                    await emailService.SendEmailAsync("EmailVerification","Link For Email Verification", model.Email);
+
                 }
                 // If the model is not valid, return model errors
                 var errors = ModelState
