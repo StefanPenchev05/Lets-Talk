@@ -10,7 +10,7 @@ namespace Server.Services
     {
         private readonly string _secretKey = "VxKpZVMXggM5vunvgBUlbNQYa1AlGg0C";
 
-        public async Task<string> GenerateTokenAsync(string uuid)
+        public async Task<string> GenerateTokenAsync(List<string> data, int expireInMinutes)
         {
             // Create a new JWT token handler
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -18,25 +18,25 @@ namespace Server.Services
             // Convert the secret key to bytes using UTF8 encoding
             var key = Encoding.UTF8.GetBytes(_secretKey);
 
+            // Create a list of claims, one for each string in the data list
+            var claims = data.Select(datum => new Claim(ClaimTypes.Name, datum)).ToList();
+
             // Define the token descriptor
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                // Set the subject of the token to be the user's UUID
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, uuid)
-                }),
+                // Set the subject of the token to be the claims
+                Subject = new ClaimsIdentity(claims),
                 // Set the token to expire in 15 minutes
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(expireInMinutes),
                 // Set the signing credentials, using the symmetric key and HMAC SHA256 for signing
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
             // Create the token using the token descriptor
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = await Task.Run(() => tokenHandler.CreateToken(tokenDescriptor));
 
-            // Return the token as a string
-            return await Task.FromResult(tokenHandler.WriteToken(token));
+            // Return the token
+            return tokenHandler.WriteToken(token);
         }
 
         public async Task<ClaimsPrincipal> VerifyTokenAsync(string token)

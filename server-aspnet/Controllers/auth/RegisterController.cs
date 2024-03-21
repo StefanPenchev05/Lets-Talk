@@ -18,16 +18,20 @@ namespace Server.Controllers
         private readonly ILogger<RegisterController> _logger;
         private readonly UserManagerDB _context;
         private readonly IHashService _hashService;
+        private readonly ICryptoService _cryptoService;
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
+        private readonly IAuthHub _authHub;
 
-        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService)
+        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, IAuthHub authHub, ICryptoService cryptoService)
         {
             _logger = logger;
             _context = context;
             _hashService = hashService;
             _tokenService = tokenService;
             _emailService = emailService;
+            _cryptoService = cryptoService;
+            _authHub = authHub;
         }
 
         private async Task<string> SuggestUsername(string username)
@@ -66,9 +70,9 @@ namespace Server.Controllers
             return suggestedUsername;
         }
 
-        private async Task<string> GenerateToken(string uuid)
+        private async Task<string> GenerateToken(List<string> data, int expiresInMinutes)
         {
-            return await _tokenService.GenerateTokenAsync(uuid);
+            return await _tokenService.GenerateTokenAsync(data, expiresInMinutes);
         }
 
         [HttpPost]
@@ -105,7 +109,7 @@ namespace Server.Controllers
                     string hashedPassword = await _hashService.HashPassword(model.Password);
 
                     // Generate a new verification code
-                    string verificationCode = Guid.NewGuid().ToString();
+                    string roomId = Guid.NewGuid().ToString();
 
                     // Create a new TempData object for the new user
                     TempData tempUser = new()
@@ -117,17 +121,28 @@ namespace Server.Controllers
                         LastName = model.LastName,
                         ProfilePicture = model.ProfilePicture,
                         TwoFactorAuth = model.TwoFactorAuth,
-                        VerificationCode = verificationCode
+                        VerificationCode = roomId
                     };
 
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
 
-                    string token = await GenerateToken(tempUser.Id.ToString());
-                    
-                    await _emailService.SendEmailAsync("EmailVerification","Link For Email Verification", model.Email);
+                    List<string> dataForToken = new()
+                    {
+                        roomId,
+                        tempUser.Id.ToString()
+                    };
 
-                    return Ok(new {message = "Sended Email"});
+                    string token = await GenerateToken(dataForToken, 15);
+
+                    Dictionary<string, object> additionalData = new()
+                    {
+                        {"VerificationLink", token}
+                    };
+
+                    await _emailService.SendEmailAsync("EmailVerification", "Link For Email Verification", model.Email, additionalData);
+
+                    return Ok(new { AwaitForEmailVerification = true, roomId , message = "Sended Email" });
 
                 }
                 // If the model is not valid, return model errors
@@ -143,5 +158,8 @@ namespace Server.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
             }
         }
+
+        
+        
     }
 }

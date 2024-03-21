@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Services;
 using Server.Interface;
+using Server.SignalRHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,10 @@ builder.Services.AddTransient<IEmailService, EmailManager>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<ICryptoService, CryptoService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IAuthHub, AuthHub>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -52,6 +56,8 @@ app.UseRouting();
 app.UseSession();
 
 app.UseAuthorization();
+
+app.MapHub<AuthHub>("/authHub");
 
 app.MapControllerRoute(
     name: "default",

@@ -211,3 +211,5 @@
 /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
 /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/obj/Debug/net8.0/Server.RazorAssemblyInfo.cache
 /Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/obj/Debug/net8.0/Server.RazorAssemblyInfo.cs
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/bin/Debug/net8.0/System.Net.WebSockets.WebSocketProtocol.dll
