@@ -366,7 +366,7 @@ namespace Server.Migrations
                     b.Property<bool?>("TwoFactorAuth")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .HasColumnType("longtext");
 
                     b.Property<string>("VerificationCode")
@@ -399,8 +399,7 @@ namespace Server.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("longtext");
 
                     b.Property<byte[]>("ProfilePicture")
                         .HasColumnType("longblob");

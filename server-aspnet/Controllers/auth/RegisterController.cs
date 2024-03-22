@@ -205,7 +205,10 @@ namespace Server.Controllers
             // Save the changes to the database
             await _context.SaveChangesAsync();
 
-            return Ok(new { data });
+            // Sends to the user that his email is verified
+            await _authHub.SendToRoom(roomId);
+
+            return Ok();
         }
     }
 }

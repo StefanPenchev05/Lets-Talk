@@ -17,7 +17,7 @@ builder.Services.AddDbContext<UserManagerDB>(option =>
 
 // MySql distributed cache services
 builder.Services.AddDistributedMySqlCache(option => {
-    option.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    option.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") + ";Allow User Variables=true";
     option.TableName = "SesssionStore";
     option.SchemaName = "LetsTalk";
 });

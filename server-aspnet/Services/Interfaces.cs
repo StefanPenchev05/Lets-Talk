@@ -39,5 +39,6 @@ namespace Server.Interface
     public interface IAuthHub
     {
         Task JoinRoom(string roomId);
+        Task SendToRoom(string roomId);
     }
 }

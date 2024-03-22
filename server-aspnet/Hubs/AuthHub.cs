@@ -10,6 +10,16 @@ namespace Server.SignalRHub
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         }
-        
+
+        public async Task SendToRoom(string roomId)
+        {
+            var data = new
+            {
+                verifiedEmail = true, 
+                message = "You successfuly verified your email"
+            };
+
+            await Clients.Group(roomId).SendAsync("VerifiedEmail", data);
+        }
     }
 }
