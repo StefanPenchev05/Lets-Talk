@@ -10,10 +10,6 @@ namespace Server.SignalRHub
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         }
-
-        public async Task AwaitForEmailVeification(string user, string message)
-        {
-            await Clients.User(user).SendAsync("AwaitForEmailVerification", message);
-        }
+        
     }
 }

@@ -39,7 +39,7 @@ namespace Server.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<ClaimsPrincipal> VerifyTokenAsync(string token)
+        public async Task<List<string>> VerifyTokenAsync(string token)
         {
             // Create a new JWT token handler
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -74,8 +74,11 @@ namespace Server.Services
                     throw new SecurityTokenException("Invalid token");
                 }
 
-                // Return the principal
-                return await Task.FromResult(principal);
+                // Extract the claims from the principal and convert them to a list of strings
+                var data = principal.Claims.Select(claim => claim.Value).ToList();
+
+                // Return the data
+                return await Task.FromResult(data);
             }
             catch
             {

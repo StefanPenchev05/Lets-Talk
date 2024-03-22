@@ -123,6 +123,9 @@ namespace Server.Controllers
                         TwoFactorAuth = model.TwoFactorAuth,
                         VerificationCode = roomId
                     };
+                    
+                    // Add the tempUser to the DbSet
+                    _context.tempDatas.Add(tempUser);
 
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
@@ -142,7 +145,7 @@ namespace Server.Controllers
 
                     await _emailService.SendEmailAsync("EmailVerification", "Link For Email Verification", model.Email, additionalData);
 
-                    return Ok(new { AwaitForEmailVerification = true, roomId , message = "Sended Email" });
+                    return Ok(new { AwaitForEmailVerification = true, roomId, message = "Sended Email" });
 
                 }
                 // If the model is not valid, return model errors
@@ -159,7 +162,50 @@ namespace Server.Controllers
             }
         }
 
-        
-        
+        [HttpGet]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            var data = await _tokenService.VerifyTokenAsync(token);
+
+            if (data == null)
+            {
+                return StatusCode(404, new { invalidToken = true, message = "This token is invalid" });
+            }
+
+            var roomId = data[0];
+            var tempUserId = data[1];
+
+            var existingTempUser = await _context.tempDatas.SingleOrDefaultAsync(t => t.Id == int.Parse(tempUserId));
+
+            if (existingTempUser == null)
+            {
+                return StatusCode(404, new { tempUserNotFound = true, message = "Your temporary registration data could not be found or has expired. Please register again." });
+            }
+
+            User newUser = new()
+            {
+                Email = existingTempUser.Email,
+                UserName = existingTempUser.UserName,
+                FirstName = existingTempUser.FirstName,
+                LastName = existingTempUser.LastName,
+                Password = existingTempUser.Password,
+                ProfilePicture = existingTempUser.ProfilePicture == null ? null : existingTempUser.ProfilePicture,
+                Settings = new ()
+                {
+                    SecuritySettings = new()
+                    {
+                        TwoFactorAuth = existingTempUser.TwoFactorAuth == false ? false : true
+                    }
+                }  
+            };
+
+            // Add the new User to the DbSet
+            _context.Users.Add(newUser);
+
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
+
+            return Ok(new { data });
+        }
     }
 }

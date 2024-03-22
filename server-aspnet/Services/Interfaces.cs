@@ -33,12 +33,11 @@ namespace Server.Interface
     public interface ITokenService
     {
         Task<string> GenerateTokenAsync(List<string> data, int expireInMinutes);
-        Task<ClaimsPrincipal> VerifyTokenAsync(string token);
+        Task<List<string>> VerifyTokenAsync(string token);
     }
 
     public interface IAuthHub
     {
         Task JoinRoom(string roomId);
-        Task AwaitForEmailVeification(string user, string message);
     }
 }
