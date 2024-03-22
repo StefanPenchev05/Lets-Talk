@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const axiosInstance = axios.create({
@@ -29,5 +29,7 @@ export function api(url: string, options: any) {
       .catch((error) => reject(error));
   });
 }
+
+export { AxiosError };
 
 export default axiosInstance;

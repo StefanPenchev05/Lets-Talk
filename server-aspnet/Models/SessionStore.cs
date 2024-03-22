@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Server.Models 
 {
@@ -19,6 +21,7 @@ namespace Server.Models
 
         public DateTime? AbsoluteExpiration { get; set; }
 
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
     }

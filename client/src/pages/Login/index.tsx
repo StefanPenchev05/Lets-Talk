@@ -42,6 +42,7 @@ const Login: React.FC = () => {
         <form
           className="flex flex-col space-y-4 w-full mb-9"
           onSubmit={handleFormSubmit}
+          method="post"          
         >
           <EmailInput email={email} setEmail={setEmail} error={emailError} />
           <PasswordInput

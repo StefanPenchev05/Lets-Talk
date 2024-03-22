@@ -5,6 +5,7 @@ using Server.Data;
 using Server.ViewModels;
 using Server.Interface;
 using Server.Models;
+using System.Data;
 
 namespace Server.Controllers
 {
@@ -80,6 +81,7 @@ namespace Server.Controllers
         {
             try
             {
+                Console.WriteLine(model.UsernameOrEmail);
                 // Check if the model is valid
                 if (ModelState.IsValid)
                 {
@@ -87,7 +89,7 @@ namespace Server.Controllers
 
                     if (user == null)
                     {
-                        return NotFound(new { message = "User not found" });
+                        return NotFound(new {existingUser = false, message = "Email or username not found" });
                     }
 
                     if (!await VerifyPassword(model.Password, user.Password))
@@ -95,7 +97,7 @@ namespace Server.Controllers
                         user.Settings.SecuritySettings.FailedLoginAttempts += 1;
                         await _context.SaveChangesAsync();
 
-                        return BadRequest(new { message = "Incorrect password" });
+                        return BadRequest(new { incorrectPassword = false, message = "Incorrect password for this user" });
                     }
 
                     // If two-factor authentication is enabled, handle it
@@ -115,7 +117,7 @@ namespace Server.Controllers
                     .Where(x => x.Value.Errors.Count > 0)
                     .Select(x => new { Filed = x.Key, Message = x.Value.Errors.First().ErrorMessage })
                     .ToList();
-                return StatusCode(500, new { message = errors });
+                return StatusCode(500, new { errors });
             }
             catch (Exception ex)
             {
