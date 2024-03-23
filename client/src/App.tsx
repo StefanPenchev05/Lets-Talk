@@ -1,8 +1,9 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import useDayNightTheme from './hooks/useDayNightTheme.hook'
 import { Routes, Route } from 'react-router-dom';
 
 import Loader from './pages/Loader/index';
+import ProtectedPage from './ProtectedPage';
 
 const Login = lazy(() => import('./pages/Login/index'));
 
@@ -14,8 +15,10 @@ function App() {
       <Suspense fallback= {<Loader />}>
         <Routes>
           <Route path="/" element={<Login/>} />
-          <Route path="/about" element={<h1>About</h1>} />
           <Route path="/loader" element={<Loader/>}/>
+          <Route element={<ProtectedPage/>}>
+            <Route path='/dashboard' element={<h1>Hello World</h1>}/>
+          </Route>
         </Routes>
       </Suspense>
     </div>

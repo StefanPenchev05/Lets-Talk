@@ -42,16 +42,12 @@ builder.Services.AddSession(option =>
 {
     option.IdleTimeout = TimeSpan.FromHours(1);
     option.IOTimeout = TimeSpan.FromMinutes(60);
-    option.Cookie.Name = "authSession";
+    option.Cookie.Name = "Auth";
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
     option.Cookie.SameSite = SameSiteMode.None;
     option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-});
-
-builder.Services.ConfigureApplicationCookie(option => {
-        option.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
 });
 
 builder.Services.AddTransient<IEmailService, EmailManager>();

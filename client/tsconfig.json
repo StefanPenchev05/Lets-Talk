@@ -10,7 +10,8 @@
       "@services/*" : ["src/services/*"],
       "@utils/*" : ["src/utils/*"],
       "@types" : ["src/types.ts"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["src/components/*"],
+      "@hooks/*": ["src/hooks/*"]
     },
 
     /* Bundler mode */

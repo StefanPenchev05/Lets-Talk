@@ -30,7 +30,7 @@ namespace Server.Controllers
             {
                 var userId = HttpContext.Session.GetString("Auth");
                 var user = await _context.Users.SingleOrDefaultAsync(u => u.UserId == int.Parse(userId));
-
+                
                 if (user == null)
                 {
                     return BadRequest(new { authSession = false, message = "Session is not valid" });
@@ -38,7 +38,7 @@ namespace Server.Controllers
 
                 return Ok(new { authSession = true, message = "Session is valid" });
             }
-            return BadRequest(new { authSession = false, message = "Session is not valid" });
+            return BadRequest(new { authSession = false, message = "Session is not valid", });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

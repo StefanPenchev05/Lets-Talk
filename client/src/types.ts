@@ -1,8 +1,4 @@
 export interface LoginResponse {
-  errors: {
-    filed: string;
-    message: string;
-  };
   twoFactorAwait: boolean;
   existingUser: boolean;
   incorrectPassword: boolean;
@@ -10,10 +6,6 @@ export interface LoginResponse {
 }
 
 export interface AuthSessionResponse{
-  errors: {
-    authSession: boolean;
-    message: string;
-  };
   authSession:boolean;
   message: string;
 }
@@ -24,5 +16,5 @@ export interface Alert{
 }
 
 export interface ProtectedPage{
-  children: React.ReactNode;
+  isAuth: boolean;
 }
