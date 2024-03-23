@@ -8,3 +8,16 @@ export interface LoginResponse {
   incorrectPassword: boolean;
   message: string;
 }
+
+export interface AuthSessionResponse{
+  errors: {
+    authSession: boolean;
+    message: string;
+  };
+  authSession:boolean;
+  message: string;
+}
+
+export interface ProtectedPage{
+  children: React.ReactNode;
+}

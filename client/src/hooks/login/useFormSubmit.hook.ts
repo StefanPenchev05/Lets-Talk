@@ -21,9 +21,12 @@ export const useFormSubmit = (email: string, password: string) => {
         method: "POST",
         data: JSON.stringify({ usernameOrEmail: email, Password: password }),
       })
-        .then(async(response) => {
+        .then((response: any) => {
           console.log(response);
-          await api("http://localhost:5295/auth/login", {method: "GET"}).then(data => console.log(data));
+          const data = response.data as LoginResponse;
+          if(data.twoFactorAwait === true){
+            navigate("/")
+          }
         })
         .catch((err) => {
           const response = err.response.data as LoginResponse;

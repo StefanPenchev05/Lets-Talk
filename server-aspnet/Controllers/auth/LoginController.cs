@@ -17,6 +17,7 @@ namespace Server.Controllers
         private readonly IHashService _hashService;
         private readonly IEmailService _emailManager;
         private readonly ICryptoService _cryptoService;
+        //private readonly IHttpContextAccessor _httpContextAccessor;
 
         // Dependency injection via constructor
         public LoginController(ILogger<LoginController> logger, UserManagerDB context, IHashService hashService, IEmailService emailService, ICryptoService cryptoService)
@@ -26,6 +27,7 @@ namespace Server.Controllers
             _hashService = hashService;
             _emailManager = emailService;
             _cryptoService = cryptoService;
+           // _httpContextAccessor = httpContextAccessor;
         }
 
         // Find a user by username or email
@@ -70,7 +72,7 @@ namespace Server.Controllers
 
             byte[] encryptedUserId = await EncryptUserId(user.UserId.ToString());
 
-            HttpContext.Session.SetString("ID", encryptedUserId.ToString());
+            HttpContext.Session.SetString("TwoFactorAuthenticationID", encryptedUserId.ToString());
 
             return Ok(new { twoFactorAwait = true, message = "Email has been send to you with the code" });
         }
@@ -81,7 +83,8 @@ namespace Server.Controllers
         {
             try
             {
-                Console.WriteLine(model.UsernameOrEmail);
+                var session = HttpContext.Session.GetString("UserId");
+
                 // Check if the model is valid
                 if (ModelState.IsValid)
                 {
@@ -89,7 +92,7 @@ namespace Server.Controllers
 
                     if (user == null)
                     {
-                        return NotFound(new {existingUser = false, message = "Email or username not found" });
+                        return NotFound(new { existingUser = false, message = "Email or username not found" });
                     }
 
                     if (!await VerifyPassword(model.Password, user.Password))
@@ -103,12 +106,12 @@ namespace Server.Controllers
                     // If two-factor authentication is enabled, handle it
                     if (user.Settings.SecuritySettings.TwoFactorAuth)
                     {
-                       await _HandleTwoFactorAuthAsync(user, model);
+                        await _HandleTwoFactorAuthAsync(user, model);
                     }
 
                     // Store the user ID in the session
-                    HttpContext.Session.SetString("UserId", user.UserId.ToString());
-                    return Ok(new { message = "Login successful" });
+                    HttpContext.Session.SetString("Auth", user.UserId.ToString());
+                    return Ok(new { message = "Login successful", session, userId = user.UserId.ToString() });
 
                 }
 
@@ -124,6 +127,13 @@ namespace Server.Controllers
                 _logger.LogError(ex, "An error occurred while processing the login request.");
                 return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Test()
+        {
+            var session = HttpContext.Session.GetString("UserId");
+            return Ok(new {session});
         }
     }
 }

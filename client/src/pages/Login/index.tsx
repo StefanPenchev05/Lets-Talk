@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useWindowResize } from "../../hooks/useWindowResize.hook";
 import { useFormSubmit } from "../../hooks/login/useFormSubmit.hook";
 
-import Subtitle from "../../components/login/Subtitle";
-import SubmitButton from "../../components/shared/SubmitButton";
-import EmailInput from "../../components/shared/EmailInput";
-import PasswordInput from "../../components/shared/PasswordInput";
-import DividerField from "../../components/shared/DividerFiled";
-import SocialButton from "../../components/login/SocialButton";
+import Subtitle from "@components/login/Subtitle";
+import SubmitButton from "@components/shared/SubmitButton";
+import EmailInput from "@components/shared/EmailInput";
+import PasswordInput from "@components/shared/PasswordInput";
+import DividerField from "@components/shared/DividerFiled";
+import SocialButton from "@components/login/SocialButton";
 
 import ManImg from "../../assets/icons/man.png";
 import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
@@ -24,7 +24,7 @@ const Login: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-screen w-full">
+    <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">
       <div className="hidden lg:block w-3/4 h-full bg-white dark:bg-[#150f38]">
         <img
           src={Wallpaper}

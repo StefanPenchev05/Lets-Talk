@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import useDayNightTheme from './hooks/useDayNightTheme.hook'
 import { Routes, Route } from 'react-router-dom';
 

@@ -37,7 +37,7 @@ namespace Server.Controllers
                 if (ModelState.IsValid)
                 {
                     // Get the encrypted user ID from the session
-                    string encryptedUserId = HttpContext.Session.GetString("ID");
+                    string encryptedUserId = HttpContext.Session.GetString("TwoFactorAuthenticationID");
                     // Convert the encrypted user ID to a byte array
                     byte[] encryptedUserIdBytes = Encoding.UTF8.GetBytes(encryptedUserId);
 
@@ -49,12 +49,6 @@ namespace Server.Controllers
                         .Include(u => u.Settings)
                         .ThenInclude(s => s.SecuritySettings)
                         .SingleOrDefaultAsync(u => u.UserId == int.Parse(decryptedUserId));
-
-                    // If the user is not found, return an error
-                    if (user == null)
-                    {
-                        return NotFound(new { message = "Invalid session" });
-                    }
 
                     // If the two-factor authentication code is incorrect, return an error
                     if (user.Settings.SecuritySettings.TwoFactorAuthCode != model.TwoFactorAuthCode)

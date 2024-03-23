@@ -16,31 +16,42 @@ builder.Services.AddDbContext<UserManagerDB>(option =>
 
 
 // MySql distributed cache services
-builder.Services.AddDistributedMySqlCache(option =>
+// builder.Services.AddDistributedMySqlCache(option =>
+// {
+//     option.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") + ";Allow User Variables=true";
+//     option.TableName = "SesssionStore";
+//     option.SchemaName = "LetsTalk";
+// });
+
+
+builder.Services.AddCors(options =>
 {
-    option.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") + ";Allow User Variables=true";
-    option.TableName = "SesssionStore";
-    option.SchemaName = "LetsTalk";
+    options.AddPolicy("AllowSpecificOrigins",
+        builder =>
+        {
+            builder
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
 });
 
 // Add session services
 builder.Services.AddSession(option =>
 {
     option.IdleTimeout = TimeSpan.FromHours(1);
+    option.IOTimeout = TimeSpan.FromMinutes(60);
+    option.Cookie.Name = "authSession";
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
+    option.Cookie.SameSite = SameSiteMode.None;
+    option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins",
-        builder =>
-        {
-            builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
+builder.Services.ConfigureApplicationCookie(option => {
+        option.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
 });
 
 builder.Services.AddTransient<IEmailService, EmailManager>();
@@ -51,6 +62,7 @@ builder.Services.AddTransient<IAuthHub, AuthHub>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
@@ -65,7 +77,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseCors("AllowAllOrigins");
+app.UseCors("AllowSpecificOrigins");
 
 app.UseRouting();
 
