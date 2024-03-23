@@ -18,6 +18,11 @@ export interface AuthSessionResponse{
   message: string;
 }
 
+export interface Alert{
+  message: string;
+  type: 'success' | 'error' | 'warning';
+}
+
 export interface ProtectedPage{
   children: React.ReactNode;
 }
