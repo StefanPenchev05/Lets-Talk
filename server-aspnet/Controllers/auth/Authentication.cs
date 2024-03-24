@@ -37,7 +37,9 @@ namespace Server.Controllers
             {
                 return Ok(new { awaitTwoFactorAuth = true, message = "Session is valid" });
             }
-            Response.Cookies.Delete("Auth");
+            Response.Cookies.Delete("UserId");
+            Response.Cookies.Delete("TwoFactorAuthenticationID");
+
             return BadRequest(new { authSession = false, message = "Session is not valid" });
         }
     }

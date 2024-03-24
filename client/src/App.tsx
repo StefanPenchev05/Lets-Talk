@@ -34,7 +34,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login/>} />
           <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>
-          <Route element={<ProtectedPage isAuth={isAuth}/>}>
+          <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor}/>}>
             <Route path='/dashboard' element={<h1>Home</h1>}/>
           </Route>
         </Routes>

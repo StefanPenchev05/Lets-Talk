@@ -18,4 +18,5 @@ export interface Alert{
 
 export interface ProtectedPage{
   isAuth: boolean;
+  isAwaitTwoFactor: boolean;
 }
