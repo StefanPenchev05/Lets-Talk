@@ -1,20 +1,25 @@
 import { useState, useEffect } from "react";
 import { api } from "@services/api";
 import { AuthResponse } from "@types";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const useAuthentication = () => {
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [isAwaitTwoFactor, setIsAwaitTwoFactor] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const isAuthenticated = async (): Promise<void> => {
-    api("http://localhost:5295/auth/", { method: "GET" })
+    api("/auth/", { method: "GET" })
       .then((reponse: any) => {
         const data = reponse.data as AuthResponse;
-        console.log(data);
         if (data.awaitTwoFactorAuth) {
+          navigate('/login/verify')
           setIsAwaitTwoFactor(true);
         } else {
+          navigate("/");
           setIsAuth(true);
         }
         setIsLoading(false);
@@ -22,6 +27,7 @@ export const useAuthentication = () => {
       .catch((err: any) => {
         console.error(err);
         setIsAuth(false);
+        setIsAwaitTwoFactor(false);
         setIsLoading(false);
       }).finally(() => {
         setIsLoading(false);
@@ -34,7 +40,7 @@ export const useAuthentication = () => {
     };
 
     checkAuth();
-  }, []);
+  }, [location]);
 
   return { isAuth, isAwaitTwoFactor, isLoading };
 };

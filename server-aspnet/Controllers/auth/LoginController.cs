@@ -153,8 +153,6 @@ namespace Server.Controllers
                         .ThenInclude(s => s.SecuritySettings)
                         .SingleOrDefaultAsync(u => u.UserId == int.Parse(userId));
 
-                    Console.WriteLine("____________" + userId + "------" + model.TwoFactorAuthCode);
-
                     // If the two-factor authentication code is incorrect, return an error
                     if (user.Settings.SecuritySettings.TwoFactorAuthCode != model.TwoFactorAuthCode)
                     {

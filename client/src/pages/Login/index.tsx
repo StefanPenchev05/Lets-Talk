@@ -11,6 +11,7 @@ import SocialButton from "@components/login/SocialButton";
 
 import ManImg from "../../assets/icons/man.png";
 import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
+import Loader from "../Loader";
 
 const RESOLUTION_THRESHOLD = 1022;
 
@@ -18,10 +19,14 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const windowWidth = useWindowResize();
-  const { emailError, passwordError, handleFormSubmit } = useFormSubmit(
+  const { isLoading, emailError, passwordError, handleFormSubmit } = useFormSubmit(
     email,
     password
   );
+
+  if(isLoading){
+    return <Loader/>
+  }
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">

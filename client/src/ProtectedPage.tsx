@@ -1,12 +1,9 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { ProtectedPage } from "@types";
-import Loader from "./pages/Loader";
+import { ProtectedPages } from "@types";
 
-const ProtectedRoute: React.FC<ProtectedPage> = ({ isAuth, isAwaitTwoFactor, isLoading }) => {
+const ProtectedRoute: React.FC<ProtectedPages> = ({ isAuth, isAwaitTwoFactor }) => {
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  console.log(isAwaitTwoFactor);
 
   return <div>{isAuth ? <Outlet /> : (isAwaitTwoFactor ? <Outlet/> : <Navigate to={"/login"} /> )}</div>;
 };

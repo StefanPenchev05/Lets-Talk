@@ -9,15 +9,18 @@ import { useNavigate } from "react-router-dom";
 export const useFormSubmit = (email: string, password: string) => {
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     setEmailError("");
     setPasswordError("");
     try {
       //await validateLogInForm(email, password);
-      await api("http://localhost:5295/" + "auth/login", {
+      await api("/auth/login", {
         method: "POST",
         data: JSON.stringify({ usernameOrEmail: email, Password: password }),
       })
@@ -25,7 +28,7 @@ export const useFormSubmit = (email: string, password: string) => {
           console.log(response);
           const data = response.data as LoginResponse;
           if(data.twoFactorAwait === true){
-            navigate("/login/verify")
+            navigate("/login/verify");
           }
         })
         .catch((err) => {
@@ -53,5 +56,5 @@ export const useFormSubmit = (email: string, password: string) => {
     }
   };
 
-  return { emailError, passwordError, handleFormSubmit };
+  return { isLoading, emailError, passwordError, handleFormSubmit };
 };

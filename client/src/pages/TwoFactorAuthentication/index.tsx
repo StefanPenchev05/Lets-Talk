@@ -22,7 +22,6 @@ const TwoFactorAuthentication: React.FC = () => {
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, nextInput: React.RefObject<HTMLInputElement>) => {
     if (e.target.value) {
-      console.log("helllooo")
       nextInput.current?.focus();
     }
   }
@@ -31,13 +30,16 @@ const TwoFactorAuthentication: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     const code = input1 + input2 + input3 + input4 + input5;
-    await api("http://localhost:5295/auth/login/verify/", {
-      method: "POST", 
-      data: JSON.stringify({TwoFactorAuthCode: code})
-    }).then((response: any) => {
-      navigate("/dashboard")
-    })
-    .catch(err => console.log(err));
+    try{
+      await api("/auth/login/verify/", {
+        method: "POST", 
+        data: JSON.stringify({TwoFactorAuthCode: code})
+      })
+
+      navigate("/");
+    }catch(err){
+
+    }
   }
 
   if(isLoading){

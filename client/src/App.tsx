@@ -17,12 +17,12 @@ function App() {
   const { isAuth, isAwaitTwoFactor, isLoading } = useAuthentication();
   const navigate = useNavigate();
 
+
   useEffect(() => {
     if(isAwaitTwoFactor){
       navigate('/login/verify');
     }
-    console.log(isAwaitTwoFactor);
-  },[isAwaitTwoFactor])
+  },[isAwaitTwoFactor, isLoading])
 
   if (isLoading) {
     return <Loader />;
@@ -33,8 +33,8 @@ function App() {
       <Suspense fallback= {<Loader />}>
         <Routes>
           <Route path="/login" element={<Login/>} />
-          <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor} isLoading={isLoading}/>}>
-            <Route path='/dashboard' element={<h1>Home</h1>}/>
+          <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor}/>}>
+            <Route path='/' element={<h1>Home</h1>}/>
             <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>
           </Route>
         </Routes>

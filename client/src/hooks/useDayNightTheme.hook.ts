@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const useDayNightTheme = (dayStart = 6, dayEnd = 10, checkIntervalMinutes = 30) => {
+const useDayNightTheme = (dayStart = 6, dayEnd = 18, checkIntervalMinutes = 30) => {
     useEffect(() => {
         const setTheme = () => {
             const currentHour = new Date().getHours();

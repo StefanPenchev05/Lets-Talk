@@ -18,14 +18,14 @@ export function api(url: string, options: any) {
 
       // But also wait until they're online to make the request
       window.addEventListener("online", () => {
-        axiosInstance(url, options)
+        axiosInstance("http://localhost:5295" + url, options)
           .then((response) => resolve(response))
           .catch((error) => reject(error));
       });
     }
 
     //method:...  data: {}
-    axiosInstance(url, options)
+    axiosInstance("http://localhost:5295" + url, options)
       .then((response) => resolve(response))
       .catch((error) => reject(error));
   });

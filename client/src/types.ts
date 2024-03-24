@@ -16,8 +16,7 @@ export interface Alert{
   type: 'success' | 'error' | 'warning';
 }
 
-export interface ProtectedPage{
-  isAuth: boolean;
-  isAwaitTwoFactor: boolean;
-  isLoading: boolean;
+export interface ProtectedPages{
+  isAuth?: boolean;
+  isAwaitTwoFactor?: boolean;
 }

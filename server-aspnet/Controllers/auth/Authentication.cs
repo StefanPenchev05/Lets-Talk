@@ -29,8 +29,6 @@ namespace Server.Controllers
             var userId = HttpContext.Session.GetString("UserId");
             var twoFactorAwait = HttpContext.Session.GetString("TwoFactorAuthenticationID");
 
-            Console.WriteLine(userId + "---" + twoFactorAwait);
-
             if (userId != null)
             {
                 return Ok(new { authSession = true, message = "Session is valid" });
