@@ -165,6 +165,7 @@ namespace Server.Controllers
         [HttpGet]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
+            Console.WriteLine(token);
             var data = await _tokenService.VerifyTokenAsync(token);
 
             if (data == null)
@@ -180,6 +181,12 @@ namespace Server.Controllers
             if (existingTempUser == null)
             {
                 return StatusCode(404, new { tempUserNotFound = true, message = "Your temporary registration data could not be found or has expired. Please register again." });
+            }
+
+            var exisitngUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == existingTempUser.Email || u.UserName == existingTempUser.UserName);
+
+            if(exisitngUser != null){
+                return BadRequest(new {invalidToken = true, message = "This token has already been used"});
             }
 
             User newUser = new()
@@ -206,7 +213,7 @@ namespace Server.Controllers
             await _context.SaveChangesAsync();
 
             // Sends to the user that his email is verified
-            await _authHub.SendToRoom(roomId);
+            //await _authHub.SendToRoom(roomId);
 
             return Ok();
         }

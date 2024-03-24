@@ -36,7 +36,7 @@ namespace Server.Controllers
             return await _context.Users
                 .Include(u => u.Settings)
                 .ThenInclude(s => s.SecuritySettings)
-                .SingleOrDefaultAsync(u => u.Email == usernameOrEmail || u.UserName == usernameOrEmail);
+                .FirstOrDefaultAsync(u => u.Email == usernameOrEmail || u.UserName == usernameOrEmail);
         }
 
         // Verify if the provided password matches the hashed password
@@ -106,11 +106,11 @@ namespace Server.Controllers
                     // If two-factor authentication is enabled, handle it
                     if (user.Settings.SecuritySettings.TwoFactorAuth)
                     {
-                        await _HandleTwoFactorAuthAsync(user, model);
+                        return await _HandleTwoFactorAuthAsync(user, model);
                     }
 
                     // Store the user ID in the session
-                    HttpContext.Session.SetString("Auth", user.UserId.ToString());
+                    HttpContext.Session.SetString("UserId", user.UserId.ToString());
                     return Ok(new { message = "Login successful", session, userId = user.UserId.ToString() });
 
                 }

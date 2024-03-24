@@ -7,11 +7,9 @@ namespace Server.Services
     public class CryptoService : ICryptoService
     {
         // The encryption key
-        private static readonly byte[] Key = Encoding.UTF8.GetBytes("=mR\"Bqzhd,{+,#K");
-
+        private static readonly byte[] Key = Encoding.UTF8.GetBytes("12345678901234567890123456789012");
         // The initialization vector
-        private static readonly byte[] IV = Encoding.UTF8.GetBytes("HTXv*Lc-&1C}@Jv");
-
+        private static readonly byte[] IV = Encoding.UTF8.GetBytes("1234567890123456");
         // Method to encrypt a string using AES encryption
         public async Task<byte[]> EncryptAsync(string plainText)
         {

@@ -42,7 +42,7 @@ builder.Services.AddSession(option =>
 {
     option.IdleTimeout = TimeSpan.FromHours(1);
     option.IOTimeout = TimeSpan.FromMinutes(60);
-    option.Cookie.Name = "Auth";
+    option.Cookie.Name = ".AspNet";
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
     option.Cookie.SameSite = SameSiteMode.None;

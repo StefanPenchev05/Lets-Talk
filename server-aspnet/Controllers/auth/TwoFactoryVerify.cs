@@ -63,7 +63,8 @@ namespace Server.Controllers
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
 
-                    // Return a success message
+                    // Return a success message and delete the session from the user
+                    Response.Cookies.Delete("TwoFactorAuthenticationID");
                     return Ok(new { validCode = true, message = "Successful verified", greetings = $"Welcome back {user.UserName}" });
                 }
                 // If the model is not valid, return model errors

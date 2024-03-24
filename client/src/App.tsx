@@ -1,23 +1,41 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import useDayNightTheme from './hooks/useDayNightTheme.hook'
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useAuthentication } from '@hooks/useAuthenticate.hook.ts';
+
+
 
 import Loader from './pages/Loader/index';
-import ProtectedPage from './ProtectedPage';
+import ProtectedPage from './ProtectedPage';;
 
 const Login = lazy(() => import('./pages/Login/index'));
+const TwoFactorAuthentication = lazy(() => import("./pages/TwoFactorAuthentication/index"))
 
 function App() {
   useDayNightTheme();
 
+  const { isAuth, isAwaitTwoFactor, isLoading } = useAuthentication();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(isAwaitTwoFactor){
+      navigate('/login/verify');
+    }
+    console.log(isAwaitTwoFactor);
+  },[isAwaitTwoFactor])
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
-    <div className='bg-[#F5F5F5] dark:bg-[#272640]'>
+    <div className='bg-[#F5F5F5] dark:bg-base-100'>
       <Suspense fallback= {<Loader />}>
         <Routes>
-          <Route path="/" element={<Login/>} />
-          <Route path="/loader" element={<Loader/>}/>
-          <Route element={<ProtectedPage/>}>
-            <Route path='/dashboard' element={<h1>Hello World</h1>}/>
+          <Route path="/login" element={<Login/>} />
+          <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>
+          <Route element={<ProtectedPage isAuth={isAuth}/>}>
+            <Route path='/dashboard' element={<h1>Home</h1>}/>
           </Route>
         </Routes>
       </Suspense>

@@ -5,8 +5,9 @@ export interface LoginResponse {
   message: string;
 }
 
-export interface AuthSessionResponse{
+export interface AuthResponse{
   authSession:boolean;
+  awaitTwoFactorAuth:boolean;
   message: string;
 }
 

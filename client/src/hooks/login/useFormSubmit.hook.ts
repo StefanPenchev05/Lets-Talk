@@ -25,7 +25,7 @@ export const useFormSubmit = (email: string, password: string) => {
           console.log(response);
           const data = response.data as LoginResponse;
           if(data.twoFactorAwait === true){
-            navigate("/")
+            navigate("/login/verify")
           }
         })
         .catch((err) => {

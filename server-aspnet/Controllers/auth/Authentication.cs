@@ -11,7 +11,7 @@ using Server.Data;
 
 namespace Server.Controllers
 {
-    [Route("/auth/session")]
+    [Route("/auth")]
     public class AuthenticationSession : Controller
     {
         private readonly ILogger<AuthenticationSession> _logger;
@@ -26,25 +26,19 @@ namespace Server.Controllers
         [HttpGet]
         public async Task<IActionResult> AuthSession()
         {
-            if (HttpContext.Session.Keys.Contains("Auth"))
-            {
-                var userId = HttpContext.Session.GetString("Auth");
-                var user = await _context.Users.SingleOrDefaultAsync(u => u.UserId == int.Parse(userId));
-                
-                if (user == null)
-                {
-                    return BadRequest(new { authSession = false, message = "Session is not valid" });
-                }
+            var userId = HttpContext.Session.GetString("UserId");
+            var twoFactorAwait = HttpContext.Session.GetString("TwoFactorAuthenticationID");
 
+            if (userId != null)
+            {
                 return Ok(new { authSession = true, message = "Session is valid" });
             }
-            return BadRequest(new { authSession = false, message = "Session is not valid", });
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
+            else if (twoFactorAwait != null)
+            {
+                return Ok(new { awaitTwoFactorAuth = true, message = "Session is valid" });
+            }
+            Response.Cookies.Delete("Auth");
+            return BadRequest(new { authSession = false, message = "Session is not valid" });
         }
     }
 }
