@@ -40,7 +40,6 @@ builder.Services.AddCors(options =>
 // Add session services
 builder.Services.AddSession(option =>
 {
-    option.IdleTimeout = TimeSpan.FromHours(1);
     option.IOTimeout = TimeSpan.FromMinutes(60);
     option.Cookie.Name = ".AspNet";
     option.Cookie.HttpOnly = true;

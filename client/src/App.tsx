@@ -33,9 +33,9 @@ function App() {
       <Suspense fallback= {<Loader />}>
         <Routes>
           <Route path="/login" element={<Login/>} />
-          <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>
-          <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor}/>}>
+          <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor} isLoading={isLoading}/>}>
             <Route path='/dashboard' element={<h1>Home</h1>}/>
+            <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>
           </Route>
         </Routes>
       </Suspense>

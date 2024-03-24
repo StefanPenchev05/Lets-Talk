@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Text;
 using Server.Data;
 using Server.ViewModels;
 using Server.Interface;
@@ -17,7 +17,6 @@ namespace Server.Controllers
         private readonly IHashService _hashService;
         private readonly IEmailService _emailManager;
         private readonly ICryptoService _cryptoService;
-        //private readonly IHttpContextAccessor _httpContextAccessor;
 
         // Dependency injection via constructor
         public LoginController(ILogger<LoginController> logger, UserManagerDB context, IHashService hashService, IEmailService emailService, ICryptoService cryptoService)
@@ -27,7 +26,7 @@ namespace Server.Controllers
             _hashService = hashService;
             _emailManager = emailService;
             _cryptoService = cryptoService;
-           // _httpContextAccessor = httpContextAccessor;
+            // _httpContextAccessor = httpContextAccessor;
         }
 
         // Find a user by username or email
@@ -50,6 +49,12 @@ namespace Server.Controllers
             return await _cryptoService.EncryptAsync(userID);
         }
 
+        // Method to decrypt the user ID
+        private async Task<string> DecryptUserId(byte[] encryptedUserId)
+        {
+            return await _cryptoService.DecryptAsync(encryptedUserId);
+        }
+
         // Handle two-factor authentication
         private async Task<IActionResult> _HandleTwoFactorAuthAsync(User user, LoginViewModel model)
         {
@@ -68,11 +73,9 @@ namespace Server.Controllers
             // Update the TwoFactorAuthCode in the user's security settings
             user.Settings.SecuritySettings.TwoFactorAuthCode = code;
 
-            _context.SaveChanges();
+            _context.SaveChanges();;
 
-            byte[] encryptedUserId = await EncryptUserId(user.UserId.ToString());
-
-            HttpContext.Session.SetString("TwoFactorAuthenticationID", encryptedUserId.ToString());
+            HttpContext.Session.SetString("TwoFactorAuthenticationID", user.UserId.ToString());
 
             return Ok(new { twoFactorAwait = true, message = "Email has been send to you with the code" });
         }
@@ -129,11 +132,59 @@ namespace Server.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Test()
+        [HttpPost("verify")]
+        public async Task<IActionResult> Verify([FromBody] TwoFactorVerifyViewModel model)
         {
-            var session = HttpContext.Session.GetString("UserId");
-            return Ok(new {session});
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    // Get the encrypted user ID from the session
+                    string userId = HttpContext.Session.GetString("TwoFactorAuthenticationID");
+
+                    if (userId == null)
+                    {
+                        return BadRequest(new { invalidTwoFactorSession = true, message = "Invalid Session" });
+                    }
+
+                    // Get the user from the database
+                    User user = await _context.Users
+                        .Include(u => u.Settings)
+                        .ThenInclude(s => s.SecuritySettings)
+                        .SingleOrDefaultAsync(u => u.UserId == int.Parse(userId));
+
+                    Console.WriteLine("____________" + userId + "------" + model.TwoFactorAuthCode);
+
+                    // If the two-factor authentication code is incorrect, return an error
+                    if (user.Settings.SecuritySettings.TwoFactorAuthCode != model.TwoFactorAuthCode)
+                    {
+                        return BadRequest(new { validCode = false, message = "Incorrect Code" });
+                    }
+
+                    // If the two-factor authentication code is correct, update the session and clear the code
+                    HttpContext.Session.SetString("UserId", user.UserId.ToString());
+                    user.Settings.SecuritySettings.TwoFactorAuthCode = null;
+
+                    // Save the changes to the database
+                    await _context.SaveChangesAsync();
+
+                    // Return a success message and delete the session from the user
+                    Response.Cookies.Delete("TwoFactorAuthenticationID");
+                    return Ok(new { validCode = true, message = "Successful verified", greetings = $"Welcome back {user.UserName}" });
+                }
+                // If the model is not valid, return model errors
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { Filed = x.Key, Message = x.Value.Errors.First().ErrorMessage })
+                    .ToList();
+                return StatusCode(500, new { message = errors });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the login request.");
+                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later." });
+            }
         }
+
     }
 }
