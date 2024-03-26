@@ -64,9 +64,11 @@ const Login: React.FC = () => {
         <SocialButton />
         <p className="text-base w-full text-center text-black dark:text-white">
           Don't have an account?&nbsp;
-          <span className="underline text-[#6F58C1] dark:text-[#8B71DD]">
-            Sign Up
-          </span>
+          <a href="/register">
+            <span className="underline text-[#6F58C1] dark:text-[#8B71DD]">
+              Sign Up
+            </span>
+          </a>
         </p>
       </div>
     </div>

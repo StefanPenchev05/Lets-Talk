@@ -19,6 +19,12 @@ export interface AuthResponse{
   message: string;
 }
 
+export interface VerifiedEmailSignalRResponse{
+  verifiedEmail: boolean;
+  token: string,
+  message: string;
+}
+
 export interface Alert{
   message: string;
   type: 'success' | 'error' | 'warning';

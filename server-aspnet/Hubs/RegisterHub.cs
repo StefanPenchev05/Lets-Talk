@@ -9,14 +9,16 @@ namespace Server.SignalRHub
         public async Task JoinRoom(string roomId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            await Clients.Caller.SendAsync("JoinedRoom", $"You have joined room {roomId}");
+            await Clients.Caller.SendAsync("JoinedRoom", $"We have send you an Email. Please click on the link to Verify your account");
         }
 
-        public async Task SendToRoom(string roomId)
+        public async Task SendVerifiedEmail(string roomId, string token)
         {
+
             var data = new
             {
                 verifiedEmail = true, 
+                token,
                 message = "You successfuly verified your email"
             };
 

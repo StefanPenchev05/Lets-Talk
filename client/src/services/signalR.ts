@@ -25,7 +25,7 @@ export default class SignalRConnection{
             });
     }
 
-    onMessage(handler: (message: string) => void){
-        this.connection.on("JoinedRoom", handler);
+    onMessage(port: string,handler: (data: any) => void){
+        this.connection.on(port, handler);
     }
 }

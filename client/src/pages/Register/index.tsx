@@ -14,6 +14,8 @@ import TwoFactorAuthenticationButton from "@components/register/TwoFactorAuthent
 
 import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
 import Loader from "../Loader";
+import { RotateLoader } from "react-spinners";
+import { FaCheckCircle } from "react-icons/fa";
 
 const RESOLUTION_THRESHOLD = 1022;
 const connection = new SignalRConnection("/RegisterHub");
@@ -36,6 +38,8 @@ const Register: React.FC = () => {
     lastNameError,
     emailError,
     passwordError,
+    verifyLoading,
+    refDialog,
     handleFormSubmit,
   } = useFormSubmit(
     email,
@@ -127,6 +131,18 @@ const Register: React.FC = () => {
           />
           <SubmitButton helperText="Sign in" />
         </form>
+        <dialog className="modal modal-bottom sm:modal-middle" ref={refDialog}>
+          <div className="modal-box">
+            {verifyLoading ? (
+              <div className="flex items-center justify-center space-y-6">
+                <RotateLoader color="#36d7b7"/> 
+                <p>Check your email. Your Verifican Link <span className="text-red-500 font-bold">expirese after 15 minutes</span></p>
+              </div>
+            ) : (
+              <FaCheckCircle color="green" size="2em" />
+            )}
+          </div>
+        </dialog>
       </div>
     </div>
   );

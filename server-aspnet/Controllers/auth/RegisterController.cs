@@ -18,8 +18,9 @@ namespace Server.Controllers
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IRegisterHub _registerHub;
 
-        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment)
+        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment, IRegisterHub registerHub)
         {
             _logger = logger;
             _context = context;
@@ -28,6 +29,7 @@ namespace Server.Controllers
             _emailService = emailService;
             _cryptoService = cryptoService;
             _hostEnvironment = hostEnvironment;
+            _registerHub = registerHub;
         }
 
         private async Task<string> SuggestUsername(string username)
@@ -275,8 +277,8 @@ namespace Server.Controllers
             // Save the changes to the database
             await _context.SaveChangesAsync();
 
-            // Notify the user that their email has been verified
-            //await _authHub.SendToRoom(roomId);
+            // Notify the user that their email has been verified along with the token
+            await _registerHub.SendVerifiedEmail(roomId, token);
 
             // Return a 200 status code
             return Ok();
