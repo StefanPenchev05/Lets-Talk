@@ -53,11 +53,17 @@ const Register: React.FC = () => {
       </div>
       <div className="w-full h-screen lg:w-1/4 flex flex-col items-center justify-center max-md:px-8 md:p-8 loginBox dark:bg-[#040622]">
         {image ? (
-          <div className="avatar">
+          <div className="avatar relative">
             <div className="w-24 h-24 md:w-26 md:h-26 lg:w-40 lg:h-40 rounded-full mb-5">
               <img
                 src={image ? URL.createObjectURL(image) : ""}
               />
+              <button
+                className="absolute top-0 right-0 lg:top-1 lg:right-2 bg-red-500 w-7 rounded-full text-center text-xl text-white"
+                onClick={() => setImage(null)}
+              >
+                x
+              </button>
             </div>
           </div>
         ):(
