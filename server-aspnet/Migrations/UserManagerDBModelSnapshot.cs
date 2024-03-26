@@ -360,9 +360,6 @@ namespace Server.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ProfilePictureURL")
-                        .HasColumnType("longtext");
-
                     b.Property<bool?>("TwoFactorAuth")
                         .HasColumnType("tinyint(1)");
 

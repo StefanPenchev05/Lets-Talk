@@ -22,8 +22,9 @@ namespace Server.Controllers
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly IAuthHub _authHub;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, IAuthHub authHub, ICryptoService cryptoService)
+        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, IAuthHub authHub, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment)
         {
             _logger = logger;
             _context = context;
@@ -32,6 +33,7 @@ namespace Server.Controllers
             _emailService = emailService;
             _cryptoService = cryptoService;
             _authHub = authHub;
+            _hostEnvironment = hostEnvironment;
         }
 
         private async Task<string> SuggestUsername(string username)
@@ -119,11 +121,11 @@ namespace Server.Controllers
                         UserName = model.Username,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
-                        ProfilePictureURL = model.ProfilePictureURL,
+                        ProfilePicture = model.ProfilePicture,
                         TwoFactorAuth = model.TwoFactorAuth,
                         VerificationCode = roomId
                     };
-                    
+
                     // Add the tempUser to the DbSet
                     _context.tempDatas.Add(tempUser);
 
@@ -165,57 +167,87 @@ namespace Server.Controllers
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
-            Console.WriteLine(token);
+            // Verify the token
             var data = await _tokenService.VerifyTokenAsync(token);
 
+            // If the token is invalid, return a 404 status code with a custom message
             if (data == null)
             {
                 return StatusCode(404, new { invalidToken = true, message = "This token is invalid" });
             }
 
+            // Extract the room ID and temporary user ID from the data
             var roomId = data[0];
             var tempUserId = data[1];
 
+            // Try to find the temporary user in the database
             var existingTempUser = await _context.tempDatas.SingleOrDefaultAsync(t => t.Id == int.Parse(tempUserId));
 
+            // If the temporary user is not found, return a 404 status code with a custom message
             if (existingTempUser == null)
             {
                 return StatusCode(404, new { tempUserNotFound = true, message = "Your temporary registration data could not be found or has expired. Please register again." });
             }
 
+            // Check if a user with the same email or username already exists
             var exisitngUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == existingTempUser.Email || u.UserName == existingTempUser.UserName);
 
-            if(exisitngUser != null){
-                return BadRequest(new {invalidToken = true, message = "This token has already been used"});
+            // If such a user exists, return a bad request status code with a custom message
+            if (exisitngUser != null)
+            {
+                return BadRequest(new { invalidToken = true, message = "This token has already been used" });
             }
 
+            // Create a new user with the data from the temporary user
             User newUser = new()
             {
-                Email = existingTempUser.Email,
-                UserName = existingTempUser.UserName,
-                FirstName = existingTempUser.FirstName,
-                LastName = existingTempUser.LastName,
-                Password = existingTempUser.Password,
-                ProfilePictureURL = existingTempUser.ProfilePictureURL == null ? null : existingTempUser.ProfilePictureURL,
-                Settings = new ()
-                {
-                    SecuritySettings = new()
-                    {
-                        TwoFactorAuth = existingTempUser.TwoFactorAuth == false ? false : true
-                    }
-                }  
+                // ...
             };
 
-            // Add the new User to the DbSet
+            // Define the path where the user's profile picture will be stored
+            string wwwPath = _hostEnvironment.WebRootPath;
+            string uploadsDir = Path.Combine(wwwPath, "uploads", newUser.UserId.ToString());
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(uploadsDir))
+            {
+                Directory.CreateDirectory(uploadsDir);
+            }
+
+            // Define the file name for the profile picture
+            string fileName = Path.GetFileNameWithoutExtension(existingTempUser.ProfilePicture.FileName);
+            string extension = Path.GetExtension(existingTempUser.ProfilePicture.FileName);
+            fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}";
+            string filePath = Path.Combine(uploadsDir, fileName);
+
+            // Save the profile picture to the file system
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await existingTempUser.ProfilePicture.CopyToAsync(stream);
+            }
+
+            // Set the URL of the profile picture
+            newUser.ProfilePictureURL = filePath;
+
+            // Add the new user to the database
             _context.Users.Add(newUser);
 
             // Save the changes to the database
             await _context.SaveChangesAsync();
 
-            // Sends to the user that his email is verified
+            // Notify the user that their email has been verified
             //await _authHub.SendToRoom(roomId);
 
+            // Return a 200 status code
             return Ok();
+        }
+
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+            string wwwPath = _hostEnvironment.WebRootPath;
+            string contentPath = _hostEnvironment.ContentRootPath;
+            return Ok(new { wwwPath, contentPath });
         }
     }
 }

@@ -63,6 +63,8 @@ namespace Server.Data
                 .WithMany()
                 .HasForeignKey(dm => dm.ReceiverId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TempData>().Ignore(t => t.ProfilePicture);
         }
     }
 }

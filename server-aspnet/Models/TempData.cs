@@ -17,7 +17,7 @@ namespace Server.Models
 
         public string Password { get; set; }
 
-        public string ProfilePictureURL { get; set; } = null;
+        public IFormFile ProfilePicture { get; set; } = null;
 
         public bool? TwoFactorAuth { get; set; } = false;
 

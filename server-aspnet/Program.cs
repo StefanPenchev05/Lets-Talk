@@ -59,6 +59,8 @@ builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+builder.Environment.IsDevelopment();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
