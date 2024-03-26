@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
+import React from "react";
+import { TextField } from "@mui/material";
 
 type ConfirmPasswordInputProps = {
   confirmPassword: string;

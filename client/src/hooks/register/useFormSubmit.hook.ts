@@ -2,7 +2,6 @@ import { useState, FormEvent } from "react";
 import { api } from "@services/api";
 import { validateRegsiterForm } from "@utils/validations";
 import { CustomError } from "@utils/CustomError";
-import { useNavigate } from "react-router-dom";
 import { RegisterResponse } from "@types";
 import SignalRConnection from "@services/signalR";
 
@@ -16,7 +15,6 @@ export const useFormSubmit = (email: string, password: string, username: string,
   const [iamgeError, setImageNameError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const navigate = useNavigate();
   const formData = new FormData();
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -38,7 +36,7 @@ export const useFormSubmit = (email: string, password: string, username: string,
       formData.append('TwoFactorAuth', JSON.stringify(isTwoFactor));
       formData.append('ProfilePicture', image ? image : "");
 
-      //setIsLoading(true);
+      setIsLoading(true);
       await api("/auth/register/", {
         method: "POST",
         data: formData,

@@ -1,6 +1,4 @@
 import { Switch ,FormControlLabel } from "@mui/material";
-import { styled } from "@mui/system";
-import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 interface TwoFactorAuthenticationButtonProps {
         twoFactorAuthentication: boolean;
