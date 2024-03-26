@@ -21,7 +21,7 @@ export interface AuthResponse{
 
 export interface VerifiedEmailSignalRResponse{
   verifiedEmail: boolean;
-  token: string,
+  encryptUserId: Uint8Array,
   message: string;
 }
 

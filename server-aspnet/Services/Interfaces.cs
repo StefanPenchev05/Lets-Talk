@@ -39,7 +39,7 @@ namespace Server.Interface
     public interface IRegisterHub
     {
         Task JoinRoom(string roomId);
-        Task SendVerifiedEmail(string roomId, string token);
+        Task SendVerifiedEmail(string roomId, byte[] token);
         Task LeaveRoom(string roomId);
     }
 }

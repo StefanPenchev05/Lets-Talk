@@ -72,7 +72,7 @@ export const useFormSubmit = (
             });
             connection.onMessage("VerifiedEmail", async(data: VerifiedEmailSignalRResponse ) => {
               if(data.verifiedEmail){
-                await api(`/auth/register/getSession/?token=${data.token}`, {method: "GET",})
+                await api(`/auth/register/getSession/?token=${data.encryptUserId}`, {method: "GET",})
                   .then(() => {
                     //snackBar
                   })

@@ -12,7 +12,7 @@ namespace Server.SignalRHub
             await Clients.Caller.SendAsync("JoinedRoom", $"We have send you an Email. Please click on the link to Verify your account");
         }
 
-        public async Task SendVerifiedEmail(string roomId, string token)
+        public async Task SendVerifiedEmail(string roomId, byte[] token)
         {
 
             var data = new

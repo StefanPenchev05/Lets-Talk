@@ -277,11 +277,20 @@ namespace Server.Controllers
             // Save the changes to the database
             await _context.SaveChangesAsync();
 
-            // Notify the user that their email has been verified along with the token
-            await _registerHub.SendVerifiedEmail(roomId, token);
+            // Notify the user that their email has been verified along with the encrypted newUserId
+            var encryptUserId = await _cryptoService.EncryptAsync(newUser.UserId.ToString());
+            await _registerHub.SendVerifiedEmail(roomId, encryptUserId);
 
             // Return a 200 status code
             return Ok();
         }
+        [HttpGet("getSession")]
+        public async Task GetSession([FromQuery] byte[] encryptUserId)
+        {
+            var userId = await _cryptoService.DecryptAsync(encryptUserId);
+            HttpContext.Session.SetString("UserId",userId);
+
+        }
     }
+
 }
