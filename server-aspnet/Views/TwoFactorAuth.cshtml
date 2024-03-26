@@ -1,5 +1,41 @@
-<div>
-    <h1>Welcome</h1>
-    <p>This is a only a test template</p>
-    <p>@ViewData["CodeForAuth"]</p>
-</div>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    .container {
+        background-color: #fff;
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+    h1 {
+        color: #007bff;
+        font-size: 2.4em;
+    }
+    p {
+        color: #666;
+        font-size: 1.2em;
+        line-height: 1.5;
+    }
+    .footer {
+        background-color: #007bff;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+        border-radius: 0 0 8px 8px;
+    }
+</style>
+<body>
+    <div class="container">
+        <h1>Welcome</h1>
+        <p>We're excited to have you join our community! As part of the registration process, we've generated a unique code for you.</p>
+        <p>Your code: <strong>@ViewData["CodeForAuth"]</strong></p>
+        <p>Please use this code to complete your registration. If you didn't request this code, you can safely ignore this email.</p>
+    </div>
+</body>
