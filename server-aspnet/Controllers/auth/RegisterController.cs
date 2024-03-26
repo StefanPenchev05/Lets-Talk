@@ -119,7 +119,7 @@ namespace Server.Controllers
                         UserName = model.Username,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
-                        ProfilePicture = model.ProfilePicture,
+                        ProfilePictureURL = model.ProfilePictureURL,
                         TwoFactorAuth = model.TwoFactorAuth,
                         VerificationCode = roomId
                     };
@@ -162,7 +162,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
             Console.WriteLine(token);
@@ -196,7 +196,7 @@ namespace Server.Controllers
                 FirstName = existingTempUser.FirstName,
                 LastName = existingTempUser.LastName,
                 Password = existingTempUser.Password,
-                ProfilePicture = existingTempUser.ProfilePicture == null ? null : existingTempUser.ProfilePicture,
+                ProfilePictureURL = existingTempUser.ProfilePictureURL == null ? null : existingTempUser.ProfilePictureURL,
                 Settings = new ()
                 {
                     SecuritySettings = new()

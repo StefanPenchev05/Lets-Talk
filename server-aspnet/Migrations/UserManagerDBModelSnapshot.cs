@@ -360,8 +360,8 @@ namespace Server.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("longtext");
 
-                    b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("longblob");
+                    b.Property<string>("ProfilePictureURL")
+                        .HasColumnType("longtext");
 
                     b.Property<bool?>("TwoFactorAuth")
                         .HasColumnType("tinyint(1)");
@@ -401,8 +401,8 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<byte[]>("ProfilePicture")
-                        .HasColumnType("longblob");
+                    b.Property<string>("ProfilePictureURL")
+                        .HasColumnType("longtext");
 
                     b.Property<int>("SettingsId")
                         .HasColumnType("int");

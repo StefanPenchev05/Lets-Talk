@@ -4,6 +4,7 @@ import validateFirstName from "./register-validations/FirstName";
 import validateLastName from "./register-validations/LastName";
 import validateImageName from "./register-validations/ImageName";
 import validateEmail from "./register-validations/Email";
+import validateUsername from "./register-validations/Username";
 
 export const validateLogInForm = async (email: string, password: string) => {
   try {
@@ -14,9 +15,22 @@ export const validateLogInForm = async (email: string, password: string) => {
   }
 };
 
-export const validateRegsiterForm = async(email: string, password: string, username: string, firstName: string, LastName: string, image: File | null, isTwoFactor: boolean) => {
-  validateFirstName(firstName);
-  validateLastName(LastName);
-  validateEmail(email);
-  validateImageName(image);
-}
+export const validateRegsiterForm = async (
+  email: string,
+  password: string,
+  username: string,
+  firstName: string,
+  LastName: string,
+  image: File | null
+) => {
+  try {
+    validateEmail(email);
+    validateFirstName(firstName);
+    validateLastName(LastName);
+    validatePassword(password);
+    validateUsername(username);
+    validateImageName(image);
+  } catch (err) {
+    throw err;
+  }
+};

@@ -28,7 +28,7 @@ namespace Server.ViewModels
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public byte[] ProfilePicture { get; set; } = null;
+        public string ProfilePictureURL { get; set; } = null;
 
         public bool? TwoFactorAuth { get; set; } = false;
     }

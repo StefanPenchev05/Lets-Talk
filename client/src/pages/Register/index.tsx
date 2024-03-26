@@ -27,16 +27,24 @@ const Register: React.FC = () => {
   const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
 
   const windowWidth = useWindowResize();
-  const { isLoading, emailError, passwordError, handleFormSubmit } =
-    useFormSubmit(
-      email,
-      password,
-      username,
-      firstName,
-      lastName,
-      image,
-      isTwoFactor
-    );
+  const {
+    isLoading,
+    usernameError,
+    firstNameError,
+    lastNameError,
+    iamgeError,
+    emailError,
+    passwordError,
+    handleFormSubmit,
+  } = useFormSubmit(
+    email,
+    password,
+    username,
+    firstName,
+    lastName,
+    image,
+    isTwoFactor
+  );
 
   if (isLoading) {
     return <Loader />;
@@ -55,9 +63,7 @@ const Register: React.FC = () => {
         {image ? (
           <div className="avatar relative">
             <div className="w-24 h-24 md:w-26 md:h-26 lg:w-40 lg:h-40 rounded-full mb-5">
-              <img
-                src={image ? URL.createObjectURL(image) : ""}
-              />
+              <img src={image ? URL.createObjectURL(image) : ""} />
               <button
                 className="absolute top-0 right-0 lg:top-1 lg:right-2 bg-red-500 w-7 rounded-full text-center text-xl text-white"
                 onClick={() => setImage(null)}
@@ -66,22 +72,22 @@ const Register: React.FC = () => {
               </button>
             </div>
           </div>
-        ):(
+        ) : (
           <label
-          htmlFor="image"
-          className="relative w-24 h-24 md:w-26 md:h-26 lg:w-36 lg:h-40 rounded-full border-2 border-dashed mb-5 cursor-pointer flex items-center justify-center"
-        >
-          <input
-            type="file"
-            id="image"
-            className="hidden"
-            placeholder="Please Upload Image"
-            onChange={(e) => setImage(e.target.files![0])}
-          />
-          <span className="text-gray-500 w-2/3 text-center">
-            Upload Your Avatar
-          </span>
-        </label>
+            htmlFor="image"
+            className="relative w-24 h-24 md:w-26 md:h-26 lg:w-36 lg:h-40 rounded-full border-2 border-dashed mb-5 cursor-pointer flex items-center justify-center"
+          >
+            <input
+              type="file"
+              id="image"
+              className="hidden"
+              placeholder="Please Upload Image"
+              onChange={(e) => setImage(e.target.files![0])}
+            />
+            <span className="text-gray-500 w-2/3 text-center">
+              Upload Your Avatar
+            </span>
+          </label>
         )}
         {windowWidth <= RESOLUTION_THRESHOLD ? (
           <Subtitle align="center" gutterBottom />
@@ -96,10 +102,12 @@ const Register: React.FC = () => {
           <FirstAndLastName
             firstName={firstName}
             setFirstName={setFirstName}
+            firstNameError={firstNameError}
             lastName={lastName}
             setLastName={setLastName}
+            lastNameError={lastNameError}
           />
-          <Username Username={username} setUsername={setUsername} />
+          <Username Username={username} setUsername={setUsername} error={usernameError}  />
           <PasswordInput
             password={password}
             setPassword={setPassword}

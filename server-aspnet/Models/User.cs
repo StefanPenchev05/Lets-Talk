@@ -25,7 +25,7 @@ namespace Server.Models
         [MaxLength(50)]
         public string LastName { get; set; }
 
-        public byte[] ProfilePicture { get; set; } = null;
+        public string ProfilePictureURL { get; set; } = null;
 
         // Navigation properties
         public int SettingsId { get; set; }
