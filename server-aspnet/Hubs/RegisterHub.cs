@@ -9,6 +9,7 @@ namespace Server.SignalRHub
         public async Task JoinRoom(string roomId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
+            await Clients.Caller.SendAsync("JoinedRoom", $"You have joined room {roomId}");
         }
 
         public async Task SendToRoom(string roomId)

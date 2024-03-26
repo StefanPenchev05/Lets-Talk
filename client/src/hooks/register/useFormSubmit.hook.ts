@@ -45,11 +45,14 @@ export const useFormSubmit = (email: string, password: string, username: string,
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      }).then((response: any) => {
+      }).then(async(response: any) => {
         const data = response.data as RegisterResponse;
         if(data.awaitForEmailVerification && data.roomId){
-          connection.start();
+          await connection.start();
           connection.JoinRoom(data.roomId);
+          connection.onMessage((message: string) => {
+            console.log(message);
+          });
         }
       })
       .catch((err) => {

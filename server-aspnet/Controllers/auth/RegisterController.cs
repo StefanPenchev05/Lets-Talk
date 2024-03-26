@@ -83,7 +83,10 @@ namespace Server.Controllers
                     User userWithEmail = await _context.Users
                         .SingleOrDefaultAsync(u => u.Email == model.Email);
 
-                    if (userWithEmail != null)
+                    TempData tempDataWithEmail = await _context.tempDatas
+                        .SingleOrDefaultAsync(t => t.Email == model.Email);
+
+                    if (userWithEmail != null || tempDataWithEmail != null)
                     {
                         return BadRequest(new { emailExists = true, message = "This email is already taken" });
                     }
@@ -92,8 +95,11 @@ namespace Server.Controllers
                     User userWithUsername = await _context.Users
                         .SingleOrDefaultAsync(u => u.UserName == model.Username);
 
+                    TempData tempDataWithUsername = await _context.tempDatas
+                        .SingleOrDefaultAsync(t => t.Email == model.Email);
+
                     // If a user with the same username already exists...
-                    if (userWithUsername != null)
+                    if (userWithUsername != null || tempDataWithEmail != null)
                     {
                         // Generate a suggested username
                         string suggestedUsername = await SuggestUsername(model.Username);
@@ -178,7 +184,7 @@ namespace Server.Controllers
                     await _emailService.SendEmailAsync("EmailVerification", "Link For Email Verification", model.Email, additionalData);
 
                     // Return a success response indicating that the email has been sent and the user should check their email for the verification link
-                    return Ok(new { AwaitForEmailVerification = true, roomId, message = "Sended Email" });
+                    return Ok(new { awaitForEmailVerification = true, roomId, message = "Sended Email" });
                 }
                 // If the model is not valid, return model errors
                 var errors = ModelState

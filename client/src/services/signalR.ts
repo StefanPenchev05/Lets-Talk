@@ -24,4 +24,8 @@ export default class SignalRConnection{
                 console.log(err);
             });
     }
+
+    onMessage(handler: (message: string) => void){
+        this.connection.on("JoinedRoom", handler);
+    }
 }
