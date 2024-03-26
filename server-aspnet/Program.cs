@@ -15,15 +15,6 @@ builder.Services.AddDbContext<UserManagerDB>(option =>
     new MySqlServerVersion(new Version(8, minor: 3, 0))));
 
 
-// MySql distributed cache services
-// builder.Services.AddDistributedMySqlCache(option =>
-// {
-//     option.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") + ";Allow User Variables=true";
-//     option.TableName = "SesssionStore";
-//     option.SchemaName = "LetsTalk";
-// });
-
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
@@ -53,7 +44,7 @@ builder.Services.AddTransient<IEmailService, EmailManager>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<ICryptoService, CryptoService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<IAuthHub, AuthHub>();
+builder.Services.AddTransient<IRegisterHub, RegisterHub>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 
 builder.Services.AddSignalR();
@@ -82,7 +73,7 @@ app.UseSession();
 
 app.UseAuthorization();
 
-app.MapHub<AuthHub>("/authHub");
+app.MapHub<RegisterHub>("/RegisterHub");
 
 app.MapControllerRoute(
     name: "default",

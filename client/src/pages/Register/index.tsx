@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useWindowResize } from "../../hooks/useWindowResize.hook";
 import { useFormSubmit } from "../../hooks/register/useFormSubmit.hook";
+import SignalRConnection from "@services/signalR";
 
 import Subtitle from "@components/login/Subtitle";
 import SubmitButton from "@components/shared/SubmitButton";
@@ -15,6 +16,7 @@ import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
 import Loader from "../Loader";
 
 const RESOLUTION_THRESHOLD = 1022;
+const connection = new SignalRConnection("/RegisterHub");
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -32,7 +34,6 @@ const Register: React.FC = () => {
     usernameError,
     firstNameError,
     lastNameError,
-    iamgeError,
     emailError,
     passwordError,
     handleFormSubmit,
@@ -43,7 +44,8 @@ const Register: React.FC = () => {
     firstName,
     lastName,
     image,
-    isTwoFactor
+    isTwoFactor,
+    connection
   );
 
   if (isLoading) {

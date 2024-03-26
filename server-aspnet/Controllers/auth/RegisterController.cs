@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Server.Data;
 using Server.ViewModels;
@@ -21,10 +17,9 @@ namespace Server.Controllers
         private readonly ICryptoService _cryptoService;
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
-        private readonly IAuthHub _authHub;
         private readonly IWebHostEnvironment _hostEnvironment;
 
-        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, IAuthHub authHub, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment)
+        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment)
         {
             _logger = logger;
             _context = context;
@@ -32,7 +27,6 @@ namespace Server.Controllers
             _tokenService = tokenService;
             _emailService = emailService;
             _cryptoService = cryptoService;
-            _authHub = authHub;
             _hostEnvironment = hostEnvironment;
         }
 
@@ -78,8 +72,9 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
         {
+            Console.WriteLine(model.Email);
             try
             {
                 if (ModelState.IsValid)
@@ -121,10 +116,38 @@ namespace Server.Controllers
                         UserName = model.Username,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
-                        ProfilePicture = model.ProfilePicture,
                         TwoFactorAuth = model.TwoFactorAuth,
                         VerificationCode = roomId
                     };
+
+                    if (model.ProfilePicture != null)
+                    {
+                        // Define the path where the user's profile picture will be stored
+                        string wwwRoot = _hostEnvironment.WebRootPath;
+                        string uploadTempDir = Path.Combine(wwwRoot, "uploadsTemp", tempUser.Id.ToString());
+
+                        // Create the directory if it doesn't exist
+                        if (!Directory.Exists(uploadTempDir))
+                        {
+                            Directory.CreateDirectory(uploadTempDir);
+                        }
+
+                        // Define the file name for the profile picture
+                        string fileName = Path.GetFileNameWithoutExtension(model.ProfilePicture.FileName);
+                        string extension = Path.GetExtension(model.ProfilePicture.FileName);
+                        fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}";
+                        string filePath = Path.Combine(uploadTempDir, fileName);
+
+
+                        // Save the profile picture to the file system
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await model.ProfilePicture.CopyToAsync(stream);
+                        }
+
+                        // Set the URL of the profile picture
+                        tempUser.ProfilePictureURL = filePath;
+                    }
 
                     // Add the tempUser to the DbSet
                     _context.tempDatas.Add(tempUser);
@@ -132,23 +155,30 @@ namespace Server.Controllers
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
 
+                    // Create a list to hold the data that will be used to generate the token
+                    // This includes the room ID and the temporary user's ID
                     List<string> dataForToken = new()
                     {
                         roomId,
                         tempUser.Id.ToString()
                     };
 
+                    // Generate a token using the data and set it to expire in 15 minutes
                     string token = await GenerateToken(dataForToken, 15);
 
+                    // Create a dictionary to hold additional data that will be sent in the email
+                    // This includes the verification link, which is the generated token
                     Dictionary<string, object> additionalData = new()
                     {
                         {"VerificationLink", token}
                     };
 
+                    // Send an email to the user with the verification link
+                    // The email's subject is "Link For Email Verification" and the body is generated using the "EmailVerification" template
                     await _emailService.SendEmailAsync("EmailVerification", "Link For Email Verification", model.Email, additionalData);
 
+                    // Return a success response indicating that the email has been sent and the user should check their email for the verification link
                     return Ok(new { AwaitForEmailVerification = true, roomId, message = "Sended Email" });
-
                 }
                 // If the model is not valid, return model errors
                 var errors = ModelState
@@ -215,33 +245,23 @@ namespace Server.Controllers
                 }
             };
 
-            if (existingTempUser.ProfilePicture != null)
+            string wwwRoot = _hostEnvironment.WebRootPath;
+            string uploadDir = Path.Combine(wwwRoot, "uploads", newUser.UserId.ToString());
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(uploadDir))
             {
-                // Define the path where the user's profile picture will be stored
-                string wwwPath = _hostEnvironment.WebRootPath;
-                string uploadsDir = Path.Combine(wwwPath, "uploads", newUser.UserId.ToString());
-
-                // Create the directory if it doesn't exist
-                if (!Directory.Exists(uploadsDir))
-                {
-                    Directory.CreateDirectory(uploadsDir);
-                }
-
-                // Define the file name for the profile picture
-                string fileName = Path.GetFileNameWithoutExtension(existingTempUser.ProfilePicture.FileName);
-                string extension = Path.GetExtension(existingTempUser.ProfilePicture.FileName);
-                fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}";
-                string filePath = Path.Combine(uploadsDir, fileName);
-
-                // Save the profile picture to the file system
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await existingTempUser.ProfilePicture.CopyToAsync(stream);
-                }
-
-                // Set the URL of the profile picture
-                newUser.ProfilePictureURL = filePath;
+                Directory.CreateDirectory(uploadDir);
             }
+
+            // Define the source file and the destination file
+            string sourceFile = existingTempUser.ProfilePictureURL;
+            string destinationFile = Path.Combine(uploadDir, Path.GetFileName(sourceFile));
+
+            // Move File
+            System.IO.File.Move(sourceFile, destinationFile);
+
+            newUser.ProfilePictureURL = destinationFile;
 
             // Add the new user to the database
             _context.Users.Add(newUser);

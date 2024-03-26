@@ -3,14 +3,12 @@ import useDayNightTheme from './hooks/useDayNightTheme.hook'
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useAuthentication } from '@hooks/useAuthenticate.hook.ts';
 
-
-
 import Loader from './pages/Loader/index';
 import ProtectedPage from './ProtectedPage';;
 
 const Login = lazy(() => import('./pages/Login/index'));
 const Register = lazy(() => import('./pages/Register/index'));
-const TwoFactorAuthentication = lazy(() => import("./pages/TwoFactorAuthentication/index"))
+const TwoFactorAuthentication = lazy(() => import("./pages/TwoFactorAuthentication/index"));
 
 function App() {
   useDayNightTheme();

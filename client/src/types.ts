@@ -5,6 +5,14 @@ export interface LoginResponse {
   message: string;
 }
 
+export interface RegisterResponse{
+  emailExists: boolean;
+  usernameExists: boolean;
+  awaitForEmailVerification: boolean;
+  roomId: string;
+  message: string;
+}
+
 export interface AuthResponse{
   authSession:boolean;
   awaitTwoFactorAuth:boolean;

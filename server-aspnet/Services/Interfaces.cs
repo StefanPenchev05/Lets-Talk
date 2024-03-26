@@ -36,9 +36,10 @@ namespace Server.Interface
         Task<List<string>> VerifyTokenAsync(string token);
     }
 
-    public interface IAuthHub
+    public interface IRegisterHub
     {
         Task JoinRoom(string roomId);
         Task SendToRoom(string roomId);
+        Task LeaveRoom(string roomId);
     }
 }

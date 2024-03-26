@@ -26,7 +26,6 @@ export const useFormSubmit = (email: string, password: string) => {
         data: JSON.stringify({ usernameOrEmail: email, Password: password }),
       })
         .then((response: any) => {
-          console.log(response);
           const data = response.data as LoginResponse;
           if(data.twoFactorAwait === true){
             navigate("/login/verify");

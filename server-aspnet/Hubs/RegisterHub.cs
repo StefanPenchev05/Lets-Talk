@@ -4,7 +4,7 @@ using Server.Interface;
 
 namespace Server.SignalRHub
 {
-    public class AuthHub : Hub, IAuthHub
+    public class RegisterHub : Hub, IRegisterHub
     {
         public async Task JoinRoom(string roomId)
         {
@@ -20,6 +20,10 @@ namespace Server.SignalRHub
             };
 
             await Clients.Group(roomId).SendAsync("VerifiedEmail", data);
+        }
+
+        public async Task LeaveRoom(string roomId){
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId,roomId);
         }
     }
 }
