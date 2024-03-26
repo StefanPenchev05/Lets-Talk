@@ -9,6 +9,7 @@ import Loader from './pages/Loader/index';
 import ProtectedPage from './ProtectedPage';;
 
 const Login = lazy(() => import('./pages/Login/index'));
+const Register = lazy(() => import('./pages/Register/index'));
 const TwoFactorAuthentication = lazy(() => import("./pages/TwoFactorAuthentication/index"))
 
 function App() {
@@ -32,7 +33,8 @@ function App() {
     <div className='bg-[#F5F5F5] dark:bg-base-100'>
       <Suspense fallback= {<Loader />}>
         <Routes>
-          <Route path="/login" element={<Login/>} />
+          <Route path='/login' element={<Login/>} />
+          <Route path='register' element={<Register/>}/>
           <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor}/>}>
             <Route path='/' element={<h1>Home</h1>}/>
             <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>

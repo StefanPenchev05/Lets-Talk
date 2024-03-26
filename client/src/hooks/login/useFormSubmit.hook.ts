@@ -15,11 +15,12 @@ export const useFormSubmit = (email: string, password: string) => {
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     setEmailError("");
     setPasswordError("");
+    
     try {
-      //await validateLogInForm(email, password);
+      await validateLogInForm(email, password);
+      setIsLoading(true);
       await api("/auth/login", {
         method: "POST",
         data: JSON.stringify({ usernameOrEmail: email, Password: password }),
