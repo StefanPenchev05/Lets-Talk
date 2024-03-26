@@ -201,33 +201,47 @@ namespace Server.Controllers
             // Create a new user with the data from the temporary user
             User newUser = new()
             {
-                // ...
+                Email = existingTempUser.Email,
+                UserName = existingTempUser.UserName,
+                FirstName = existingTempUser.FirstName,
+                LastName = existingTempUser.LastName,
+                Password = existingTempUser.Password,
+                Settings = new()
+                {
+                    SecuritySettings = new()
+                    {
+                        TwoFactorAuth = existingTempUser.TwoFactorAuth == false ? false : true
+                    }
+                }
             };
 
-            // Define the path where the user's profile picture will be stored
-            string wwwPath = _hostEnvironment.WebRootPath;
-            string uploadsDir = Path.Combine(wwwPath, "uploads", newUser.UserId.ToString());
-
-            // Create the directory if it doesn't exist
-            if (!Directory.Exists(uploadsDir))
+            if (existingTempUser.ProfilePicture != null)
             {
-                Directory.CreateDirectory(uploadsDir);
+                // Define the path where the user's profile picture will be stored
+                string wwwPath = _hostEnvironment.WebRootPath;
+                string uploadsDir = Path.Combine(wwwPath, "uploads", newUser.UserId.ToString());
+
+                // Create the directory if it doesn't exist
+                if (!Directory.Exists(uploadsDir))
+                {
+                    Directory.CreateDirectory(uploadsDir);
+                }
+
+                // Define the file name for the profile picture
+                string fileName = Path.GetFileNameWithoutExtension(existingTempUser.ProfilePicture.FileName);
+                string extension = Path.GetExtension(existingTempUser.ProfilePicture.FileName);
+                fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}";
+                string filePath = Path.Combine(uploadsDir, fileName);
+
+                // Save the profile picture to the file system
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await existingTempUser.ProfilePicture.CopyToAsync(stream);
+                }
+
+                // Set the URL of the profile picture
+                newUser.ProfilePictureURL = filePath;
             }
-
-            // Define the file name for the profile picture
-            string fileName = Path.GetFileNameWithoutExtension(existingTempUser.ProfilePicture.FileName);
-            string extension = Path.GetExtension(existingTempUser.ProfilePicture.FileName);
-            fileName = $"{fileName}_{DateTime.Now:yyyyMMddHHmmss}{extension}";
-            string filePath = Path.Combine(uploadsDir, fileName);
-
-            // Save the profile picture to the file system
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await existingTempUser.ProfilePicture.CopyToAsync(stream);
-            }
-
-            // Set the URL of the profile picture
-            newUser.ProfilePictureURL = filePath;
 
             // Add the new user to the database
             _context.Users.Add(newUser);
@@ -240,14 +254,6 @@ namespace Server.Controllers
 
             // Return a 200 status code
             return Ok();
-        }
-
-        [HttpGet("test")]
-        public async Task<IActionResult> Test()
-        {
-            string wwwPath = _hostEnvironment.WebRootPath;
-            string contentPath = _hostEnvironment.ContentRootPath;
-            return Ok(new { wwwPath, contentPath });
         }
     }
 }
