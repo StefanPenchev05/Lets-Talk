@@ -16,6 +16,8 @@ export interface RegisterResponse{
 export interface AuthResponse{
   authSession:boolean;
   awaitTwoFactorAuth:boolean;
+  AwaitForEmailVerification: boolean;
+  roomId: string;
   message: string;
 }
 

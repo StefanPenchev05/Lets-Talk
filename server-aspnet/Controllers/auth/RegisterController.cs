@@ -5,6 +5,7 @@ using Server.ViewModels;
 using Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Server.Interface;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Server.Controllers
 {
@@ -76,7 +77,6 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel model)
         {
-            Console.WriteLine(model.Email);
             try
             {
                 if (ModelState.IsValid)
@@ -186,6 +186,8 @@ namespace Server.Controllers
                     await _emailService.SendEmailAsync("EmailVerification", "Link For Email Verification", model.Email, additionalData);
 
                     // Return a success response indicating that the email has been sent and the user should check their email for the verification link
+                    // Send session if the user reloads the page to connect to the room again
+                    HttpContext.Session.SetString("AwaitForEmailVerification", roomId);
                     return Ok(new { awaitForEmailVerification = true, roomId, message = "Sended Email" });
                 }
                 // If the model is not valid, return model errors
@@ -266,13 +268,19 @@ namespace Server.Controllers
             string sourceFile = existingTempUser.ProfilePictureURL;
             string destinationFile = Path.Combine(uploadDir, Path.GetFileName(sourceFile));
 
-            // Move File
+            // Move File from the tempData to uploads
             System.IO.File.Move(sourceFile, destinationFile);
 
             newUser.ProfilePictureURL = destinationFile;
 
+            // Delete the folder and the file from tempData
+            Directory.Delete(uploadDir, true);
+
             // Add the new user to the database
             _context.Users.Add(newUser);
+
+            // Delete the existingTempUser
+            _context.tempDatas.Remove(existingTempUser);
 
             // Save the changes to the database
             await _context.SaveChangesAsync();
@@ -281,16 +289,20 @@ namespace Server.Controllers
             var encryptUserId = await _cryptoService.EncryptAsync(newUser.UserId.ToString());
             await _registerHub.SendVerifiedEmail(roomId, encryptUserId);
 
+
             // Return a 200 status code
             return Ok();
         }
         [HttpGet("getSession")]
-        public async Task GetSession([FromQuery] byte[] encryptUserId)
+        public async Task<IActionResult> GetSession([FromQuery] byte[] encryptUserId)
         {
+            if (encryptUserId.IsNullOrEmpty())
+            {
+                return BadRequest(new { message = "Token cannot be empty" });
+            }
             var userId = await _cryptoService.DecryptAsync(encryptUserId);
-            HttpContext.Session.SetString("UserId",userId);
-
+            HttpContext.Session.SetString("UserId", userId);
+            return Ok();
         }
     }
-
 }

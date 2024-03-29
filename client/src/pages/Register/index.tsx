@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import SignalRConnection from "@services/signalR";
+import { useLocation } from "react-router-dom";
+
 import { useWindowResize } from "../../hooks/useWindowResize.hook";
 import { useFormSubmit } from "../../hooks/register/useFormSubmit.hook";
-import SignalRConnection from "@services/signalR";
 
 import Subtitle from "@components/login/Subtitle";
 import SubmitButton from "@components/shared/SubmitButton";
@@ -13,7 +15,6 @@ import FirstAndLastName from "@components/shared/FirstAndLastName";
 import TwoFactorAuthenticationButton from "@components/register/TwoFactorAuthenticationButton";
 
 import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
-import Loader from "../Loader";
 import { RotateLoader } from "react-spinners";
 import { FaCheckCircle } from "react-icons/fa";
 
@@ -32,7 +33,6 @@ const Register: React.FC = () => {
 
   const windowWidth = useWindowResize();
   const {
-    isLoading,
     usernameError,
     firstNameError,
     lastNameError,
@@ -52,9 +52,14 @@ const Register: React.FC = () => {
     connection
   );
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  const location = useLocation();
+  const roomId = location.state.roomId ? location.state.roomId : false;
+  (async() => {
+    if(roomId){
+      await connection.start();
+      await connection.JoinRoom(roomId);
+    }
+  })
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">
@@ -133,13 +138,13 @@ const Register: React.FC = () => {
         </form>
         <dialog className="modal modal-bottom sm:modal-middle" ref={refDialog}>
           <div className="modal-box">
-            {verifyLoading ? (
-              <div className="flex items-center justify-center space-y-6">
+            {verifyLoading || roomId  ? (
+              <div className="flex flex-col items-center justify-center space-y-9 p-2">
                 <RotateLoader color="#36d7b7"/> 
                 <p>Check your email. Your Verifican Link <span className="text-red-500 font-bold">expirese after 15 minutes</span></p>
               </div>
             ) : (
-              <FaCheckCircle color="green" size="2em" />
+              <FaCheckCircle color="green" size="1em" />
             )}
           </div>
         </dialog>

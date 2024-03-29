@@ -11,11 +11,12 @@ interface FirstAndLastNameProps {
 
 const FirstAndLastName : React.FC<FirstAndLastNameProps> = ({...rest}) => {
   return (
-    <div className='container flex mx-auto space-x-2'>
+    <div className='container flex space-x-2'>
         <div className='w-1/2'>
             <TextField
                 label="First Name"
                 variant="outlined"
+                className="w-full"
                 color="primary"
                 error={!!rest.firstNameError}
                 value={rest.firstName}
@@ -55,6 +56,7 @@ const FirstAndLastName : React.FC<FirstAndLastNameProps> = ({...rest}) => {
                 label="Last Name"
                 variant="outlined"
                 color="primary"
+                className="w-full"
                 error={!!rest.lastNameError}
                 value={rest.lastName}
                 onChange={(e) => rest.setLastName(e.target.value)}

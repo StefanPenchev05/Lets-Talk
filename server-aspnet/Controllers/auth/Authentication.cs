@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Server.Data;
+
 
 namespace Server.Controllers
 {
@@ -16,11 +8,9 @@ namespace Server.Controllers
     {
         private readonly ILogger<AuthenticationSession> _logger;
 
-        private readonly UserManagerDB _context;
-        public AuthenticationSession(ILogger<AuthenticationSession> logger, UserManagerDB userManagerDB)
+        public AuthenticationSession(ILogger<AuthenticationSession> logger)
         {
             _logger = logger;
-            _context = userManagerDB;
         }
 
         [HttpGet]
@@ -28,10 +18,15 @@ namespace Server.Controllers
         {
             var userId = HttpContext.Session.GetString("UserId");
             var twoFactorAwait = HttpContext.Session.GetString("TwoFactorAuthenticationID");
+            var awaitForEmailVerificationRoomId = HttpContext.Session.GetString("AwaitForEmailVerification");
 
             if (userId != null)
             {
                 return Ok(new { authSession = true, message = "Session is valid" });
+            }
+            else if(awaitForEmailVerificationRoomId != null)
+            {   
+                return Ok(new {awaitForEmailVerification = true, roomId = awaitForEmailVerificationRoomId });
             }
             else if (twoFactorAwait != null)
             {

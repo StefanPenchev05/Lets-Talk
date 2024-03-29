@@ -1,5 +1,5 @@
 import React, { useState, createRef } from "react";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 import { api } from "@services/api";
 import { useNavigate } from "react-router-dom";
 

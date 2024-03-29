@@ -5,6 +5,8 @@ import { CustomError } from "@utils/CustomError";
 import { RegisterResponse, VerifiedEmailSignalRResponse } from "@types";
 import SignalRConnection from "@services/signalR";
 
+import { useNavigate } from "react-router-dom";
+
 export const useFormSubmit = (
   email: string,
   password: string,
@@ -21,10 +23,10 @@ export const useFormSubmit = (
   const [firstNameError, setFirstNameError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
   const [iamgeError, setImageNameError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [verifyLoading, setVerifyLoading] = useState<boolean>(false);
 
   const refDialog = createRef<HTMLDialogElement>();
+  const naviagte = useNavigate();
 
   const formData = new FormData();
 
@@ -53,7 +55,6 @@ export const useFormSubmit = (
       formData.append("TwoFactorAuth", JSON.stringify(isTwoFactor));
       formData.append("ProfilePicture", image ? image : "");
 
-      setIsLoading(true);
       await api("/auth/register/", {
         method: "POST",
         data: formData,
@@ -72,9 +73,9 @@ export const useFormSubmit = (
             });
             connection.onMessage("VerifiedEmail", async(data: VerifiedEmailSignalRResponse ) => {
               if(data.verifiedEmail){
-                await api(`/auth/register/getSession/?token=${data.encryptUserId}`, {method: "GET",})
+                await api(`/auth/register/getSession?token=${data.encryptUserId}`, {method: "GET",})
                   .then(() => {
-                    //snackBar
+                    naviagte("/");
                   })
                   .catch(() => {
                     //snackBar
@@ -119,7 +120,6 @@ export const useFormSubmit = (
   };
 
   return {
-    isLoading,
     usernameError,
     firstNameError,
     lastNameError,

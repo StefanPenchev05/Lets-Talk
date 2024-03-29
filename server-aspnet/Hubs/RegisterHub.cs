@@ -14,6 +14,15 @@ namespace Server.SignalRHub
 
         public async Task SendVerifiedEmail(string roomId, byte[] token)
         {
+            if (roomId == null)
+            {
+                throw new ArgumentNullException(nameof(roomId));
+            }
+
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
 
             var data = new
             {
