@@ -11,7 +11,7 @@ function index() {
     useEffect(() => {
         const sendVerify = async() => {
             await api(`/auth/register/verify/${token}`, {method: "GET"}).then(() => {
-
+                window.close();
             });
         }
 

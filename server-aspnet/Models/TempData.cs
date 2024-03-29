@@ -26,5 +26,10 @@ namespace Server.Models
 
         [Required]
         public DateTime ExpiryDate { get; set; }
+
+        public TempData()
+        {
+            ExpiryDate = DateTime.UtcNow;
+        }
     }
 }

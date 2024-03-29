@@ -19,7 +19,7 @@ export const useAuthentication = () => {
           navigate('/login/verify')
           setIsAwaitTwoFactor(true);
         } else if(data.AwaitForEmailVerification){
-          navigate('/register', {state : { roomId: data.roomId }});
+          navigate('/register', { state : { roomId: data.roomId } });
         }else {
           navigate("/");
           setIsAuth(true);

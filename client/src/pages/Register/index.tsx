@@ -53,7 +53,7 @@ const Register: React.FC = () => {
   );
 
   const location = useLocation();
-  const roomId = location.state.roomId ? location.state.roomId : false;
+  const roomId = location.state && location.state.roomId != null ? location.state.roomId : false;
   (async() => {
     if(roomId){
       await connection.start();
