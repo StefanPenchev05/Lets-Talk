@@ -245,14 +245,6 @@
       "PackagePath": "staticwebassets/siteImages/Logo.png"
     },
     {
-      "Id": "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/wwwroot/uploads/0/37248943-E44E-4FA4-B90A-B3F8D822D293_1_201_a_20240327005847.heic",
-      "PackagePath": "staticwebassets/uploads/0/37248943-E44E-4FA4-B90A-B3F8D822D293_1_201_a_20240327005847.heic"
-    },
-    {
-      "Id": "/Users/stefanpenchev/Desktop/Projects/ItKariera/LetsTalk/server-aspnet/wwwroot/uploadsTemp/0/37248943-E44E-4FA4-B90A-B3F8D822D293_1_201_a_20240327005644.heic",
-      "PackagePath": "staticwebassets/uploadsTemp/0/37248943-E44E-4FA4-B90A-B3F8D822D293_1_201_a_20240327005644.heic"
-    },
-    {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.Server.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

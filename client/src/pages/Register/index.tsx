@@ -59,7 +59,7 @@ const Register: React.FC = () => {
       await connection.start();
       await connection.JoinRoom(roomId);
     }
-  })
+  });
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">

@@ -42,4 +42,10 @@ namespace Server.Interface
         Task SendVerifiedEmail(string roomId, byte[] token);
         Task LeaveRoom(string roomId);
     }
+
+    public interface ICleanupService{
+        Task StartAsync(CancellationToken cancellationToken);
+        void DoWork(object state);
+        Task StopAsync(CancellationToken cancellationToken);
+    }
 }
