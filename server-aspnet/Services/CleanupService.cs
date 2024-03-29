@@ -7,14 +7,14 @@ namespace Server.Services
     public class CleanupService : IHostedService, IDisposable, ICleanupService
     {
         // The database context and the web host environment are injected into the service.
-        private readonly UserManagerDB _context;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IWebHostEnvironment _webHostEnvironment;
         // A Timer is used to trigger the cleanup task periodically.
         private Timer _timer;
 
-        public CleanupService(UserManagerDB context, IWebHostEnvironment webHostEnvironment)
+        public CleanupService(IServiceScopeFactory serviceScopeFactory, IWebHostEnvironment webHostEnvironment)
         {
-            _context = context;
+            _serviceScopeFactory = serviceScopeFactory;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -28,27 +28,31 @@ namespace Server.Services
         // This method contains the cleanup task. It checks all TempData entries and deletes the ones that have expired.
         public void DoWork(object state)
         {
-            // Retrieve all TempData entries.
-            var tempDatas = _context.tempDatas.ToList();
-            // Get the path to the web root directory.
-            string wwwRoot = _webHostEnvironment.WebRootPath;
-            foreach (var tempData in tempDatas)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                // Check if the TempData has expired.
-                if(DateTime.UtcNow == tempData.ExpiryDate)
+                var _context = scope.ServiceProvider.GetRequiredService<UserManagerDB>();
+                // Retrieve all TempData entries.
+                var tempDatas = _context.tempDatas.ToList();
+                // Get the path to the web root directory.
+                string wwwRoot = _webHostEnvironment.WebRootPath;
+                foreach (var tempData in tempDatas)
                 {
-                    // If it has, delete the associated directory.
-                    string uploadDir = Path.Combine(wwwRoot, "uploads", tempData.Id.ToString());
-                    if(Directory.Exists(uploadDir))
+                    // Check if the TempData has expired.
+                    if (DateTime.UtcNow == tempData.ExpiryDate)
                     {
-                        Directory.Delete(uploadDir);
-                    }
+                        // If it has, delete the associated directory.
+                        string uploadDir = Path.Combine(wwwRoot, "uploads", tempData.Id.ToString());
+                        if (Directory.Exists(uploadDir))
+                        {
+                            Directory.Delete(uploadDir);
+                        }
 
-                    // Also remove the TempData entry from the database.
-                    _context.tempDatas.Remove(tempData);
+                        // Also remove the TempData entry from the database.
+                        _context.tempDatas.Remove(tempData);
+                    }
+                    // Save the changes to the database.
+                    _context.SaveChanges();
                 }
-                // Save the changes to the database.
-                _context.SaveChanges();
             }
         }
 
