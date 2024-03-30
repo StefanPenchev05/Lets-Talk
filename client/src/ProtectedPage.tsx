@@ -4,6 +4,7 @@ import { ProtectedPages } from "@types";
 const ProtectedRoute: React.FC<ProtectedPages> = ({ isAuth, isAwaitTwoFactor }) => {
 
   console.log(isAwaitTwoFactor);
+  console.log(isAuth);
 
   return <div>{isAuth ? <Outlet /> : (isAwaitTwoFactor ? <Outlet/> : <Navigate to={"/login"} /> )}</div>;
 };
