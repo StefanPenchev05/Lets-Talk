@@ -31,9 +31,6 @@ const Register: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
 
-  const location = useLocation();
-  const roomId: string | boolean = location.state && location.state.roomId != null ? location.state.roomId : false;
-
   const windowWidth = useWindowResize();
   const {
     usernameError,
@@ -55,10 +52,22 @@ const Register: React.FC = () => {
     connection
   );
 
+  const location = useLocation();
+  const [roomId, setRoomId] = useState<boolean | string>(false);
+
+  useEffect(() => {
+    console.log(location.state);
+    setRoomId(
+      location.state && location.state.roomId != null
+        ? location.state.roomId
+        : false
+    );
+  }, [location.state]);
+
   useEffect(() => {
     const joinRoom = async () => {
       console.log(roomId);
-      if(roomId){
+      if (roomId) {
         await connection.start();
         await connection.JoinRoom(roomId as string);
         refDialog.current?.showModal();
@@ -66,7 +75,7 @@ const Register: React.FC = () => {
     };
 
     joinRoom();
-  }, []);
+  }, [roomId]);
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">
@@ -125,7 +134,11 @@ const Register: React.FC = () => {
             setLastName={setLastName}
             lastNameError={lastNameError}
           />
-          <Username Username={username} setUsername={setUsername} error={usernameError}  />
+          <Username
+            Username={username}
+            setUsername={setUsername}
+            error={usernameError}
+          />
           <PasswordInput
             password={password}
             setPassword={setPassword}
@@ -147,8 +160,13 @@ const Register: React.FC = () => {
           <div className="modal-box">
             {verifyLoading ? (
               <div className="flex flex-col items-center justify-center space-y-9 p-2">
-                <RotateLoader color="#36d7b7"/> 
-                <p>Check your email. Your Verifican Link <span className="text-red-500 font-bold">expirese after 15 minutes</span></p>
+                <RotateLoader color="#36d7b7" />
+                <p>
+                  Check your email. Your Verifican Link{" "}
+                  <span className="text-red-500 font-bold">
+                    expirese after 15 minutes
+                  </span>
+                </p>
               </div>
             ) : (
               <FaCheckCircle color="green" size="1em" />

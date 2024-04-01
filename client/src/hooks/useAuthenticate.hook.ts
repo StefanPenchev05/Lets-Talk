@@ -15,11 +15,11 @@ export const useAuthentication = () => {
     api("/auth/", { method: "GET" })
       .then((reponse: any) => {
         const data = reponse.data as AuthResponse;
-        console.log(data);
         if (data.awaitTwoFactorAuth) {
           navigate('/login/verify')
           setIsAwaitTwoFactor(true);
         } else if(data.awaitForEmailVerification){
+          console.log(data.roomId); 
           navigate('/register', { state : { roomId: data.roomId } });
           setIsAuth(false);
         }else {
@@ -30,7 +30,6 @@ export const useAuthentication = () => {
       })
       .catch((err: any) => {
         console.log(err);
-        console.error(err);
         setIsAuth(false);
         setIsAwaitTwoFactor(false);
         setIsLoading(false);

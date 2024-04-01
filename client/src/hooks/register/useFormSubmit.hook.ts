@@ -23,7 +23,7 @@ export const useFormSubmit = (
   const [firstNameError, setFirstNameError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
   const [iamgeError, setImageNameError] = useState<string>("");
-  const [verifyLoading, setVerifyLoading] = useState<boolean>(false);
+  const [verifyLoading, setVerifyLoading] = useState<boolean>(true);
 
   const refDialog = createRef<HTMLDialogElement>();
   const naviagte = useNavigate();
@@ -69,10 +69,10 @@ export const useFormSubmit = (
             connection.JoinRoom(data.roomId);
             connection.onMessage("JoinedRoom", () => {
               refDialog.current?.showModal();
-              setVerifyLoading(true);
             });
             connection.onMessage("VerifiedEmail", async(data: VerifiedEmailSignalRResponse ) => {
               if(data.verifiedEmail){
+                setVerifyLoading(false);
                 await api(`/auth/register/getSession?token=${data.encryptUserId}`, {method: "GET",})
                   .then(() => {
                     naviagte("/");
