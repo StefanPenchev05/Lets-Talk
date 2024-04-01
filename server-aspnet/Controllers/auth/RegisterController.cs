@@ -307,14 +307,15 @@ namespace Server.Controllers
             // Return a 200 status code
             return Ok();
         }
-        [HttpGet("getSession")]
-        public async Task<IActionResult> GetSession([FromQuery] byte[] token)
+        [HttpGet("GetSession")]
+        public async Task<IActionResult> GetSession([FromQuery] string token)
         {
             if (token.IsNullOrEmpty())
             {
                 return BadRequest(new { message = "Token cannot be empty" });
             }
-            var userId = await _cryptoService.DecryptAsync(token);
+            byte[] tokenBytes = Convert.FromBase64String(token);
+            var userId = await _cryptoService.DecryptAsync(tokenBytes);
             HttpContext.Session.SetString("UserId", userId);
             Response.Cookies.Delete("AwaitForEmailVerification");
             return Ok();

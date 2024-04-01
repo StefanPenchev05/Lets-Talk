@@ -5,6 +5,7 @@ import { FaCheckCircle } from "react-icons/fa";
 
 import * as RegisterImports from "./imports";
 import * as GlobalImports from "@globalImports"
+import { api } from "@services/api";
 
 
 const RESOLUTION_THRESHOLD = 1022;
@@ -62,7 +63,7 @@ const Register: React.FC = () => {
             console.log(data.message);
             if (data.verifiedEmail) {
               setVerifyLoading(false);
-              await GlobalImports.API(`/auth/register/getSession?token=${data.encryptUserId}`,{ method: "GET" })
+              await api(`/auth/register/GetSession?token=${data.encryptUserId}`,{ method: "GET" })
                 .then(() => {
                   dispatch(RegisterImports.setIsAuth(true));
                 });
