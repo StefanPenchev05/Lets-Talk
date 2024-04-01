@@ -62,7 +62,7 @@ const Register: React.FC = () => {
             console.log(data.message);
             if (data.verifiedEmail) {
               setVerifyLoading(false);
-              await GlobalImports.API(`/auth/register/getSession?encryptUserId=${data.encryptUserId}`,{ method: "GET" })
+              await GlobalImports.API(`/auth/register/getSession?token=${data.encryptUserId}`,{ method: "GET" })
                 .then(() => {
                   dispatch(RegisterImports.setIsAuth(true));
                 });

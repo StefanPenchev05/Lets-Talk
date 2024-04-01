@@ -13,21 +13,18 @@ export const useAuthentication = () => {
   const { isAuth, isAwaitTwoFactor, isAwaitEmailVerifiaction, roomId, isLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    console.log(window.location.href);
-    const isAuthenticated = async (): Promise<void> => {
+    dispatch(checkAuth());
+  }, [location])
+
+  useEffect(() => {
       if(isAuth){
         navigate("/");
       }else if(isAwaitTwoFactor){
         navigate("/login/verify");
       }else if(isAwaitEmailVerifiaction){
         navigate("/register");
-      }else{
-        await dispatch(checkAuth());
       }
-    };
-
-    isAuthenticated();
-  }, [location,isAuth, isAwaitTwoFactor, ]);
+  }, [isAuth, isAwaitTwoFactor, isAwaitEmailVerifiaction]);
 
   return { isAwaitEmailVerifiaction, roomId, isLoading };
 };
