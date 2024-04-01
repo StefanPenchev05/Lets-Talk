@@ -8,7 +8,9 @@ import ProtectedPage from './ProtectedPage';
 
 const Login = lazy(() => import('./pages/Login/index'));
 const Register = lazy(() => import('./pages/Register/index'));
+const VerifyEmail = lazy(() => import('./pages/Register/Verify/index'))
 const TwoFactorAuthentication = lazy(() => import("./pages/Login/TwoFactorAuthentication/index"));
+
 
 function App() {
   useDayNightTheme();
@@ -25,7 +27,7 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>}/>
-          <Route path ='/register/verify/:token' element={<div>hello</div>}/>
+          <Route path ='/register/verify/:token' element={<VerifyEmail/>}/>
           <Route element={<ProtectedPage />}>
             <Route path='/' element={<h1>Home</h1>}/>
             <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>

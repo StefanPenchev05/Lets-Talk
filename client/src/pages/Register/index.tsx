@@ -50,16 +50,19 @@ const Register: React.FC = () => {
       if (roomId) {
         await connection.start();
         connection.JoinRoom(roomId);
-        connection.onMessage("JoinedRoom", () => {
+        connection.onMessage("JoinedRoom", (data) => {
           refDialog.current?.showModal();
+          console.log(data)
         });
 
         connection.onMessage(
           "VerifiedEmail",
           async (data: RegisterImports.VerifiedEmailSignalRResponse) => {
+            console.log(data);
+            console.log(data.message);
             if (data.verifiedEmail) {
               setVerifyLoading(false);
-              await GlobalImports.API(`/auth/register/getSession?token=${data.encryptUserId}`,{ method: "GET" })
+              await GlobalImports.API(`/auth/register/getSession?encryptUserId=${data.encryptUserId}`,{ method: "GET" })
                 .then(() => {
                   dispatch(RegisterImports.setIsAuth(true));
                 });

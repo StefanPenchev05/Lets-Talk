@@ -6,6 +6,8 @@ using Server.Models;
 using Microsoft.EntityFrameworkCore;
 using Server.Interface;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.SignalR;
+using Server.SignalRHub;
 
 namespace Server.Controllers
 {
@@ -19,9 +21,9 @@ namespace Server.Controllers
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly IWebHostEnvironment _hostEnvironment;
-        private readonly IRegisterHub _registerHub;
+        private readonly IHubContext<RegisterHub> _registerHub;
 
-        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment, IRegisterHub registerHub)
+        public RegisterController(ILogger<RegisterController> logger, UserManagerDB context, IHashService hashService, ITokenService tokenService, IEmailService emailService, ICryptoService cryptoService, IWebHostEnvironment hostEnvironment, IHubContext<RegisterHub> registerHub)
         {
             _logger = logger;
             _context = context;
@@ -213,6 +215,7 @@ namespace Server.Controllers
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
+            Console.WriteLine(token);
             // Verify the token
             var data = await _tokenService.VerifyTokenAsync(token);
 
@@ -293,8 +296,13 @@ namespace Server.Controllers
 
             // Notify the user that their email has been verified along with the encrypted newUserId
             var encryptUserId = await _cryptoService.EncryptAsync(newUser.UserId.ToString());
-            await _registerHub.SendVerifiedEmail(roomId, encryptUserId);
-
+            var signalR_data = new
+            {
+                verifiedEmail = true, 
+                encryptUserId,
+                message = "You successfuly verified your email"
+            };
+            await _registerHub.Clients.Group(roomId).SendAsync("VerifiedEmail", signalR_data);
 
             // Return a 200 status code
             return Ok();
@@ -308,6 +316,7 @@ namespace Server.Controllers
             }
             var userId = await _cryptoService.DecryptAsync(encryptUserId);
             HttpContext.Session.SetString("UserId", userId);
+            Response.Cookies.Delete("AwaitForEmailVerification");
             return Ok();
         }
     }

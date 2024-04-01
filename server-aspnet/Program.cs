@@ -46,7 +46,6 @@ builder.Services.AddTransient<IEmailService, EmailManager>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<ICryptoService, CryptoService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
-builder.Services.AddTransient<IRegisterHub, RegisterHub>();
 builder.Services.AddTransient<ICleanupService, CleanupService>();
 builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 

@@ -27,7 +27,7 @@ export const useAuthentication = () => {
     };
 
     isAuthenticated();
-  }, [location]);
+  }, [location,isAuth, isAwaitTwoFactor, ]);
 
   return { isAwaitEmailVerifiaction, roomId, isLoading };
 };

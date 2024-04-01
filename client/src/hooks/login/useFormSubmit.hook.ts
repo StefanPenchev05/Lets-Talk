@@ -39,6 +39,8 @@ export default function useFormSubmit(email: string, password: string) {
           }else if(response.incorrectPassword === false){
             setPasswordError(response.message);
           }
+
+          setIsLoading(false);
         });
     } catch (err) {
       if (err instanceof CustomError) {

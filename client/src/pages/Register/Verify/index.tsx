@@ -6,11 +6,11 @@ import Loader from "src/pages/Loader";
 
 function index() {
 
-    const {token} = useParams();
+    const { token } = useParams();
 
     useEffect(() => {
         const sendVerify = async() => {
-            await api(`/auth/register/verify/${token}`, {method: "GET"}).then(() => {
+            await api(`/auth/register/verify?token=${token}`, {method: "GET"}).then(() => {
                 window.close();
             });
         }
