@@ -19,7 +19,7 @@ const Register: React.FC = () => {
   const [lastName, setLastName] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
-  const [verifyLoading, setVerifyLoading] = useState<boolean>(false);
+  const [verifyLoading, setVerifyLoading] = useState<boolean>(true);
 
   const refDialog = useRef<HTMLDialogElement>(null);
 
@@ -154,7 +154,7 @@ const Register: React.FC = () => {
         <dialog className="modal modal-bottom sm:modal-middle" ref={refDialog}>
           <div className="modal-box">
             {verifyLoading ? (
-              <div className="flex flex-col items-center justify-center space-y-9 p-2">
+              <div className="flex flex-col items-center justify-center space-y-9 p-6">
                 <RotateLoader color="#36d7b7" />
                 <p>
                   Check your email. Your Verifican Link{" "}

@@ -3,9 +3,10 @@ import { api } from "@services/api";
 import { validateRegsiterForm } from "@utils/validations";
 import { CustomError } from "@utils/CustomError";
 import { RegisterResponse } from "@types";
+import { setRoomId } from "@store/authSlice";
 
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "src/store/app";
+
+import useAppDispatch from "@hooks/useAppDispatch.hook";
 
 export default function useFormSubmit(
   email: string,
@@ -23,7 +24,7 @@ export default function useFormSubmit(
   const [lastNameError, setLastNameError] = useState<string>("");
   const [iamgeError, setImageNameError] = useState<string>("");
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const formData = new FormData();
 
@@ -62,7 +63,7 @@ export default function useFormSubmit(
         .then(async (response: any) => {
           const data = response.data as RegisterResponse;
           if (data.awaitForEmailVerification && data.roomId) {
-            
+            dispatch(setRoomId(data.roomId));
           }
         })
         .catch((err) => {

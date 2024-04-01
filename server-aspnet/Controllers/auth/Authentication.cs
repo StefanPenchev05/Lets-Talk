@@ -18,15 +18,15 @@ namespace Server.Controllers
         {
             var userId = HttpContext.Session.GetString("UserId");
             var twoFactorAwait = HttpContext.Session.GetString("TwoFactorAuthenticationID");
-            var awaitForEmailVerificationRoomId = HttpContext.Session.GetString("AwaitForEmailVerification");
+            var awaitForEmailVerificationRoomId = Request.Cookies["AwaitForEmailVerification"];
 
             if (userId != null)
             {
                 return Ok(new { authSession = true, message = "Session is valid" });
             }
-            else if(awaitForEmailVerificationRoomId != null)
-            {   
-                return Ok(new {awaitForEmailVerification = true, roomId = awaitForEmailVerificationRoomId });
+            else if (awaitForEmailVerificationRoomId != null)
+            {
+                return Ok(new { awaitForEmailVerification = true, roomId = awaitForEmailVerificationRoomId });
             }
             else if (twoFactorAwait != null)
             {

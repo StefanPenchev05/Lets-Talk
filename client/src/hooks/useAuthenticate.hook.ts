@@ -12,24 +12,22 @@ export const useAuthentication = () => {
   const dispatch = useAppDispatch();
   const { isAuth, isAwaitTwoFactor, isAwaitEmailVerifiaction, roomId, isLoading } = useAppSelector((state) => state.auth);
 
-  const isAuthenticated = async (): Promise<void> => {
-    dispatch(checkAuth());
-    if(isAuth){
-      navigate("/");
-    }else if(isAwaitTwoFactor){
-      navigate("/login/verify");
-    }else if(isAwaitEmailVerifiaction){
-      navigate("/register");
-    }
-  };
-
   useEffect(() => {
-    const checkAuth = async () => {
-      await isAuthenticated();
+    console.log(window.location.href);
+    const isAuthenticated = async (): Promise<void> => {
+      if(isAuth){
+        navigate("/");
+      }else if(isAwaitTwoFactor){
+        navigate("/login/verify");
+      }else if(isAwaitEmailVerifiaction){
+        navigate("/register");
+      }else{
+        await dispatch(checkAuth());
+      }
     };
 
-    checkAuth();
-  }, [location, isAuth]);
+    isAuthenticated();
+  }, [location]);
 
   return { isAwaitEmailVerifiaction, roomId, isLoading };
 };

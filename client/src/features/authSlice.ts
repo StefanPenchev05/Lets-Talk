@@ -48,7 +48,6 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
-        console.log(state)
         state.isLoading = false;
         if (action.payload.awaitTwoFactorAuth) {
           state.isAwaitTwoFactor = true;

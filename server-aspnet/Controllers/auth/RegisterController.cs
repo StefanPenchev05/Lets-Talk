@@ -187,7 +187,13 @@ namespace Server.Controllers
 
                     // Return a success response indicating that the email has been sent and the user should check their email for the verification link
                     // Send session if the user reloads the page to connect to the room again
-                    HttpContext.Session.SetString("AwaitForEmailVerification", roomId);
+                    var cookieOptions = new CookieOptions
+                    {
+                        Expires = DateTime.UtcNow.AddMinutes(15),
+                        HttpOnly = true,
+                        Secure = true
+                    };
+                    Response.Cookies.Append("AwaitForEmailVerification",roomId, cookieOptions);
                     return Ok(new { awaitForEmailVerification = true, roomId, message = "Sended Email" });
                 }
                 // If the model is not valid, return model errors
