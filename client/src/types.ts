@@ -31,8 +31,3 @@ export interface Alert{
   message: string;
   type: 'success' | 'error' | 'warning';
 }
-
-export interface ProtectedPages{
-  isAuth?: boolean;
-  isAwaitTwoFactor?: boolean;
-}

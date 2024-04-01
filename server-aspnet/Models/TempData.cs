@@ -29,7 +29,7 @@ namespace Server.Models
 
         public TempData()
         {
-            ExpiryDate = DateTime.UtcNow;
+            ExpiryDate = DateTime.UtcNow.AddMinutes(15);
         }
     }
 }

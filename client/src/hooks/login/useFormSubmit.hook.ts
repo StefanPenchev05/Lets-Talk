@@ -6,7 +6,7 @@ import { LoginResponse } from "@types";
 import { useNavigate } from "react-router-dom";
 
 
-export const useFormSubmit = (email: string, password: string) => {
+export default function useFormSubmit(email: string, password: string) {
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);

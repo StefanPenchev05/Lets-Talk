@@ -1,41 +1,26 @@
-import { useState, useEffect } from "react";
-import { api } from "@services/api";
-import { AuthResponse } from "@types";
+import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+import { checkAuth } from "src/features/authSlice";
+import useAppSelector from "./useAppSelector.hook";
+import useAppDispatch  from "./useAppDispatch.hook";
+
 export const useAuthentication = () => {
-  const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [isAwaitTwoFactor, setIsAwaitTwoFactor] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  const { isAuth, isAwaitTwoFactor, isAwaitEmailVerifiaction, roomId, isLoading } = useAppSelector((state) => state.auth);
 
   const isAuthenticated = async (): Promise<void> => {
-    api("/auth/", { method: "GET" })
-      .then((reponse: any) => {
-        const data = reponse.data as AuthResponse;
-        if (data.awaitTwoFactorAuth) {
-          navigate('/login/verify')
-          setIsAwaitTwoFactor(true);
-        } else if(data.awaitForEmailVerification){
-          console.log(data.roomId); 
-          navigate('/register', { state : { roomId: data.roomId } });
-          setIsAuth(false);
-        }else {
-          navigate("/");
-          setIsAuth(true);
-        }
-        setIsLoading(false);
-      })
-      .catch((err: any) => {
-        console.log(err);
-        setIsAuth(false);
-        setIsAwaitTwoFactor(false);
-        setIsLoading(false);
-      }).finally(() => {
-        setIsLoading(false);
-      })
+    dispatch(checkAuth());
+    if(isAuth){
+      navigate("/");
+    }else if(isAwaitTwoFactor){
+      navigate("/login/verify");
+    }else if(isAwaitEmailVerifiaction){
+      navigate("/register");
+    }
   };
 
   useEffect(() => {
@@ -44,7 +29,7 @@ export const useAuthentication = () => {
     };
 
     checkAuth();
-  }, [location]);
+  }, [location, isAuth]);
 
-  return { isAuth, isAwaitTwoFactor, isLoading };
+  return { isAwaitEmailVerifiaction, roomId, isLoading };
 };

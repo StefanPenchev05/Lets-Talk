@@ -41,8 +41,9 @@ namespace Server.Services
                     // Check if the TempData has expired.
                     if (DateTime.UtcNow >= tempData.ExpiryDate)
                     {
+                        Console.WriteLine("The count of the tempdata is " + tempDatas.Count);
                         // If it has, delete the associated directory.
-                        string uploadDir = Path.Combine(wwwRoot, "uploads", tempData.Id.ToString());
+                        string uploadDir = Path.Combine(wwwRoot, "uploadsTemp", tempData.Id.ToString());
                         if (Directory.Exists(uploadDir))
                         {
                             Directory.Delete(uploadDir);

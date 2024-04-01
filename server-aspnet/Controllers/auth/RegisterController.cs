@@ -125,7 +125,7 @@ namespace Server.Controllers
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         TwoFactorAuth = model.TwoFactorAuth,
-                        VerificationCode = roomId
+                        VerificationCode = roomId,
                     };
 
                     if (model.ProfilePicture != null)

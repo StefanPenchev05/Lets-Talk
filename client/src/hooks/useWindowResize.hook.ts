@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-export const useWindowResize = () => {
+export default function useWindowResize() {
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
   const handleWindowResize = useCallback(() => {

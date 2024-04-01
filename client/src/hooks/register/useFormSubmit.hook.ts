@@ -1,13 +1,13 @@
-import { useState, FormEvent, createRef } from "react";
+import { useState, FormEvent } from "react";
 import { api } from "@services/api";
 import { validateRegsiterForm } from "@utils/validations";
 import { CustomError } from "@utils/CustomError";
-import { RegisterResponse, VerifiedEmailSignalRResponse } from "@types";
-import SignalRConnection from "@services/signalR";
+import { RegisterResponse } from "@types";
 
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "src/store/app";
 
-export const useFormSubmit = (
+export default function useFormSubmit(
   email: string,
   password: string,
   username: string,
@@ -15,18 +15,15 @@ export const useFormSubmit = (
   lastName: string,
   image: File | null,
   isTwoFactor: boolean,
-  connection: SignalRConnection
-) => {
+) {
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
   const [usernameError, setUsernameError] = useState<string>("");
   const [firstNameError, setFirstNameError] = useState<string>("");
   const [lastNameError, setLastNameError] = useState<string>("");
   const [iamgeError, setImageNameError] = useState<string>("");
-  const [verifyLoading, setVerifyLoading] = useState<boolean>(true);
 
-  const refDialog = createRef<HTMLDialogElement>();
-  const naviagte = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
 
   const formData = new FormData();
 
@@ -65,23 +62,7 @@ export const useFormSubmit = (
         .then(async (response: any) => {
           const data = response.data as RegisterResponse;
           if (data.awaitForEmailVerification && data.roomId) {
-            await connection.start();
-            connection.JoinRoom(data.roomId);
-            connection.onMessage("JoinedRoom", () => {
-              refDialog.current?.showModal();
-            });
-            connection.onMessage("VerifiedEmail", async(data: VerifiedEmailSignalRResponse ) => {
-              if(data.verifiedEmail){
-                setVerifyLoading(false);
-                await api(`/auth/register/getSession?token=${data.encryptUserId}`, {method: "GET",})
-                  .then(() => {
-                    naviagte("/");
-                  })
-                  .catch(() => {
-                    //snackBar
-                  })
-              }
-            })
+            
           }
         })
         .catch((err) => {
@@ -126,8 +107,6 @@ export const useFormSubmit = (
     iamgeError,
     emailError,
     passwordError,
-    verifyLoading,
-    refDialog,
     handleFormSubmit,
   };
 };

@@ -1,10 +1,10 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { ProtectedPages } from "@types";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/app";
 
-const ProtectedRoute: React.FC<ProtectedPages> = ({ isAuth, isAwaitTwoFactor }) => {
+const ProtectedRoute: React.FC = () => {
 
-  console.log(isAwaitTwoFactor);
-  console.log(isAuth);
+  const { isAuth, isAwaitTwoFactor } = useSelector((state: RootState) => state.auth);
 
   return <div>{isAuth ? <Outlet /> : (isAwaitTwoFactor ? <Outlet/> : <Navigate to={"/login"} /> )}</div>;
 };

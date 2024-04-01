@@ -16,7 +16,7 @@
     "@microsoft/signalr": "^8.0.0",
     "@mui/icons-material": "^5.15.7",
     "@mui/material": "^5.15.7",
-    "@reduxjs/toolkit": "^2.1.0",
+    "@reduxjs/toolkit": "^2.2.3",
     "axios": "^1.6.7",
     "jest-environment-jsdom": "^29.7.0",
     "js-cookie": "^3.0.5",

@@ -1,25 +1,14 @@
-import React, { useState, useEffect } from "react";
-import SignalRConnection from "@services/signalR";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
 
-import { useWindowResize } from "../../hooks/useWindowResize.hook";
-import { useFormSubmit } from "../../hooks/register/useFormSubmit.hook";
-
-import Subtitle from "@components/login/Subtitle";
-import SubmitButton from "@components/shared/SubmitButton";
-import EmailInput from "@components/register/EmailInput";
-import Username from "@components/shared/Username";
-import PasswordInput from "@components/shared/PasswordInput";
-import ConfirmPasswordInput from "@components/shared/ConfirmPasswordInput";
-import FirstAndLastName from "@components/shared/FirstAndLastName";
-import TwoFactorAuthenticationButton from "@components/register/TwoFactorAuthenticationButton";
-
-import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
 import { RotateLoader } from "react-spinners";
 import { FaCheckCircle } from "react-icons/fa";
 
+import * as RegisterImports from "./imports";
+import * as GlobalImports from "@globalImports"
+
+
 const RESOLUTION_THRESHOLD = 1022;
-const connection = new SignalRConnection("/RegisterHub");
+const connection = new RegisterImports.SignalRConnection("/RegisterHub");
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -30,58 +19,64 @@ const Register: React.FC = () => {
   const [lastName, setLastName] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
+  const [verifyLoading, setVerifyLoading] = useState<boolean>(false);
 
-  const windowWidth = useWindowResize();
+  const refDialog = useRef<HTMLDialogElement>(null);
+
+  const { roomId } = RegisterImports.useAppSelector((state) => state.auth);
+  const dispatch = RegisterImports.useAppDispatch();
+
+  const windowWidth = GlobalImports.useWindowResize();
+
   const {
     usernameError,
     firstNameError,
     lastNameError,
     emailError,
     passwordError,
-    verifyLoading,
-    refDialog,
     handleFormSubmit,
-  } = useFormSubmit(
+  } = RegisterImports.useFormSubmit(
     email,
     password,
     username,
     firstName,
     lastName,
     image,
-    isTwoFactor,
-    connection
+    isTwoFactor
   );
 
-  const location = useLocation();
-  const [roomId, setRoomId] = useState<boolean | string>(false);
-
   useEffect(() => {
-    console.log(location.state);
-    setRoomId(
-      location.state && location.state.roomId != null
-        ? location.state.roomId
-        : false
-    );
-  }, [location.state]);
-
-  useEffect(() => {
-    const joinRoom = async () => {
-      console.log(roomId);
+    const connectToRoom = async () => {
       if (roomId) {
         await connection.start();
-        await connection.JoinRoom(roomId as string);
-        refDialog.current?.showModal();
+        connection.JoinRoom(roomId);
+        connection.onMessage("JoinedRoom", () => {
+          refDialog.current?.showModal();
+        });
+
+        connection.onMessage(
+          "VerifiedEmail",
+          async (data: RegisterImports.VerifiedEmailSignalRResponse) => {
+            if (data.verifiedEmail) {
+              setVerifyLoading(false);
+              await GlobalImports.API(`/auth/register/getSession?token=${data.encryptUserId}`,{ method: "GET" })
+                .then(() => {
+                  dispatch(RegisterImports.setIsAuth(true));
+                });
+            }
+          }
+        );
       }
     };
 
-    joinRoom();
+    connectToRoom();
   }, [roomId]);
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">
       <div className="hidden lg:block w-3/4 h-full bg-white dark:bg-[#150f38]">
         <img
-          src={Wallpaper}
+          src={RegisterImports.Wallpaper}
           alt="Register Wallpaper"
           className="w-full h-full object-cover"
         />
@@ -117,16 +112,16 @@ const Register: React.FC = () => {
           </label>
         )}
         {windowWidth <= RESOLUTION_THRESHOLD ? (
-          <Subtitle align="center" gutterBottom />
+          <RegisterImports.Subtitle align="center" gutterBottom />
         ) : (
-          <Subtitle align="left" gutterBottom />
+          <RegisterImports.Subtitle align="left" gutterBottom />
         )}
         <form
           className="flex flex-col space-y-4 w-full mb-9"
           onSubmit={handleFormSubmit}
         >
-          <EmailInput email={email} setEmail={setEmail} error={emailError} />
-          <FirstAndLastName
+          <RegisterImports.EmailInput email={email} setEmail={setEmail} error={emailError} />
+          <RegisterImports.FirstAndLastName
             firstName={firstName}
             setFirstName={setFirstName}
             firstNameError={firstNameError}
@@ -134,27 +129,27 @@ const Register: React.FC = () => {
             setLastName={setLastName}
             lastNameError={lastNameError}
           />
-          <Username
+          <RegisterImports.Username
             Username={username}
             setUsername={setUsername}
             error={usernameError}
           />
-          <PasswordInput
+          <RegisterImports.PasswordInput
             password={password}
             setPassword={setPassword}
             error={passwordError}
           />
-          <ConfirmPasswordInput
+          <RegisterImports.ConfirmPasswordInput
             confirmPassword={confirmPassword}
             setConfirmPassword={setConfirmPassword}
             error={passwordError}
           />
 
-          <TwoFactorAuthenticationButton
+          <RegisterImports.TwoFactorAuthenticationButton
             twoFactorAuthentication={isTwoFactor}
             setTwoFactorAuthentication={setIsTwoFactor}
           />
-          <SubmitButton helperText="Sign in" />
+          <RegisterImports.SubmitButton helperText="Sign in" />
         </form>
         <dialog className="modal modal-bottom sm:modal-middle" ref={refDialog}>
           <div className="modal-box">

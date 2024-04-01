@@ -1,10 +1,10 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy } from 'react';
 import useDayNightTheme from './hooks/useDayNightTheme.hook'
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { useAuthentication } from '@hooks/useAuthenticate.hook.ts';
 
 import Loader from './pages/Loader/index';
-import ProtectedPage from './ProtectedPage';;
+import ProtectedPage from './ProtectedPage';
 
 const Login = lazy(() => import('./pages/Login/index'));
 const Register = lazy(() => import('./pages/Register/index'));
@@ -13,15 +13,7 @@ const TwoFactorAuthentication = lazy(() => import("./pages/Login/TwoFactorAuthen
 function App() {
   useDayNightTheme();
 
-  const { isAuth, isAwaitTwoFactor, isLoading } = useAuthentication();
-  const navigate = useNavigate();
-
-
-  useEffect(() => {
-    if(isAwaitTwoFactor){
-      navigate('/login/verify');
-    }
-  },[isAwaitTwoFactor, isLoading])
+  const { isLoading } = useAuthentication();
 
   if (isLoading) {
     return <Loader />;
@@ -34,7 +26,7 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/register' element={<Register/>}/>
           <Route path ='/register/verify/:token' element={<div>hello</div>}/>
-          <Route element={<ProtectedPage isAuth={isAuth} isAwaitTwoFactor= {isAwaitTwoFactor}/>}>
+          <Route element={<ProtectedPage />}>
             <Route path='/' element={<h1>Home</h1>}/>
             <Route path='/login/verify' element={<TwoFactorAuthentication/>}/>
           </Route>

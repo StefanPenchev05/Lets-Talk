@@ -1,56 +1,46 @@
 import React, { useState } from "react";
-import { useWindowResize } from "../../hooks/useWindowResize.hook";
-import { useFormSubmit } from "../../hooks/login/useFormSubmit.hook";
 
-import Subtitle from "@components/login/Subtitle";
-import SubmitButton from "@components/shared/SubmitButton";
-import EmailInput from "@components/shared/EmailInput";
-import PasswordInput from "@components/shared/PasswordInput";
-import DividerField from "@components/shared/DividerFiled";
-import SocialButton from "@components/login/SocialButton";
-
-import ManImg from "../../assets/icons/man.png";
-import Wallpaper from "../../assets/wallpaper/LoginWallpaper.png";
-import Loader from "../Loader";
+import * as GlobalImports from "@globalImports"
+import * as LoginImports from "./imports";
 
 const RESOLUTION_THRESHOLD = 1022;
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const windowWidth = useWindowResize();
-  const { isLoading, emailError, passwordError, handleFormSubmit } = useFormSubmit(
+  const windowWidth = GlobalImports.useWindowResize();
+  const { isLoading, emailError, passwordError, handleFormSubmit } = LoginImports.useFormSubmit(
     email,
     password
   );
 
   if(isLoading){
-    return <Loader/>
+    return <LoginImports.Loader/>
   }
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">
       <div className="hidden lg:block w-3/4 h-full bg-white dark:bg-[#150f38]">
         <img
-          src={Wallpaper}
+          src={LoginImports.Wallpaper}
           alt="Login Wallpaper"
           className="w-full h-full object-cover"
         />
       </div>
       <div className="w-full h-screen lg:w-1/4 flex flex-col items-center justify-center max-md:px-8 md:p-8 loginBox dark:bg-[#040622]">
-        <img src={ManImg} alt="Avatar" className="w-1/3 mb-5" />
+        <img src={LoginImports.ManImg} alt="Avatar" className="w-1/3 mb-5" />
         {windowWidth <= RESOLUTION_THRESHOLD ? (
-          <Subtitle align="center" gutterBottom />
+          <LoginImports.Subtitle align="center" gutterBottom />
         ) : (
-          <Subtitle align="left" gutterBottom />
+          <LoginImports.Subtitle align="left" gutterBottom />
         )}
         <form
           className="flex flex-col space-y-4 w-full mb-9"
           onSubmit={handleFormSubmit}
           method="post"          
         >
-          <EmailInput email={email} setEmail={setEmail} error={emailError} />
-          <PasswordInput
+          <LoginImports.EmailInput email={email} setEmail={setEmail} error={emailError} />
+          <LoginImports.PasswordInput
             password={password}
             setPassword={setPassword}
             error={passwordError}
@@ -58,10 +48,10 @@ const Login: React.FC = () => {
           <p className="text-base w-full text-end text-[#6F58C1] dark:text-[#8B71DD] underline">
             Forgot Password?
           </p>
-          <SubmitButton helperText="Sign in" />
+          <LoginImports.SubmitButton helperText="Sign in" />
         </form>
-        <DividerField helperText="Login with social media" />
-        <SocialButton />
+        <LoginImports.DividerField helperText="Login with social media" />
+        <LoginImports.SocialButton />
         <p className="text-base w-full text-center text-black dark:text-white">
           Don't have an account?&nbsp;
           <a href="/register">
