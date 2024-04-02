@@ -3,6 +3,7 @@ using Server.Data;
 using Server.Services;
 using Server.Interface;
 using Server.SignalRHub;
+using Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,4 +82,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.Map("/user", builder => builder.UseMiddleware<SessionCheckMiddleware>());
 app.Run();
