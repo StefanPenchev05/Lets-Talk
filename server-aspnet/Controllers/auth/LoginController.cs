@@ -43,18 +43,7 @@ namespace Server.Controllers
         {
             return await _hashService.Compare(password, hashedPassword);
         }
-
-        private async Task<byte[]> EncryptUserId(string userID)
-        {
-            return await _cryptoService.EncryptAsync(userID);
-        }
-
-        // Method to decrypt the user ID
-        private async Task<string> DecryptUserId(byte[] encryptedUserId)
-        {
-            return await _cryptoService.DecryptAsync(encryptedUserId);
-        }
-
+        
         // Handle two-factor authentication
         private async Task<IActionResult> _HandleTwoFactorAuthAsync(User user, LoginViewModel model)
         {

@@ -35,18 +35,16 @@ namespace Server.Services
                 var tempDatas = _context.tempDatas.ToList();
                 // Get the path to the web root directory.
                 string wwwRoot = _webHostEnvironment.WebRootPath;
-                Console.WriteLine("The count of the tempdata is " + tempDatas.Count);
                 foreach (var tempData in tempDatas)
                 {
                     // Check if the TempData has expired.
                     if (DateTime.UtcNow >= tempData.ExpiryDate)
                     {
-                        Console.WriteLine("The count of the tempdata is " + tempDatas.Count);
                         // If it has, delete the associated directory.
                         string uploadDir = Path.Combine(wwwRoot, "uploadsTemp", tempData.Id.ToString());
                         if (Directory.Exists(uploadDir))
                         {
-                            Directory.Delete(uploadDir);
+                            Directory.Delete(uploadDir, true);
                         }
 
                         // Also remove the TempData entry from the database.

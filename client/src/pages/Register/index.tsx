@@ -4,9 +4,8 @@ import { RotateLoader } from "react-spinners";
 import { FaCheckCircle } from "react-icons/fa";
 
 import * as RegisterImports from "./imports";
-import * as GlobalImports from "@globalImports"
+import * as GlobalImports from "@globalImports";
 import { api } from "@services/api";
-
 
 const RESOLUTION_THRESHOLD = 1022;
 const connection = new RegisterImports.SignalRConnection("/RegisterHub");
@@ -53,7 +52,7 @@ const Register: React.FC = () => {
         connection.JoinRoom(roomId);
         connection.onMessage("JoinedRoom", (data) => {
           refDialog.current?.showModal();
-          console.log(data)
+          console.log(data);
         });
 
         connection.onMessage(
@@ -63,10 +62,12 @@ const Register: React.FC = () => {
             console.log(data.message);
             if (data.verifiedEmail) {
               setVerifyLoading(false);
-              await api(`/auth/register/GetSession?token=${data.encryptUserId}`,{ method: "GET" })
-                .then(() => {
-                  dispatch(RegisterImports.setIsAuth(true));
-                });
+              await api(
+                `/auth/register/GetSession?token=${data.encryptUserId}`,
+                { method: "GET" }
+              ).then(() => {
+                dispatch(RegisterImports.setIsAuth(true));
+              });
             }
           }
         );
@@ -124,7 +125,11 @@ const Register: React.FC = () => {
           className="flex flex-col space-y-4 w-full mb-9"
           onSubmit={handleFormSubmit}
         >
-          <RegisterImports.EmailInput email={email} setEmail={setEmail} error={emailError} />
+          <RegisterImports.EmailInput
+            email={email}
+            setEmail={setEmail}
+            error={emailError}
+          />
           <RegisterImports.FirstAndLastName
             firstName={firstName}
             setFirstName={setFirstName}

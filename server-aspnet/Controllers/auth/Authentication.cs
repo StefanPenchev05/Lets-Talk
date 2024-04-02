@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Server.Data;
 
 
 namespace Server.Controllers
@@ -7,10 +8,12 @@ namespace Server.Controllers
     public class AuthenticationSession : Controller
     {
         private readonly ILogger<AuthenticationSession> _logger;
+        private readonly UserManagerDB _context;
 
-        public AuthenticationSession(ILogger<AuthenticationSession> logger)
+        public AuthenticationSession(ILogger<AuthenticationSession> logger, UserManagerDB context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet]
@@ -20,7 +23,8 @@ namespace Server.Controllers
             var twoFactorAwait = HttpContext.Session.GetString("TwoFactorAuthenticationID");
             var awaitForEmailVerificationRoomId = Request.Cookies["AwaitForEmailVerification"];
 
-            if (userId != null)
+            var existingUser = _context.Users.SingleOrDefault(u => u.UserId.ToString() == userId);
+            if (existingUser != null)
             {
                 return Ok(new { authSession = true, message = "Session is valid" });
             }

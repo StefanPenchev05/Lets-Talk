@@ -8,6 +8,7 @@ using Server.Interface;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.SignalR;
 using Server.SignalRHub;
+using System.Net;
 
 namespace Server.Controllers
 {
@@ -215,7 +216,6 @@ namespace Server.Controllers
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
-            Console.WriteLine(token);
             // Verify the token
             var data = await _tokenService.VerifyTokenAsync(token);
 
@@ -283,7 +283,7 @@ namespace Server.Controllers
             newUser.ProfilePictureURL = destinationFile;
 
             // Delete the folder and the file from tempData
-            Directory.Delete(uploadDir, true);
+            Directory.Delete(Path.GetDirectoryName(existingTempUser.ProfilePictureURL), true);
 
             // Add the new user to the database
             _context.Users.Add(newUser);
@@ -308,14 +308,22 @@ namespace Server.Controllers
             return Ok();
         }
         [HttpGet("GetSession")]
-        public async Task<IActionResult> GetSession([FromQuery] string token)
+        public async Task<IActionResult> getSession([FromQuery] string token)
         {
+            Console.WriteLine(token);
+            token = token.Replace(" ", "+");
             if (token.IsNullOrEmpty())
             {
                 return BadRequest(new { message = "Token cannot be empty" });
             }
             byte[] tokenBytes = Convert.FromBase64String(token);
             var userId = await _cryptoService.DecryptAsync(tokenBytes);
+            var exisitngUser = _context.Users.FirstOrDefault(u => u.UserId == int.Parse(userId));
+            if(exisitngUser == null)
+            {
+                return BadRequest(new {message = "Invalid token"});
+            }
+
             HttpContext.Session.SetString("UserId", userId);
             Response.Cookies.Delete("AwaitForEmailVerification");
             return Ok();
