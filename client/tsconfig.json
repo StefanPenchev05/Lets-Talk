@@ -13,7 +13,8 @@
       "@types" : ["src/types.ts"],
       "@components/*": ["src/components/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@store/*": ["src/features/*"]
+      "@store/*": ["src/features/*"],
+      "@assets/*": ["src/assets/*"]
     },
 
     /* Bundler mode */
