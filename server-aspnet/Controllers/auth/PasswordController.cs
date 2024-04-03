@@ -1,26 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using Server.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Server.Data;
 using Server.Services;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Server.Controllers
 {
-    [Route("/password")]
+    [Route("password")]
     public class PasswordController : Controller
     {
         private readonly ILogger<PasswordController> _logger;
         private readonly UserManagerDB _context;
-        private readonly EmailManager _emailManager;
-        private readonly TokenService _tokenService;
-        private readonly HashService _hashService;
+        private readonly IEmailService _emailManager;
+        private readonly ITokenService _tokenService;
+        private readonly IHashService _hashService;
 
-        public PasswordController(ILogger<PasswordController> logger, UserManagerDB context, EmailManager emailManager, TokenService tokenService, HashService hashService)
+        public PasswordController(ILogger<PasswordController> logger, UserManagerDB context, IEmailService emailManager, ITokenService tokenService, IHashService hashService)
         {
             _logger = logger;
             _context = context;
@@ -34,11 +30,11 @@ namespace Server.Controllers
             return await _tokenService.GenerateTokenAsync(data, expiresInMinutes);
         }
 
-        [HttpPost("/reset/")]
-        public async Task<IActionResult> SendResetPassword([FromBody] string email)
+        [HttpPost("reset")]
+        public async Task<IActionResult> SendResetPassword([FromBody] string emailOrUsername)
         {
             // Find the user with the provided email
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == emailOrUsername || u.UserName == emailOrUsername);
 
             // If the user does not exist, return a 404 Not Found status
             if (existingUser == null)
@@ -53,7 +49,7 @@ namespace Server.Controllers
             };
 
             // Generate a token that expires in 15 minutes
-            var token = GenerateToken(dataForToken, 15);
+            var token = await GenerateToken(dataForToken, 15);
 
             // Create a dictionary with the reset password link
             Dictionary<string, object> additianalData = new()
@@ -62,21 +58,27 @@ namespace Server.Controllers
             };
 
             // Send an email to the user with the reset password link
-            await _emailManager.SendEmailAsync("PasswordReset", "Link for reset password", email, additianalData);
+            await _emailManager.SendEmailAsync("PasswordReset", "Link for reset password", existingUser.Email, additianalData);
 
             return Ok(new { message = "Your link for password resetting expires after 15 minutes" });
         }
 
-        [HttpPost("/reset/verify/")]
+        [HttpPost("reset/verify")]
         public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] string newPassword)
         {
             // Verify the token
             var data = await _tokenService.VerifyTokenAsync(token);
 
-            // If the token is invalid, return a 400 Bad Request status with a custom message
+            // If the token is invalid, return a 400 Bad Request status
             if (data == null)
             {
                 return BadRequest(new { invalidToken = true, message = "This token is invalid" });
+            }
+
+            // if the newPassword is empty or null, return a 400 Bad Request status
+            if (newPassword.IsNullOrEmpty())
+            {
+                return BadRequest(new { emptyPassword = true, message = "Password should not be empty" });
             }
 
             // Find the user with the ID from the token
@@ -105,7 +107,7 @@ namespace Server.Controllers
             // Save the changes to the database
             await _context.SaveChangesAsync();
 
-            return Ok(new {passwordChanged = true, message = "You have successfully changed your password!"});
+            return Ok(new { passwordChanged = true, message = "You have successfully changed your password!" });
 
         }
     }

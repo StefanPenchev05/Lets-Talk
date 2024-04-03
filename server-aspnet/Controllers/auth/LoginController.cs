@@ -16,17 +16,15 @@ namespace Server.Controllers
         private readonly UserManagerDB _context;
         private readonly IHashService _hashService;
         private readonly IEmailService _emailManager;
-        private readonly ICryptoService _cryptoService;
+
 
         // Dependency injection via constructor
-        public LoginController(ILogger<LoginController> logger, UserManagerDB context, IHashService hashService, IEmailService emailService, ICryptoService cryptoService)
+        public LoginController(ILogger<LoginController> logger, UserManagerDB context, IHashService hashService, IEmailService emailService)
         {
             _logger = logger;
             _context = context;
             _hashService = hashService;
             _emailManager = emailService;
-            _cryptoService = cryptoService;
-            // _httpContextAccessor = httpContextAccessor;
         }
 
         // Find a user by username or email

@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 
-import * as GlobalImports from "@globalImports"
+import * as GlobalImports from "@globalImports";
 import * as LoginImports from "./imports";
+import { api } from "@services/api";
+import { LoginResponse } from "@types";
 
 const RESOLUTION_THRESHOLD = 1022;
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const windowWidth = GlobalImports.useWindowResize();
-  const { isLoading, emailError, passwordError, handleFormSubmit } = LoginImports.useFormSubmit(
-    email,
-    password
-  );
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const refDialog = useRef<HTMLDialogElement>(null);
 
-  if(isLoading){
-    return <LoginImports.Loader/>
+  const windowWidth = GlobalImports.useWindowResize();
+  const { isLoading, emailError, passwordError, handleFormSubmit } =
+    LoginImports.useFormSubmit(email, password);
+
+    const handleSubmitFromResetPassword = async(e: FormEvent<HTMLFormElement>, emailOrUsername: string) => {
+      e.preventDefault();
+      try{
+        await api("/password/reset/", {method : "POST", data:JSON.stringify(emailOrUsername)});
+
+        refDialog.current?.close();
+      }catch(err: any){
+        console.log(err)
+      }
+    }
+  if (isLoading) {
+    return <LoginImports.Loader />;
   }
 
   return (
@@ -37,15 +50,24 @@ const Login: React.FC = () => {
         <form
           className="flex flex-col space-y-4 w-full mb-9"
           onSubmit={handleFormSubmit}
-          method="post"          
+          method="post"
         >
-          <LoginImports.EmailInput email={email} setEmail={setEmail} error={emailError} />
+          <LoginImports.EmailInput
+            email={email}
+            setEmail={setEmail}
+            error={emailError}
+          />
           <LoginImports.PasswordInput
             password={password}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
             setPassword={setPassword}
             error={passwordError}
           />
-          <p className="text-base w-full text-end text-[#6F58C1] dark:text-[#8B71DD] underline">
+          <p
+            className="text-base w-full hover:cursor-pointer text-end text-[#6F58C1] dark:text-[#8B71DD] underline"
+            onClick={() => refDialog.current?.showModal()}
+          >
             Forgot Password?
           </p>
           <LoginImports.SubmitButton helperText="Sign in" />
@@ -61,6 +83,22 @@ const Login: React.FC = () => {
           </a>
         </p>
       </div>
+      <dialog ref={refDialog} className="modal">
+        <div className="modal-box space-y-4">
+          <h3 className="font-bold text-lg">Reset Password Function</h3>
+          <form onSubmit={(e) => handleSubmitFromResetPassword(e,email)}>
+            <LoginImports.EmailInput
+              email={email}
+              setEmail={setEmail}
+              error={emailError}
+            />
+            <LoginImports.SubmitButton helperText="Send Email" />
+          </form>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 };
