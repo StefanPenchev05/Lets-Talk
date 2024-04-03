@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using Server.Data;
 
 namespace Server.Controllers
@@ -126,6 +127,13 @@ namespace Server.Controllers
             }
 
             return Ok(userChannels);
+        }
+
+        [HttpGet("logout")]
+        public async Task<IActionResult> LogOutUser()
+        {
+            HttpContext.Session.Remove("UserId");
+            return Ok();
         }
     }
 }

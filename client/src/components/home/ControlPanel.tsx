@@ -5,19 +5,32 @@ import NotificationIcon from "@assets/svg/NotificationIcon";
 import SettingsIcon from "@assets/svg/SettingsIcon";
 
 import useAppSelector from "@hooks/useAppSelector.hook";
+import { api } from "@services/api";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ICONS = [
-  {component: ChatIcon, label: "chat"},
-  {component: ContactIcon, label: "contact"},
-  {component: NotificationIcon, label: "notifications"},
-  {component: SettingsIcon, label: "settings"}
+  { component: ChatIcon, label: "chat" },
+  { component: ContactIcon, label: "contact" },
+  { component: NotificationIcon, label: "notifications" },
+  { component: SettingsIcon, label: "settings" },
 ];
 
 function ControlPanel() {
+  const { firstName, lastName, avatarURL } = useAppSelector(
+    (state) => state.profile
+  );
+  const [activeOn, setActiveOn] = useState<string>("chat");
+  const navigate = useNavigate();
 
-  const { firstName, lastName, avatarURL } = useAppSelector((state) => state.profile);
-  const [activeOn, setActiveOn] = useState<string>("chat")
+  const handleLogOut = async() => {
+    try{
+      await api("/user/logout", {method: "GET"});
+      navigate("/login");
+    }catch(err){
+      console.log(err);
+    }
+  }
 
   return (
     <div className="container flex flex-col rounded-xl items-center justify-between min-h-[100dvh] bg-white dark:bg-base-100 w-full lg:w-60 px-8 py-14">
@@ -33,15 +46,25 @@ function ControlPanel() {
       </div>
       <div className="flex flex-col justify-center items-center md:items-start space-y-8 w-full">
         {ICONS.map(({ component: Icon, label }) => (
-          <div key={label} className={`flex items-center space-x-2 ${activeOn === label ? "border-l-2 pl-4 border-blue-500" : null}`} onClick={() => setActiveOn(label)}>
+          <div
+            key={label}
+            className={`flex items-center space-x-2 ${
+              activeOn === label ? "border-l-2 pl-4 border-blue-500" : null
+            }`}
+            onClick={() => setActiveOn(label)}
+          >
             <Icon isActive={activeOn === label} />
-            <span className={`text-black dark:text-white ${activeOn === label ? "text-blue-500" : null} uppercase text-sm`}>
+            <span
+              className={`text-black dark:text-white ${
+                activeOn === label ? "text-blue-500" : null
+              } uppercase text-sm`}
+            >
               {label}
             </span>
           </div>
         ))}
       </div>
-      <div className="space-x-2 w-full mt-40 flex items-center md:items-start">
+      <div className="space-x-2 w-full mt-40 flex items-center md:items-start" onClick={handleLogOut}>
         <ExitIcon />
         <span className="text-black dark:text-white uppercase text-sm">
           log out
