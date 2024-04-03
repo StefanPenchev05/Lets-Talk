@@ -1,11 +1,13 @@
-function ChatIcon() {
+import { Icon } from "@types";
+
+function ChatIcon({isActive}: Icon) {
   return (
     <>
       <svg
         data-slot="icon"
         fill="none"
         strokeWidth="1.5"
-        className="w-5 h-5 inline-block dark:stroke-white"
+        className={`w-5 h-5 inline-block dark:stroke-white ${isActive ? " stroke-blue-500" : null}`}
         stroke="black"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"

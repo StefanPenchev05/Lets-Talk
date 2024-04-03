@@ -32,6 +32,10 @@ export interface Alert{
   type: 'success' | 'error' | 'warning';
 }
 
+export interface Icon{
+  isActive: boolean;
+}
+
 export interface ProfileSlice{
   username: string | null;
   firstName: string | null;
