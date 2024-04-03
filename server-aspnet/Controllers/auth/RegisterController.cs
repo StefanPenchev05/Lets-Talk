@@ -131,6 +131,11 @@ namespace Server.Controllers
                         VerificationCode = roomId,
                     };
 
+                    // Add the tempUser to the DbSet
+                    _context.tempDatas.Add(tempUser);
+
+                    await _context.SaveChangesAsync();
+
                     if (model.ProfilePicture != null)
                     {
                         // Define the path where the user's profile picture will be stored
@@ -159,9 +164,6 @@ namespace Server.Controllers
                         // Set the URL of the profile picture
                         tempUser.ProfilePictureURL = filePath;
                     }
-
-                    // Add the tempUser to the DbSet
-                    _context.tempDatas.Add(tempUser);
 
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
@@ -196,7 +198,7 @@ namespace Server.Controllers
                         HttpOnly = true,
                         Secure = true
                     };
-                    Response.Cookies.Append("AwaitForEmailVerification",roomId, cookieOptions);
+                    Response.Cookies.Append("AwaitForEmailVerification", roomId, cookieOptions);
                     return Ok(new { awaitForEmailVerification = true, roomId, message = "Sended Email" });
                 }
                 // If the model is not valid, return model errors
@@ -264,6 +266,11 @@ namespace Server.Controllers
                 }
             };
 
+            // Add the new user to the database
+            _context.Users.Add(newUser);
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
+
             string wwwRoot = _hostEnvironment.WebRootPath;
             string uploadDir = Path.Combine(wwwRoot, "uploads", newUser.UserId.ToString());
 
@@ -285,12 +292,6 @@ namespace Server.Controllers
             // Delete the folder and the file from tempData
             Directory.Delete(Path.GetDirectoryName(existingTempUser.ProfilePictureURL), true);
 
-            // Add the new user to the database
-            _context.Users.Add(newUser);
-
-            // Delete the existingTempUser
-            _context.tempDatas.Remove(existingTempUser);
-
             // Save the changes to the database
             await _context.SaveChangesAsync();
 
@@ -298,7 +299,7 @@ namespace Server.Controllers
             var encryptUserId = await _cryptoService.EncryptAsync(newUser.UserId.ToString());
             var signalR_data = new
             {
-                verifiedEmail = true, 
+                verifiedEmail = true,
                 encryptUserId,
                 message = "You successfuly verified your email"
             };
@@ -319,9 +320,9 @@ namespace Server.Controllers
             byte[] tokenBytes = Convert.FromBase64String(token);
             var userId = await _cryptoService.DecryptAsync(tokenBytes);
             var exisitngUser = _context.Users.FirstOrDefault(u => u.UserId == int.Parse(userId));
-            if(exisitngUser == null)
+            if (exisitngUser == null)
             {
-                return BadRequest(new {message = "Invalid token"});
+                return BadRequest(new { message = "Invalid token" });
             }
 
             HttpContext.Session.SetString("UserId", userId);

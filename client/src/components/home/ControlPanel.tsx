@@ -4,6 +4,8 @@ import ExitIcon from "@assets/svg/ExitIcon";
 import NotificationIcon from "@assets/svg/NotificationIcon";
 import SettingsIcon from "@assets/svg/SettingsIcon";
 
+import useAppSelector from "@hooks/useAppSelector.hook";
+
 const ICONS = [
   {component: ContactIcon, label: "contact"},
   {component: ChatIcon, label: "chat"},
@@ -12,16 +14,19 @@ const ICONS = [
 ];
 
 function ControlPanel() {
+
+  const { firstName, lastName, avatarURL } = useAppSelector((state) => state.profile);
+
   return (
     <div className="container flex flex-col rounded-xl items-center justify-between min-h-[100dvh] bg-white dark:bg-base-100 w-full lg:w-60 px-8 py-14 pb-32">
       <div className="flex flex-col items-center space-y-2">
         <div className="avatar">
           <div className="w-24 h-24 rounded-full">
-            <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+            <img src={avatarURL as string} />
           </div>
         </div>
         <span className="text-black dark:text-white text-lg font-medium">
-          Stefan Penchev
+          {firstName} {lastName}
         </span>
       </div>
       <div className="flex flex-col justify-center items-center md:items-start space-y-8 w-full">

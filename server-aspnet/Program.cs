@@ -32,7 +32,7 @@ builder.Services.AddCors(options =>
 // Add session services
 builder.Services.AddSession(option =>
 {
-    option.IOTimeout = TimeSpan.FromMinutes(60);
+    option.IOTimeout = TimeSpan.FromHours(2);
     option.Cookie.Name = ".AspNet";
     option.Cookie.HttpOnly = true;
     option.Cookie.IsEssential = true;
@@ -76,11 +76,13 @@ app.UseSession();
 
 app.UseAuthorization();
 
+// app.Map("/user", builder => builder.UseMiddleware<SessionCheckMiddleware>());
+//app.UseMiddleware<SessionCheckMiddleware>();
+
 app.MapHub<RegisterHub>("/RegisterHub");
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Map("/user", builder => builder.UseMiddleware<SessionCheckMiddleware>());
 app.Run();

@@ -31,3 +31,11 @@ export interface Alert{
   message: string;
   type: 'success' | 'error' | 'warning';
 }
+
+export interface ProfileSlice{
+  username: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  avatarURL: string | null;
+  isLoading: boolean;
+}

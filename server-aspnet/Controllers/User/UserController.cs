@@ -59,7 +59,7 @@ namespace Server.Controllers
             // Construct the absolute URL to the profile picture
             var absoluteUrl = $"{Request.Scheme}://{Request.Host}/uploads/{existingUser.UserId}/{fileName}";
 
-            return Ok(new { firstName = existingUser.FirstName, lastName = existingUser.LastName, username = existingUser.UserName, avatar = absoluteUrl });
+            return Ok(new { firstName = existingUser.FirstName, lastName = existingUser.LastName, username = existingUser.UserName, avatarURL = absoluteUrl });
         }
 
         [HttpGet("settings")]

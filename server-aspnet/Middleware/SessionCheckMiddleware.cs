@@ -8,10 +8,12 @@ namespace Server.Middleware
     public class SessionCheckMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<SessionCheckMiddleware> _logger;
 
-        public SessionCheckMiddleware(RequestDelegate next)
+        public SessionCheckMiddleware(RequestDelegate next, ILogger<SessionCheckMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -22,10 +24,14 @@ namespace Server.Middleware
                 // If not, return a 400 Bad Request response
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("User ID is missing from the session.");
-                return;
+            }
+            else
+            {
+                // If the session contains the user ID, log it
+                _logger.LogInformation("User ID: {UserId}", context.Session.GetString("UserId"));
             }
 
-            // If the session contains the user ID, call the next middleware in the pipeline
+            // Always call the next middleware in the pipeline
             await _next(context);
         }
     }
