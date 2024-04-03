@@ -20,6 +20,7 @@ const Register: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [isTwoFactor, setIsTwoFactor] = useState<boolean>(false);
   const [verifyLoading, setVerifyLoading] = useState<boolean>(true);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const refDialog = useRef<HTMLDialogElement>(null);
 
@@ -146,11 +147,14 @@ const Register: React.FC = () => {
           <RegisterImports.PasswordInput
             password={password}
             setPassword={setPassword}
+            showPassword= {showPassword}
+            setShowPassword={setShowPassword}
             error={passwordError}
           />
           <RegisterImports.ConfirmPasswordInput
             confirmPassword={confirmPassword}
             setConfirmPassword={setConfirmPassword}
+            showConfirmPassword = {showPassword}
             error={passwordError}
           />
 

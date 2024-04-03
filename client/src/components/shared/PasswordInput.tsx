@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 
@@ -6,15 +6,17 @@ type PasswordInputProps = {
   password: string;
   setPassword: (password: string) => void;
   error?: string;
+  showPassword: boolean;
+  setShowPassword: (showPassword:boolean) => void;
 };
 
 const PasswordInput: React.FC<PasswordInputProps> = ({
   password,
   setPassword,
   error,
+  showPassword,
+  setShowPassword
 }) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
   return (
     <TextField
       data-testid="password-input"
