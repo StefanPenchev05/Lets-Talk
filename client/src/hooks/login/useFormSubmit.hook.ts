@@ -21,6 +21,7 @@ export default function useFormSubmit(email: string, password: string) {
     try {
       await validateLogInForm(email, password);
       setIsLoading(true);
+     setTimeout(async() => {
       await api("/auth/login", {
         method: "POST",
         data: JSON.stringify({ usernameOrEmail: email, Password: password }),
@@ -44,6 +45,7 @@ export default function useFormSubmit(email: string, password: string) {
 
           setIsLoading(false);
         });
+     }, 2000);
     } catch (err) {
       if (err instanceof CustomError) {
         if (

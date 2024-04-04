@@ -16,8 +16,7 @@ function index() {
 
   const [confirmPassword, setConfirmPassword] =
     ResetImports.useState<string>("");
-  const [confirmPasswordError, setConfirmPasswordError] =
-    ResetImports.useState<string>("");
+  const [confirmPasswordError] = ResetImports.useState<string>("");
 
   const { token } = ResetImports.useParams();
   const refDialog = ResetImports.useRef<HTMLDialogElement>(null);
@@ -30,8 +29,8 @@ function index() {
       }, 1000);
     }
 
-    if(countDown === 0){
-        navigate("/");
+    if (countDown === 0) {
+      navigate("/");
     }
   }, [countDown]);
 
@@ -61,7 +60,7 @@ function index() {
 
       await api(`/password/reset/verify/?token=${token}`, {
         method: "POST",
-        data: JSON.stringify({confirmPassword}),
+        data: JSON.stringify({ confirmPassword }),
       })
         .then((response: any) => {
           const data = response.data as ResetImports.IResetPasswordResponse;
@@ -71,11 +70,15 @@ function index() {
           setCountDown(10);
         })
         .catch((err: any) => {
-            console.log(err)
+          console.log(err);
           const data = err.response.data as ResetImports.IResetPasswordResponse;
           if (data.invalidToken) {
             navigate("/login");
-          } else if (data.samePassword || data.passwordChanged || data.emptyPassword) {
+          } else if (
+            data.samePassword ||
+            data.passwordChanged ||
+            data.emptyPassword
+          ) {
             setPasswordError(data.message);
           }
         });
