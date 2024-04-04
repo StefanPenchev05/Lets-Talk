@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Services;
 using Microsoft.IdentityModel.Tokens;
+using Server.ViewModels;
 
 namespace Server.Controllers
 {
@@ -64,19 +65,30 @@ namespace Server.Controllers
         }
 
         [HttpGet("reset/token")]
-        public async Task<IActionResult> CheckToken([FromQuery] string token){
+        public async Task<IActionResult> CheckToken([FromQuery] string token)
+        {
             var validToken = await _tokenService.VerifyTokenAsync(token);
 
-            if(validToken == null){
-                return NotFound(new {invalidToken = true});
+            if (validToken == null)
+            {
+                return NotFound(new { invalidToken = true });
             }
 
             return Ok();
         }
 
         [HttpPost("reset/verify")]
-        public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] string newPassword)
+        public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] ResetPassword model)
         {
+            if (_context == null || _tokenService == null || _hashService == null)
+            {
+                throw new InvalidOperationException("Services are not properly initialized");
+            }
+            if (token == null)
+            {
+                return BadRequest(new { invalidToken = true, message = "This token is invalid" });
+            }
+
             // Verify the token
             var data = await _tokenService.VerifyTokenAsync(token);
 
@@ -85,30 +97,31 @@ namespace Server.Controllers
             {
                 return BadRequest(new { invalidToken = true, message = "This token is invalid" });
             }
-
-            // if the newPassword is empty or null, return a 400 Bad Request status
-            if (newPassword.IsNullOrEmpty())
+            
+            // if the confirmPassword is empty or null, return a 400 Bad Request status
+            if (model.confirmPassword.IsNullOrEmpty())
             {
                 return BadRequest(new { emptyPassword = true, message = "Password should not be empty" });
             }
 
+
             // Find the user with the ID from the token
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserId == int.Parse(data[0]));
+            var existingUser = await _context.Users.Include(s => s.Settings.SecuritySettings).FirstOrDefaultAsync(u => u.UserId == int.Parse(data[0]));
 
             // If the user does not exist, return a 404 Not Found status
             if (existingUser == null)
             {
-                return NotFound(new {invalidToken = true, message = "A user with this email does not exists" });
+                return NotFound(new { invalidToken = true, message = "A user with this email does not exists" });
             }
 
             // Hash the new password
-            string hashedPassword = await _hashService.HashPassword(newPassword);
+            string hashedPassword = await _hashService.HashPassword(model.confirmPassword);
 
             // If the new password is the same as the current password, return a 400 Bad Request status
             var userPassword = existingUser.Password;
             if (userPassword == hashedPassword)
             {
-                return BadRequest(new { samePassword = true, message = "You can change your password as the same as your current password" });
+                return BadRequest(new { samePassword = true, message = "You cannot change your password as the same as your current password" });
             }
 
             // Update the user's password and the last password change date

@@ -133,6 +133,7 @@ namespace Server.Controllers
         public async Task<IActionResult> LogOutUser()
         {
             HttpContext.Session.Remove("UserId");
+            Response.Cookies.Delete(".AspNet");
             return Ok();
         }
     }

@@ -11,9 +11,8 @@ function index() {
   const [password, setPassword] = ResetImports.useState<string>("");
   const [showPassword, setShowPassword] = ResetImports.useState<boolean>(false);
   const [passwordError, setPasswordError] = ResetImports.useState<string>("");
-  const [isLoading, setIsLoading] = ResetImports.useState<boolean>(false);
   const [responseText, setResponseText] = ResetImports.useState<string>("");
-  const [countDown, setCountDown] = ResetImports.useState<number>(0);
+  const [countDown, setCountDown] = ResetImports.useState<number>(-1);
 
   const [confirmPassword, setConfirmPassword] =
     ResetImports.useState<string>("");
@@ -29,6 +28,10 @@ function index() {
       setTimeout(() => {
         setCountDown(countDown - 1);
       }, 1000);
+    }
+
+    if(countDown === 0){
+        navigate("/");
     }
   }, [countDown]);
 
@@ -56,24 +59,23 @@ function index() {
 
       validatePassword(password);
 
-      setIsLoading(true);
-
       await api(`/password/reset/verify/?token=${token}`, {
         method: "POST",
-        data: JSON.stringify({ newPassword: confirmPassword }),
+        data: JSON.stringify({confirmPassword}),
       })
         .then((response: any) => {
-          setIsLoading(false);
           const data = response.data as ResetImports.IResetPasswordResponse;
+          console.log(data);
           setResponseText(data.message);
           refDialog.current?.showModal();
           setCountDown(10);
         })
         .catch((err: any) => {
+            console.log(err)
           const data = err.response.data as ResetImports.IResetPasswordResponse;
           if (data.invalidToken) {
             navigate("/login");
-          } else if (data.samePassword || data.passwordChanged) {
+          } else if (data.samePassword || data.passwordChanged || data.emptyPassword) {
             setPasswordError(data.message);
           }
         });
@@ -87,10 +89,6 @@ function index() {
       console.log(err);
     }
   };
-
-  if (isLoading) {
-    return <ResetImports.Loader />;
-  }
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center h-screen md:h-[100dvh] w-full">
@@ -129,8 +127,8 @@ function index() {
           />
           <ResetImports.SubmitButton helperText="Reset Password" />
         </form>
-        <dialog className="modal bg-white dark:bg-neutral-100" ref={refDialog}>
-          <div className="modal-box space-y-8">
+        <dialog className="modal" ref={refDialog}>
+          <div className="modal-box space-y-8 bg-white dark:bg-neutral-100">
             <p className="font-bold text-lg w-full text-center text-green-500">
               {responseText}
             </p>
