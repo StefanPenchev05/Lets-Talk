@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { api } from "@services/api";
-import { AuthResponse } from "@types";
+import { IAuthResponse } from "@types";
 
 interface AuthState {
   isAuth: boolean;
@@ -23,7 +23,7 @@ const initialState: AuthState = {
 export const checkAuth = createAsyncThunk("auth/check", async (_, thunkAPI) => {
   try {
     const response: any = await api("/auth/", { method: "GET" });
-    const data = response.data as AuthResponse;
+    const data = response.data as IAuthResponse;
     return data;
   } catch (err) {
     return thunkAPI.rejectWithValue({ err });

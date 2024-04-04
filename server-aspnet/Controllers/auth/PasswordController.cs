@@ -63,6 +63,17 @@ namespace Server.Controllers
             return Ok(new { message = "Your link for password resetting expires after 15 minutes" });
         }
 
+        [HttpGet("reset/token")]
+        public async Task<IActionResult> CheckToken([FromQuery] string token){
+            var validToken = await _tokenService.VerifyTokenAsync(token);
+
+            if(validToken == null){
+                return NotFound(new {invalidToken = true});
+            }
+
+            return Ok();
+        }
+
         [HttpPost("reset/verify")]
         public async Task<IActionResult> ResetPassword([FromQuery] string token, [FromBody] string newPassword)
         {
@@ -87,7 +98,7 @@ namespace Server.Controllers
             // If the user does not exist, return a 404 Not Found status
             if (existingUser == null)
             {
-                return NotFound(new { message = "A user with this email does not exists" });
+                return NotFound(new {invalidToken = true, message = "A user with this email does not exists" });
             }
 
             // Hash the new password

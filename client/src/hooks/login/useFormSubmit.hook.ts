@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { api } from "@services/api";
 import { validateLogInForm } from "@utils/validations";
 import { CustomError } from "@utils/CustomError";
-import { LoginResponse } from "@types";
+import { ILoginResponse } from "@types";
 import { useNavigate } from "react-router-dom";
 
 
@@ -26,13 +26,15 @@ export default function useFormSubmit(email: string, password: string) {
         data: JSON.stringify({ usernameOrEmail: email, Password: password }),
       })
         .then((response: any) => {
-          const data = response.data as LoginResponse;
+          const data = response.data as ILoginResponse;
           if(data.twoFactorAwait === true){
             navigate("/login/verify");
           }
+
+          navigate("/");
         })
         .catch((err) => {
-          const response = err.response.data as LoginResponse;
+          const response = err.response.data as ILoginResponse;
           console.log(response.existingUser);
           if (response.existingUser === false) {
             setEmailError(response.message);

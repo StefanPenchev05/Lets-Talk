@@ -3,7 +3,7 @@ import React, { FormEvent, useRef, useState } from "react";
 import * as GlobalImports from "@globalImports";
 import * as LoginImports from "./imports";
 import { api } from "@services/api";
-import { LoginResponse } from "@types";
+import { ILoginResponse } from "@types";
 
 const RESOLUTION_THRESHOLD = 1022;
 
@@ -17,16 +17,23 @@ const Login: React.FC = () => {
   const { isLoading, emailError, passwordError, handleFormSubmit } =
     LoginImports.useFormSubmit(email, password);
 
-    const handleSubmitFromResetPassword = async(e: FormEvent<HTMLFormElement>, emailOrUsername: string) => {
-      e.preventDefault();
-      try{
-        await api("/password/reset/", {method : "POST", data:JSON.stringify(emailOrUsername)});
+  const handleSubmitFromResetPassword = async (
+    e: FormEvent<HTMLFormElement>,
+    emailOrUsername: string
+  ) => {
+    e.preventDefault();
+    try {
+      await api("/password/reset/", {
+        method: "POST",
+        data: JSON.stringify(emailOrUsername),
+      });
 
-        refDialog.current?.close();
-      }catch(err: any){
-        console.log(err)
-      }
+      refDialog.current?.close();
+    } catch (err: any) {
+      console.log(err);
     }
+  };
+  
   if (isLoading) {
     return <LoginImports.Loader />;
   }
@@ -84,9 +91,11 @@ const Login: React.FC = () => {
         </p>
       </div>
       <dialog ref={refDialog} className="modal">
-        <div className="modal-box space-y-4">
-          <h3 className="font-bold text-lg">Reset Password Function</h3>
-          <form onSubmit={(e) => handleSubmitFromResetPassword(e,email)}>
+        <div className="modal-box space-y-4 bg-white dark:bg-[#150f38]">
+          <h3 className="font-bold text-lg text-black dark:text-white">
+            Reset Password Function
+          </h3>
+          <form onSubmit={(e) => handleSubmitFromResetPassword(e, email)}>
             <LoginImports.EmailInput
               email={email}
               setEmail={setEmail}
