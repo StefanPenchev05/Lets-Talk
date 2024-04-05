@@ -135,3 +135,7 @@ export interface ProfileSlice{
   avatarURL: string | null;
   isLoading: boolean;
 }
+
+export interface SearchUserSlice extends ProfileSlice{
+  isFriend: boolean;
+}

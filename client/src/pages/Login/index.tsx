@@ -3,7 +3,6 @@ import React, { FormEvent, useRef, useState } from "react";
 import * as GlobalImports from "@globalImports";
 import * as LoginImports from "./imports";
 import { api } from "@services/api";
-import { ILoginResponse } from "@types";
 
 const RESOLUTION_THRESHOLD = 1022;
 

@@ -14,10 +14,8 @@ export const fetchProfileUser  = createAsyncThunk(
   "profile/fetchProfileUser",
   async (_, thunkAPI) => {
     try {
-        console.log("working")
       const response: any = await api("/user/profile", { method: "GET" });
       const data = response.data as ProfileSlice;
-      console.log(response);
       return data;
     } catch (err) {
         console.log(err);
