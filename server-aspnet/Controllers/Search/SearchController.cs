@@ -1,7 +1,10 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualBasic;
 using Server.Data;
+using Server.Models;
 using Server.ViewModels;
 
 namespace Server.Controllers
@@ -56,26 +59,29 @@ namespace Server.Controllers
 
         // }
 
-        [HttpPost("users")]
-        public async IAsyncEnumerable<object> FindUser([FromBody] Search model)
+        [HttpGet("users")]
+        public async Task<IActionResult> FindUser([FromQuery] string userName, [FromQuery] int pageIndex)
         {
             // Check if the userName is null or empty
-            if (string.IsNullOrEmpty(model.userName))
+            if (string.IsNullOrEmpty(userName))
             {
                 /// If userName is null or empty, yield break to end the iteration
-                yield break;
+                return NotFound(new { emptyUser = true });
             }
 
             var userId = int.Parse(HttpContext.Session.GetString("UserId"));
 
             // Query the Users table in the database
-            var users = _context.Users
+            var users = await _context.Users
                 // Filter the users where the UserName contains the provided userName
-                .Where(u => u.UserName.Contains(model.userName))
+                .Where(u => u.UserName.Contains(userName.ToLower()) && u.UserId != userId)
                 // Include the Friendships navigation property in the query
                 .Include(u => u.Friendships)
+                .ThenInclude(f => f.Friend)
+                .Include(u => u.FriendOf)
+                .ThenInclude(f => f.User)
                 // Skip the users for the previous pages
-                .Skip(pageSize * model.pageIndex)
+                .Skip(pageSize * pageIndex)
                 // Take only the users for the current page
                 .Take(pageSize)
                 // Select only the FirstName, LastName, and ProfilePictureURL properties
@@ -83,16 +89,36 @@ namespace Server.Controllers
                 {
                     u.FirstName,
                     u.LastName,
-                    u.ProfilePictureURL,
-                    isFriend = u.Friendships.Any(f => f.User2Id == userId || f.User1Id == userId)
-                });
+                    avatarURL = u.ProfilePictureURL != null ? $"{Request.Scheme}://{Request.Host}/uploads/{u.UserId}/{Path.GetFileName(u.ProfilePictureURL)}" : null,
+                    isFriend = u.Friendships.Any(f => f.FriendId == userId) || u.FriendOf.Any(f => f.UserId == userId)
+                })
+                .ToListAsync();
 
-            // Iterate over the users
-            await foreach (var user in users.AsAsyncEnumerable())
+            if (!users.Any())
             {
-                // Yield return the user to provide it to the enumerator object
-                yield return user;
+                return NotFound(new { emptyUserBox = true });
             }
+
+            return Ok(users);
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult> GetUserFriendships(int userId)
+        {
+            var userFriendships = await _context.Friendships
+        .Where(f => f.UserId == userId || f.FriendId == userId)
+        .Include(f => f.User)
+        .Include(f => f.Friend)
+        .ToListAsync();
+
+            var friends = new List<User>();
+
+            foreach (var friendship in userFriendships)
+            {
+                friends.Add(friendship.UserId == userId ? friendship.Friend : friendship.User);
+            }
+
+            return Ok(friends);
         }
 
     }

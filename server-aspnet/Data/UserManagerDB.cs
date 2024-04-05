@@ -30,15 +30,18 @@ namespace Server.Data
                 .WithOne(s => s.User)
                 .HasForeignKey<Settings>(s => s.UserId);
 
-            modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.User1)
-                .WithMany(u => u.User1Friendships)
-                .HasForeignKey(f => f.User1Id);
 
             modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.User2)
-                .WithMany(u => u.User2Friendships)
-                .HasForeignKey(f => f.User2Id);
+                .HasOne(f => f.User)
+                .WithMany(u => u.Friendships)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.Friend)
+                .WithMany(u => u.FriendOf)
+                .HasForeignKey(f => f.FriendId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<FriendRequest>()
                 .HasOne(fr => fr.Requester)

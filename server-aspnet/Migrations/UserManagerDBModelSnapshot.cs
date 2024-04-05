@@ -92,20 +92,15 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("User1Id")
+                    b.Property<int>("FriendId")
                         .HasColumnType("int");
 
-                    b.Property<int>("User2Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("FriendshipId");
 
-                    b.HasIndex("User1Id");
-
-                    b.HasIndex("User2Id");
+                    b.HasIndex("FriendId");
 
                     b.HasIndex("UserId");
 
@@ -486,25 +481,21 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.Friendship", b =>
                 {
-                    b.HasOne("Server.Models.User", "User1")
-                        .WithMany("User1Friendships")
-                        .HasForeignKey("User1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Server.Models.User", "Friend")
+                        .WithMany("FriendOf")
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Server.Models.User", "User2")
-                        .WithMany("User2Friendships")
-                        .HasForeignKey("User2Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Models.User", null)
+                    b.HasOne("Server.Models.User", "User")
                         .WithMany("Friendships")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Navigation("User1");
+                    b.Navigation("Friend");
 
-                    b.Navigation("User2");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Server.Models.LoginLocations", b =>
@@ -657,6 +648,8 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.Models.User", b =>
                 {
+                    b.Navigation("FriendOf");
+
                     b.Navigation("FriendRequests");
 
                     b.Navigation("Friendships");
@@ -666,10 +659,6 @@ namespace Server.Migrations
                     b.Navigation("Sessions");
 
                     b.Navigation("Settings");
-
-                    b.Navigation("User1Friendships");
-
-                    b.Navigation("User2Friendships");
 
                     b.Navigation("UserChannels");
                 });

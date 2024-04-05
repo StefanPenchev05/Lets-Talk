@@ -4,11 +4,14 @@ using Server.Services;
 using Server.Interface;
 using Server.SignalRHub;
 using Server.Middleware;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 // Add UserManagerDB service
 builder.Services.AddDbContext<UserManagerDB>(option =>

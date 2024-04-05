@@ -9,12 +9,12 @@ namespace Server.Models
         public int FriendshipId { get; set; }
 
         [Required]
-        public int User1Id { get; set; }
-        public User User1 { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
 
         [Required]
-        public int User2Id { get; set; }
-        public User User2 { get; set; }
+        public int FriendId { get; set; }
+        public User Friend { get; set; }
 
     }
 }

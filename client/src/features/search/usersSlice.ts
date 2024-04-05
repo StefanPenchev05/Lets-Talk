@@ -1,26 +1,58 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { api } from "@services/api";
 import { SearchUserSlice } from "@types";
 
-const initialState: SearchUserSlice[] = [
-    {
-        firstName: null,
-        lastName: null,
-        username: null,
-        avatarURL: null,
-        isFriend: false,
-        isLoading: false
+export const fetchSearchUsers = createAsyncThunk(
+  "search/fetchUsers",
+  async (
+    { userName, pageIndex }: { userName: string; pageIndex: number },
+    thunkAPI
+  ) => {
+    try {
+      const response: any = await api(
+        `/search/users?userName=${userName}&pageIndex=${pageIndex}`,
+        { method: "GET" }
+      );
+      return response.data.$values;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ error });
     }
-];
+  }
+);
+
+const initialState: SearchUserSlice[] = [];
 
 const usersSlice = createSlice({
-    name: "searchUser",
-    initialState,
-    reducers: {
-        addUser: (state, action: PayloadAction<SearchUserSlice>) => {
-            state.push(action.payload);
-        }
+  name: "searchUser",
+  initialState,
+  reducers: {
+    addUser: (state, action: PayloadAction<SearchUserSlice>) => {
+      state.push(action.payload);
     },
+
+    clearUsers: () => {
+      return [];
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchSearchUsers.pending, () => {
+        return [];
+      })
+      .addCase(
+        fetchSearchUsers.fulfilled,
+        (state, action: PayloadAction<SearchUserSlice[]>) => {
+          Object.assign(state, action.payload);
+        }
+      )
+      .addCase(
+        fetchSearchUsers.rejected,
+        () => {
+          return [];
+        }
+      )
+  },
 });
 
-export const {addUser} = usersSlice.actions;
+export const { addUser, clearUsers } = usersSlice.actions;
 export default usersSlice.reducer;

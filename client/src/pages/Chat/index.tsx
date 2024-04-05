@@ -1,18 +1,29 @@
 import SearchBar from "@components/chat/SearchBar";
 import { useEffect, useState } from "react";
+import useAppDispatch from "@hooks/useAppDispatch.hook";
+import { clearUsers, fetchSearchUsers } from "@store/search/usersSlice";
+import useAppSelector from "@hooks/useAppSelector.hook";
 
 function index() {
   const [createNewChat, setCreateNewChat] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [pageIndex, setPageIndex] = useState<number>(0);
 
+  const dispatch = useAppDispatch();
+  const searchedUser = useAppSelector((state) => state.search);
 
   const onNewChat = () => {
     setCreateNewChat(true);
   };
 
   useEffect(() => {
-    console.log(searchQuery);
-  }, [searchQuery])
+    if (searchQuery) {
+      dispatch(fetchSearchUsers({ userName: searchQuery, pageIndex }));
+    }else {
+      dispatch(clearUsers());
+    }
+    console.log(searchedUser)
+  }, [searchQuery, pageIndex]);
 
   return (
     <div className="w-full flex flex-row space-x-6 py-12 pl-12 pr-6 text-black">
@@ -49,9 +60,31 @@ function index() {
         {createNewChat ? (
           <div className="h-full shadow-md rounded-md bg-white dark:bg-base-200 p-4">
             <SearchBar setSearching={setSearchQuery} />
-            <div className="flex flex-row justify-center items-center w-full h-full">
-              No Users Found
-            </div>
+            {searchedUser && (
+              <div className="flex flex-col w-full h-full p-4 space-y-2 overflow-auto">
+                {searchedUser.map((user, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-4 p-3 bg-white shadow-lg rounded-md"
+                  >
+                    <img
+                      src={user.avatarURL ? user.avatarURL : "http://localhost:5295/uploads/default/User.svg"}
+                      alt={`${user.firstName} ${user.lastName}`}
+                      className="w-12 h-12 object-cover rounded-full"
+                    />
+                    <div className="">
+                        <p className="text-base font-bold">
+                            {user.firstName} {user.lastName}
+                        </p>
+                        <p className={user.isFriend ? "text-green-500" : "text-red-500"}>
+                            {user.isFriend ? "Friend" : "Not Friend"}
+                        </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <button>Creat Channel</button>
           </div>
         ) : (
           <div className="flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 dark:from-indigo-500 dark:via-purple-700 dark:to-blue-500 w-full h-full shadow-md rounded-lg">

@@ -101,7 +101,7 @@ namespace Server.Controllers
 
                     // Store the user ID in the session
                     HttpContext.Session.SetString("UserId", user.UserId.ToString());
-                    return Ok(new { message = "Login successful", session, userId = user.UserId.ToString() });
+                    return Ok(new { message = "Login successful" });
 
                 }
 

@@ -36,8 +36,6 @@ namespace Server.Models
         public ICollection<SessionStore> Sessions { get; set; }
         public ICollection<Friendship> Friendships { get; set; }
         public ICollection<FriendRequest> FriendRequests { get; set; }
-
-        public ICollection<Friendship> User1Friendships { get; set; }
-        public ICollection<Friendship> User2Friendships { get; set; }
+        public ICollection<Friendship> FriendOf { get; set; }
     }
 }

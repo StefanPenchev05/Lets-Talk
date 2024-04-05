@@ -136,6 +136,6 @@ export interface ProfileSlice{
   isLoading: boolean;
 }
 
-export interface SearchUserSlice extends ProfileSlice{
+export interface SearchUserSlice extends Omit<ProfileSlice, 'isLoading'>{
   isFriend: boolean;
 }
