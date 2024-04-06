@@ -87,6 +87,7 @@ namespace Server.Controllers
                 // Select only the FirstName, LastName, and ProfilePictureURL properties
                 .Select(u => new
                 {
+                    username = u.UserName,
                     u.FirstName,
                     u.LastName,
                     avatarURL = u.ProfilePictureURL != null ? $"{Request.Scheme}://{Request.Host}/uploads/{u.UserId}/{Path.GetFileName(u.ProfilePictureURL)}" : null,

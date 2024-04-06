@@ -15,6 +15,9 @@ export const fetchSearchUsers = createAsyncThunk(
       );
       return response.data.$values;
     } catch (error: any) {
+      if(pageIndex > 0){
+        return;
+      }
       return thunkAPI.rejectWithValue({ error });
     }
   }
@@ -36,13 +39,11 @@ const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchSearchUsers.pending, () => {
-        return [];
-      })
       .addCase(
         fetchSearchUsers.fulfilled,
         (state, action: PayloadAction<SearchUserSlice[]>) => {
-          Object.assign(state, action.payload);
+          if(action.payload)
+            return action.payload;
         }
       )
       .addCase(
