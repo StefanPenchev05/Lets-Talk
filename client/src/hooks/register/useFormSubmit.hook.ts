@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { api } from "@services/api";
 import { validateRegsiterForm } from "@utils/validations";
 import { CustomError } from "@utils/CustomError";
-import { RegisterResponse } from "@types";
+import { IRegisterResponse } from "@types";
 import { setRoomId } from "@store/authSlice";
 
 
@@ -61,14 +61,14 @@ export default function useFormSubmit(
         },
       })
         .then(async (response: any) => {
-          const data = response.data as RegisterResponse;
+          const data = response.data as IRegisterResponse;
           if (data.awaitForEmailVerification && data.roomId) {
             dispatch(setRoomId(data.roomId));
           }
         })
         .catch((err) => {
           console.log(err);
-          const data = err.response.data as RegisterResponse;
+          const data = err.response.data as IRegisterResponse;
           if (data.emailExists) {
             setEmailError(data.message);
           } else if (data.usernameExists) {

@@ -5,12 +5,13 @@ import { clearUsers, fetchSearchUsers } from "@store/search/usersSlice";
 import useAppSelector from "@hooks/useAppSelector.hook";
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import NewChatUser from "@components/chat/newChatUser";
+import { SearchUserSlice } from "@types";
+
 function index() {
   const [createNewChat, setCreateNewChat] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedUser, setSelectedUser] = useState<
-    { username: string | null }[]
-  >([]);
+  const [selectedUsers, setSelectedUsers] = useState<SearchUserSlice[]>([]);
   const [pageIndex, setPageIndex] = useState<number>(0);
 
   const dispatch = useAppDispatch();
@@ -22,13 +23,11 @@ function index() {
 
   const onClose = () => {
     setCreateNewChat(false);
-    setSelectedUser([]);
+    setSelectedUsers([]);
     setSearchQuery("");
   };
 
-  const onNewChatCreate = async() => {
-    
-  }
+  
 
   useEffect(() => {
     if (searchQuery) {
@@ -76,7 +75,7 @@ function index() {
           <div className="h-full shadow-md rounded-md bg-white dark:bg-base-200 p-4 flex flex-col">
             <SearchBar setSearching={setSearchQuery} />
             <div className="flex-grow overflow-auto">
-              {searchedUser && (
+              {searchedUser.length > 0 ? (
                 <InfiniteScroll
                   dataLength={searchedUser.length}
                   next={() => setPageIndex(pageIndex + 1)}
@@ -85,76 +84,42 @@ function index() {
                 >
                   <div className="flex flex-col w-full h-auto p-4 space-y-2">
                     {searchedUser.map((user, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-white shadow-lg rounded-md"
-                        onClick={() => {
-                          if (user.isFriend) {
-                            setSelectedUser([
-                              ...selectedUser,
-                              { username: user.username && user.username },
-                            ]);
-                          }
-                        }}
-                      >
-                        <div className="flex items-center space-x-4">
-                          <img
-                            src={
-                              user.avatarURL
-                                ? user.avatarURL
-                                : "http://localhost:5295/uploads/default/User.svg"
-                            }
-                            alt={`${user.firstName} ${user.lastName}`}
-                            className="w-12 h-12 object-cover rounded-full"
-                          />
-                          <div>
-                            <p
-                              className={`text-base font-bold ${
-                                user.isFriend ? null : "text-gray-200"
-                              }`}
-                            >
-                              {user.firstName} {user.lastName}
-                            </p>
-                            <p
-                              className={
-                                user.isFriend
-                                  ? "text-green-500"
-                                  : "text-red-500"
-                              }
-                            >
-                              {user.isFriend ? "Friend" : "Not Friend"}
-                            </p>
-                          </div>
-                        </div>
-                        {selectedUser.find(
-                          (u) => u.username === user.username
-                        ) && (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            className="h-6 w-6 text-green-500"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        )}
-                      </div>
+                      <NewChatUser
+                        index={index}
+                        user={user}
+                        selectedUsers={selectedUsers}
+                        setSelectedUser={setSelectedUsers}
+                      />
                     ))}
                   </div>
                 </InfiniteScroll>
+              ) : (
+                <>
+                  {selectedUsers.length > 0 ? (
+                    <div className="flex flex-col w-full h-auto p-4 space-y-4">
+                      {selectedUsers.map((user, index) => (
+                        <NewChatUser
+                          index={index}
+                          user={user}
+                          selectedUsers={selectedUsers}
+                          setSelectedUser={setSelectedUsers}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-full flex items-center justify-center">
+                      <p className="text-5xl font-bold text-gray-500 tracking-wide leading-loose bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-transparent bg-clip-text">
+                        No user selected
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
             <div className="flex w-full space-x-4">
               <button
                 className="w-1/2 p-4 bg-blue-500 text-white font-mono rounded shadow-xl hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out disabled:bg-gray-400 mt-auto"
-                disabled={selectedUser.length > 0 ? false : true}
-
+                disabled={selectedUsers.length > 1 ? false : true}
               >
                 Create
               </button>

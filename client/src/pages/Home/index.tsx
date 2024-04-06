@@ -7,7 +7,7 @@ function index() {
     const dispatch = HomeImports.useAppDispatch();
     const { isLoading } = HomeImports.useAppSelector(state => state.profile);
 
-    const [label, setLabel] = HomeImports.useState<string>("chat");
+    const [label] = HomeImports.useState<string>("chat");
     
     HomeImports.useEffect(() => {
         dispatch(HomeImports.fetchProfileUser());

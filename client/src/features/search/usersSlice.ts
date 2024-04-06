@@ -42,7 +42,7 @@ const usersSlice = createSlice({
       .addCase(
         fetchSearchUsers.fulfilled,
         (state, action: PayloadAction<SearchUserSlice[]>) => {
-          if(action.payload)
+          if(action.payload && state)
             return action.payload;
         }
       )
