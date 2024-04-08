@@ -9,12 +9,48 @@ interface CreateChannelConfigProps {
   onClose: () => void;
 }
 
+interface Users {
+  username: string;
+  role: string;
+}
+
 function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
   const [channelAvatar, setChannelAvatar] = useState<File | null>(null);
   const [channelName, setChannelName] = useState<string | null>(null);
   const [channelNameError, setChannelError] = useState<string | null>(null);
 
-  const onNextCreateStep = () => {};
+  const getChanelUsers = (): Users[] => {
+    return selectedUsers.map((user) => ({
+      username: user.username!,
+      role: "General User",
+    }));
+  };
+
+  const [channelUsers, setChannelUsers] = useState<Users[]>(getChanelUsers());
+
+  const changeRoleOfUser = (username: string, role: string) => {
+    const updatedUsers = channelUsers.map((user) =>
+      user.username === username ? { ...user, role: role } : user
+    );
+
+    setChannelUsers(updatedUsers);
+  };
+
+  const isChannelTitleValid = (): boolean => {
+    if (channelName && channelName.length === 0) {
+      setChannelError("Title is required");
+      return false;
+    }
+
+    return true;
+  };
+
+  const onCreateChannel = () => {
+    const isValid = isChannelTitleValid();
+    if (isValid) {
+      // send the server the info to create the channel
+    }
+  };
 
   return (
     <div className="flex flex-col justify-center items-center space-y-4">
@@ -51,8 +87,8 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
       )}
       <TextField
         data-testid="Username-input"
-        type="title"
-        label="title"
+        type="Title"
+        label="Title"
         variant="outlined"
         color="primary"
         value={channelName}
@@ -124,7 +160,10 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
             <span className="font-bold text-lg text-black dark:text-white">
               {user.firstName} {user.lastName}
             </span>
-            <select className="ml-2 rounded-md p-1 bg-transparent text-black dark:text-white">
+            <select
+              className="ml-2 rounded-md p-1 bg-transparent text-black dark:text-white"
+              onChange={(e) => changeRoleOfUser(user.username!, e.target.value )}
+            >
               <option selected>General User</option>
               <option>Admin</option>
               <option>Spectator</option>
@@ -134,8 +173,8 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
       </InfiniteScroll>
       <div className="flex w-full space-x-4">
         <Button
-          placeholder="Next"
-          onClick={onNextCreateStep}
+          placeholder="Create"
+          onClick={onCreateChannel}
           disabled={selectedUsers.length > 1 ? false : true}
         />
         <Button onClick={onClose} placeholder="Close" />
