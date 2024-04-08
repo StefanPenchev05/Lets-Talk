@@ -103,7 +103,7 @@ const Register: React.FC = () => {
         ) : (
           <label
             htmlFor="image"
-            className="relative w-24 h-24 md:w-26 md:h-26 lg:w-36 lg:h-40 rounded-full border-2 border-dashed mb-5 cursor-pointer flex items-center justify-center"
+            className="relative w-24 h-24 md:w-26 md:h-26 lg:w-40 lg:h-40 rounded-full border-2 border-dashed mb-5 cursor-pointer flex items-center justify-center"
           >
             <input
               type="file"

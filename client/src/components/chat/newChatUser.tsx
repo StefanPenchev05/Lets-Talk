@@ -39,6 +39,11 @@ export default function NewChatUser({
                 ? user.avatarURL
                 : "http://localhost:5295/uploads/default/User.svg"
             }
+            onError={(e) => {
+              const target  = e.target as HTMLImageElement
+              target.onerror = null;
+              target.src = "http://localhost:5295/uploads/default/User.svg"
+            }}
             alt={`${user.firstName} ${user.lastName}`}
             className="w-12 h-12 object-cover rounded-full"
           />
