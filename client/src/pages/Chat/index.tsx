@@ -1,11 +1,16 @@
-import SearchBar from "@components/chat/SearchBar";
 import { useEffect, useState } from "react";
-import useAppDispatch from "@hooks/useAppDispatch.hook";
-import { clearUsers, fetchSearchUsers } from "@store/search/usersSlice";
-import useAppSelector from "@hooks/useAppSelector.hook";
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import useAppDispatch from "@hooks/useAppDispatch.hook";
+import useAppSelector from "@hooks/useAppSelector.hook";
+
+import { clearUsers, fetchSearchUsers } from "@store/search/usersSlice";
+
+import SearchBar from "@components/chat/SearchBar";
 import NewChatUser from "@components/chat/newChatUser";
+import SearchFilter from "@components/chat/SearchFilter";
+import Button from "@components/chat/Button";
+
 import { SearchUserSlice } from "@types";
 
 function index() {
@@ -27,7 +32,7 @@ function index() {
     setSearchQuery("");
   };
 
-  
+  const onNextCreateStep = () => {};
 
   useEffect(() => {
     if (searchQuery) {
@@ -48,22 +53,12 @@ function index() {
               <p className="text-2xl text-black dark:text-white font-bold mb-2">
                 Chats
               </p>
-              <select className="bg-transparent text-black dark:text-white">
-                <option selected>Recent Chats</option>
-                <option>Last 24 Hours</option>
-                <option>Last 7 Days</option>
-                <option>Last 30 Days</option>
-                <option>Last 6 Months</option>
-                <option>Last Year</option>
-                <option>All Time</option>
-              </select>
+              <SearchFilter />
             </div>
-            <button
-              className="w-1/2 p-4 bg-blue-500 text-white font-mono rounded shadow-xl hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out"
+            <Button
               onClick={onNewChat}
-            >
-              + Create New Chat
-            </button>
+              placeholder="+ Create New Chat"
+            />
           </div>
         </header>
         <div className="flex flex-col p-3">
@@ -117,18 +112,12 @@ function index() {
               )}
             </div>
             <div className="flex w-full space-x-4">
-              <button
-                className="w-1/2 p-4 bg-blue-500 text-white font-mono rounded shadow-xl hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out disabled:bg-gray-400 mt-auto"
+              <Button
+                onClick={onNextCreateStep}
+                placeholder="Next"
                 disabled={selectedUsers.length > 1 ? false : true}
-              >
-                Create
-              </button>
-              <button
-                className="w-1/2 p-4 bg-blue-500 text-white font-mono rounded shadow-xl hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-150 ease-in-out mt-auto"
-                onClick={onClose}
-              >
-                Cancel
-              </button>
+              />
+              <Button onClick={onClose} placeholder="Close"/>
             </div>
           </div>
         ) : (

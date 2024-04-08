@@ -266,6 +266,9 @@ namespace Server.Controllers
                 }
             };
 
+            // Delete the existingTempUser
+            _context.tempDatas.Remove(existingTempUser);
+
             // Add the new user to the database
             _context.Users.Add(newUser);
             // Save the changes to the database
@@ -303,6 +306,7 @@ namespace Server.Controllers
                 encryptUserId,
                 message = "You successfuly verified your email"
             };
+
             await _registerHub.Clients.Group(roomId).SendAsync("VerifiedEmail", signalR_data);
 
             // Return a 200 status code

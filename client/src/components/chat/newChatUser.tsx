@@ -16,7 +16,7 @@ export default function NewChatUser({
   return (
     <>
       <div
-        className="flex items-center justify-between p-3 bg-white shadow-lg rounded-md hover:bg-gray-100 active:bg-gray-200"
+        className="flex items-center justify-between p-3 bg-white dark:bg-transparent shadow-lg rounded-md hover:bg-gray-100 active:bg-gray-200"
         key={index}
         onClick={() => {
           if (user.isFriend) {
@@ -45,7 +45,7 @@ export default function NewChatUser({
           <div>
             <p
               className={`text-base font-bold ${
-                user.isFriend ? null : "text-gray-200"
+                user.isFriend ? "dark:text-gray-200" : "text-gray-200 dark:text-black"
               }`}
             >
               {user.firstName} {user.lastName}

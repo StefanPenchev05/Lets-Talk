@@ -22,7 +22,7 @@ const initialState: AuthState = {
 
 export const checkAuth = createAsyncThunk("auth/check", async (_, thunkAPI) => {
   try {
-    const response: any = await api("/auth/", { method: "GET" });
+    const response: any = await api(`/auth/`, { method: "GET" });
     const data = response.data as IAuthResponse;
     return data;
   } catch (err) {

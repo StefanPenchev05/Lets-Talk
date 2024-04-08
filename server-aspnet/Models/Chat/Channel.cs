@@ -9,7 +9,7 @@ namespace Server.Models
     {
         public int ChannelId { get; set; }
         public string Name { get; set; } = "Chat Group";
-        public byte[] Image { get; set; } = null;
+        public string ImageURL { get; set; } = null;
 
         // Naviagtion properties
         public ICollection<Message> Messages { get; set; }

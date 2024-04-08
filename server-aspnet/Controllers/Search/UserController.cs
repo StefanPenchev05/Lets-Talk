@@ -22,43 +22,6 @@ namespace Server.Controllers
             _context = context;
         }
 
-        // [HttpPost("/messages")]
-        // public async Task<IActionResult> FindMessages([FromBody] Search model)
-        // {
-        //     if (model.message.IsNullOrEmpty())
-        //     {
-        //         return Ok(new { emptyMessageBox = true, message = "No messages found" });
-        //     }
-
-        //     var userId = HttpContext.Session.GetString("UserId");
-        //     if (userId == null)
-        //     {
-        //         return BadRequest(new { invalidSession = true });
-        //     }
-
-        //     int pageSize = 10;
-
-        //     var userChannels = await _context.UserChannels
-        //         .Where(u => u.UserId.ToString() == userId)
-        //         .Skip(model.pageIndex * pageSize)
-        //         .Take(pageSize)
-        //         .Select(u => u.ChannelId)
-        //         .ToListAsync();
-
-        //     if (userChannels == null)
-        //     {
-        //         return Ok(new { emptyMessageBox = true, message = "No messages found" });
-
-        //     }
-
-        //     foreach (var channel in userChannels)
-        //     {
-        //         var 
-        //     }
-
-
-        // }
-
         [HttpGet("users")]
         public async Task<IActionResult> FindUser([FromQuery] string userName, [FromQuery] int pageIndex)
         {
@@ -102,25 +65,5 @@ namespace Server.Controllers
 
             return Ok(users);
         }
-
-        [HttpGet("{userId}")]
-        public async Task<ActionResult> GetUserFriendships(int userId)
-        {
-            var userFriendships = await _context.Friendships
-        .Where(f => f.UserId == userId || f.FriendId == userId)
-        .Include(f => f.User)
-        .Include(f => f.Friend)
-        .ToListAsync();
-
-            var friends = new List<User>();
-
-            foreach (var friendship in userFriendships)
-            {
-                friends.Add(friendship.UserId == userId ? friendship.Friend : friendship.User);
-            }
-
-            return Ok(friends);
-        }
-
     }
 }

@@ -146,10 +146,10 @@ namespace Server.Controllers
                         return BadRequest(new { validCode = false, message = "Incorrect Code" });
                     }
 
-                    // If the two-factor authentication code is correct, update the session and clear the code
-                    HttpContext.Session.SetString("UserId", user.UserId.ToString());
                     user.Settings.SecuritySettings.TwoFactorAuthCode = null;
 
+                    // If the two-factor authentication code is correct, update the session and clear the code
+                    HttpContext.Session.SetString("UserId", user.UserId.ToString());
                     // Save the changes to the database
                     await _context.SaveChangesAsync();
 

@@ -17,12 +17,14 @@ export const useAuthentication = () => {
   }, [location])
 
   useEffect(() => {
-      if(isAuth){
-        navigate("/");
-      }else if(isAwaitTwoFactor){
-        navigate("/login/verify");
-      }else if(isAwaitEmailVerifiaction){
-        navigate("/register");
+      if(!location.pathname.startsWith("/register/verify/")){
+        if(isAuth){
+          navigate("/");
+        }else if(isAwaitTwoFactor){
+          navigate("/login/verify");
+        }else if(isAwaitEmailVerifiaction){
+          navigate("/register");
+        }
       }
   }, [isAuth, isAwaitTwoFactor, isAwaitEmailVerifiaction]);
 
