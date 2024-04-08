@@ -19,6 +19,7 @@ namespace Server.Models
     {
         Admin,
         User,
-        Spectator
+        Spectator,
+        Owner
     }
 }
