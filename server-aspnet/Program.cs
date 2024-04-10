@@ -83,6 +83,7 @@ app.UseAuthorization();
 //app.UseMiddleware<SessionCheckMiddleware>();
 
 app.MapHub<RegisterHub>("/RegisterHub");
+app.MapHub<ChatHub>("/ChatHub");
 
 app.MapControllerRoute(
     name: "default",

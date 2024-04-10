@@ -50,14 +50,6 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
     const isValid = isChannelTitleValid();
     if (isValid) {
       try {
-        const userDict = channelUsers.reduce(
-          (acc: { [key: string]: string }, user) => {
-            acc[user.username] = user.role;
-            return acc;
-          },
-          {}
-        );
-
         const formData = new FormData();
         channelUsers.forEach((user) => {
           formData.append(`Users[${user.username}]`, user.role);
@@ -67,16 +59,15 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
           formData.append("ChannelImg", channelAvatar);
         }
 
-        console.log(formData);
-
-        const response = await api("/channel/create", {
+        const response: any = await api("/channel/create", {
           method: "POST",
           data: formData,
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log(response);
+
+        
       } catch (err) {
         console.log(err);
       }
