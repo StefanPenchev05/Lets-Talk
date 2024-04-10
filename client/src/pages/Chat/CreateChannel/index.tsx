@@ -3,6 +3,7 @@ import { SearchUserSlice } from "@types";
 import { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Button from "@components/chat/Button";
+import { api } from "@services/api";
 
 interface CreateChannelConfigProps {
   selectedUsers: SearchUserSlice[];
@@ -45,10 +46,40 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
     return true;
   };
 
-  const onCreateChannel = () => {
+  const onCreateChannel = async () => {
     const isValid = isChannelTitleValid();
     if (isValid) {
-      // send the server the info to create the channel
+      try {
+        const userDict = channelUsers.reduce(
+          (acc: { [key: string]: string }, user) => {
+            acc[user.username] = user.role;
+            return acc;
+          },
+          {}
+        );
+
+        const formData = new FormData();
+        channelUsers.forEach((user) => {
+          formData.append(`Users[${user.username}]`, user.role);
+        });
+        formData.append("ChannelName", channelName || "");
+        if (channelAvatar) {
+          formData.append("ChannelImg", channelAvatar);
+        }
+
+        console.log(formData);
+
+        const response = await api("/channel/create", {
+          method: "POST",
+          data: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log(response);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -162,7 +193,7 @@ function index({ selectedUsers, onClose }: CreateChannelConfigProps) {
             </span>
             <select
               className="ml-2 rounded-md p-1 bg-transparent text-black dark:text-white"
-              onChange={(e) => changeRoleOfUser(user.username!, e.target.value )}
+              onChange={(e) => changeRoleOfUser(user.username!, e.target.value)}
             >
               <option selected>General User</option>
               <option>Admin</option>
